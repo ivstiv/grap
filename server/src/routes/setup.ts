@@ -1,12 +1,63 @@
 import { FastifyPluginCallback } from "fastify";
+import { Role } from "../models/Role";
+import { User } from "../models/User";
+import { UserAccountFormHandler, userAccountSchema } from "./shared";
+
+
+const numOfAdmins = async () => {
+  const adminRole = await Role.getByName("admin");
+  if (!adminRole) {
+    throw new Error("Missing admin role!");
+  }
+  const admins = await adminRole.users();
+  return admins.length;
+};
+
 
 export const setupRoutes: FastifyPluginCallback =
 (instance, _opts, next) => {
-  instance.get("/", (req, res) => {
+  instance.get("/", {
+    preHandler: async (_req, res, _done) => { 
+      // only handle this if there are no admins yet
+      if(await numOfAdmins() > 0) {
+        return res.redirect("/");
+      }
+    },
+  },
+  (req, res) => {
     res.view("/src/views/pages/setup.ejs");
   });
-  instance.post("/", (req, res) => {
-    res.send(req.raw.method);
-  });
+
+  instance.post<UserAccountFormHandler>("/", 
+    async (req, res) => {
+      // only handle this if there are no admins yet
+      if(await numOfAdmins() > 0) {
+        return res.redirect("/");
+      }
+
+      // validate the submitted form
+      const errors = await userAccountSchema.validate(req.body)
+        .then(() => [])
+        .catch(e => e.errors);
+    
+      if (errors.length > 0) {
+        return res.view("/src/views/pages/setup.ejs", { error: errors[0] });
+      }
+
+      const userWithTheSameEmail = await User.getByEmail(req.body.email);
+
+      if (userWithTheSameEmail) {
+        return res.view("/src/views/pages/setup.ejs", { error: "User with that email already exists." });
+      }
+      const adminRole = await Role.getByName("admin");
+      if (!adminRole) {
+        throw new Error("Missing admin role!");
+      }
+      const user = await User.register(req.body.email, req.body.password);
+      await user.$relatedQuery<Role>("roles").relate(adminRole);
+
+      return res.redirect("/");
+    });
+
   next();
 };

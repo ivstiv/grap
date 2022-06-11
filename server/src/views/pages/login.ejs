@@ -7,6 +7,26 @@
     <header>
         <%- include('../partials/header'); %>
     </header>
-    login
+    <h1>Login</h1>
+    <p>
+        This page is accessible only if there are no administrators to bootstrap the system!
+    </p>
+    <form method="post" action="login">
+        <p>
+            <label>Email</label><br>
+            <input type="email" name="email" required>
+        </p>
+        <p>
+            <label>Password</label><br>
+            <input type="password" name="password" required>
+        </p>
+        <p>
+            <% if (typeof error !== "undefined") { %>
+                <p><mark><%= error %></mark></p>
+            <% } %>
+        </p>
+        <button type="submit">Submit</button>
+        <a href="/register">Don't have an account?</a>
+    </form>
 </body>
 </html>

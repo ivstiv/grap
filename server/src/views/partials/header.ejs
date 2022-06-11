@@ -1,6 +1,13 @@
 <nav>
     <a href="/">Home</a>
-    <a href="/login">Login</a>
-    <a href="/register">Register</a>
-    <a href="/github">Github</a>
+    <% if (typeof isLoggedIn !== "undefined" && isLoggedIn) { %>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/emails">Emails</a>
+        <a href="/settings">Settings</a>
+        <a href="/logout">Logout</a>
+    <% } else { %>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+        <a href="/github">Github</a>
+    <% } %>
 </nav>
