@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body>
+    <header>
+        <%- include('../partials/header'); %>
+    </header>
+    <h1>Setup</h1>
+    <p>
+        This page is accessible only if there are no administrators to bootstrap the system!
+    </p>
+    <h2>Create administrator</h2>
+    <form>
+        <p>
+            <label>Email</label><br>
+            <input type="email" name="email" required>
+        </p>
+        <p>
+            <label>Password</label><br>
+            <input type="password" name="password" required>
+        </p>
+        <button>Submit</button>
+    </form>
+</body>
+</html>
