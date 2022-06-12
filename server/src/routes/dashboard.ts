@@ -14,5 +14,6 @@ export const dashboardRoutes: FastifyPluginCallback =
     );
 
     instance.get("/", DashboardController.index);
+    instance.post("/address", DashboardController.deleteAddress);
     next();
   };

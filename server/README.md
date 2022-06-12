@@ -18,10 +18,25 @@ npx npm-check-updates -u -t minor && npm install
 npx npm-check-updates -u -t latest && npm install
 ```
 
-4. Check in the end just in case something has slipped
+4. Run `npm update` to update nested depedencies
+
+5. Check in the end just in case something has slipped
 
 ```
 npm outdated
 ```
 
 Check [npm-check-updates's documentation](https://www.npmjs.com/package/npm-check-updates) for more details.
+
+Todos:
+
+- inbox preview
+- parsing and saving emails
+- auto-delete addresses and related inboxes
+- csrf, cors, may be improve dev environment with a domain and nginx proxy?
+- ask the user if old addresses can be deleted on generation if the limit is reached
+- change password setting
+- delete user account setting
+- admin user list
+- impersonation
+- dynamic user limits

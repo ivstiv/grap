@@ -1,6 +1,13 @@
 import { Model } from "objection";
 import { hash } from "bcrypt";
 import { Role } from "./Role";
+import { EmailAddress } from "./EmailAddress";
+import {
+  adjectives,
+  animals,
+  colors,
+  uniqueNamesGenerator,
+} from "unique-names-generator";
 
 export class User extends Model {
   static tableName = "users";
@@ -9,6 +16,14 @@ export class User extends Model {
   email: string;
   password: string;
   createdAt: string;
+
+  static async getById (id: number) {
+    const user = await User.query().where({ id }).first();
+    if (!user) {
+      throw new Error(`User with id: ${id} was not found!`);
+    }
+    return user;
+  }
 
   static getByEmail (email: string) {
     return User.query().where({ email }).first();
@@ -40,6 +55,26 @@ export class User extends Model {
   }
 
 
+  async createEmailAddress () {
+    const dict = Math.random() < 0.5 ? colors : adjectives;
+    const randomName = uniqueNamesGenerator({
+      dictionaries: [dict, animals],
+      length: 2,
+      separator: ".",
+    });
+
+    return EmailAddress.query().insert({
+      owner: this.id,
+      address: `${randomName}@${process.env.DOMAIN}`,
+    });
+  }
+
+
+  async addresses () {
+    return this.$relatedQuery<EmailAddress>("addresses");
+  }
+
+
   async roles () {
     const roles = await this.$relatedQuery<Role>("roles");
     return roles.map(r => r.name);
@@ -58,6 +93,14 @@ export class User extends Model {
             to: "users_roles.role",
           },
           to: "roles.id",
+        },
+      },
+      addresses: {
+        relation: Model.HasManyRelation,
+        modelClass: EmailAddress,
+        join: {
+          from: "users.id",
+          to: "addresses.owner",
         },
       },
     };

@@ -11,6 +11,7 @@ import fastifyCookiePlugin from "@fastify/cookie";
 import fastifySessionPlugin from "@fastify/session";
 import { logoutRoutes } from "./routes/logout";
 import * as ErrorController from "./controllers/ErrorController";
+import { apiV1Routes } from "./routes/api-v1";
 
 
 declare module "fastify" {
@@ -18,6 +19,7 @@ declare module "fastify" {
       user?: {
         id: number
       }
+      flashMessage?: string
   }
 }
 
@@ -29,6 +31,7 @@ if (!SESSION_SECRET) {
 
 export const fastify = Fastify({
   logger: true,
+  disableRequestLogging: true,
 });
 
 fastify.register(formBodyPlugin);
@@ -50,5 +53,6 @@ fastify.register(loginRoutes, { prefix: "login" });
 fastify.register(logoutRoutes, { prefix: "logout" });
 fastify.register(registerRoutes, { prefix: "register" });
 fastify.register(dashboardRoutes, { prefix: "dashboard" });
+fastify.register(apiV1Routes, { prefix: "api/v1" });
 
 fastify.setNotFoundHandler(ErrorController.notFound);

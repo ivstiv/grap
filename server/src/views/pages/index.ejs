@@ -9,16 +9,16 @@
     </header>
     <h1>This is grap</h1>
     <blockquote>
-        <p>a simple service for generating and capturing emails</p>
+        <p>a simple service for generating temporary email addresses</p>
     </blockquote>
 
     <article>
         <h3>How does it work?</h3>
         You can either use the API endpoint or experiment with the dashboard.
         <code>
-            <pre>curl -H "Authorization: Bearer" https://grap.email/api/unique</pre>
+            <pre>curl -H "Authorization: Bearer" https://grap.email/api/v1/address</pre>
         </code>
-        This will give you something like Figgs.Porkins@grap.email, 
+        This will give you something like possible.indigo@grap.email, 
         a temporary address valid for an hour.
     </article>
 
@@ -34,7 +34,7 @@ const emailAdr = await fetch('https://grap.email/api/address', {
     headers: {
         'Authorization': `Bearer ${token}`,
     },
-});
+}).then(r => r.text());
 
 // do the user registration
 // wait for a confirmation email
