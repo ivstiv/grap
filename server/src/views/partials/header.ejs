@@ -1,8 +1,8 @@
 <nav>
     <a href="/">Home</a>
+    <a href="/about">About</a>
     <% if (typeof isLoggedIn !== "undefined" && isLoggedIn) { %>
         <a href="/dashboard">Dashboard</a>
-        <a href="/emails">Emails</a>
         <a href="/settings">Settings</a>
         <a href="/logout">Logout</a>
     <% } else { %>
