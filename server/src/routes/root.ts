@@ -1,9 +1,9 @@
 import { FastifyPluginCallback } from "fastify";
+import * as RootController from "../controllers/RootController";
+
 
 export const rootRoutes: FastifyPluginCallback =
-(instance, _opts, next) => {
-  instance.get("/", (_req, res) => {
-    res.view("/src/views/pages/index.ejs", { text: "text" });
-  });
-  next();
-};
+  (instance, _opts, next) => {
+    instance.get("/", RootController.index);
+    next();
+  };

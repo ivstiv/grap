@@ -9,6 +9,7 @@ import { registerRoutes } from "./routes/register";
 import { dashboardRoutes } from "./routes/dashboard";
 import fastifyCookiePlugin from "@fastify/cookie";
 import fastifySessionPlugin from "@fastify/session";
+import { logoutRoutes } from "./routes/logout";
 
 
 declare module "fastify" {
@@ -45,5 +46,6 @@ fastify.register(view, {
 fastify.register(rootRoutes);
 fastify.register(setupRoutes, { prefix: "setup" });
 fastify.register(loginRoutes, { prefix: "login" });
+fastify.register(logoutRoutes, { prefix: "logout" });
 fastify.register(registerRoutes, { prefix: "register" });
 fastify.register(dashboardRoutes, { prefix: "dashboard" });

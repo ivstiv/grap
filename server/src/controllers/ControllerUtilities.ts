@@ -1,5 +1,11 @@
+import { FastifyReply, FastifyRequest } from "fastify";
 import * as yup from "yup";
 
+
+export type FastifyHandler<T = void> = (
+  req: FastifyRequest<T>,
+  res: FastifyReply
+) => Promise<void>
 
 export interface UserAccountPostBody {
   email: string;

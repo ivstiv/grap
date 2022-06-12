@@ -1,20 +1,18 @@
 import { FastifyPluginCallback } from "fastify";
+import * as DashboardController from "../controllers/DashboardController";
+
 
 export const dashboardRoutes: FastifyPluginCallback =
-(instance, _opts, next) => {
-  instance.addHook("preHandler",
-    (req, res, done) => {
-      if (!req.session.user) {
-        return res.redirect("/login");
+  (instance, _opts, next) => {
+    instance.addHook("preHandler",
+      (req, res, done) => {
+        if (!req.session.user) {
+          return res.redirect("/login");
+        }
+        done();
       }
-      done();
-    }
-  );
+    );
 
-  instance.get("/", (req, res) => {
-    res.view("/src/views/pages/dashboard.ejs", {
-      isLoggedIn: !!req.session.user,
-    });
-  });
-  next();
-};
+    instance.get("/", DashboardController.index);
+    next();
+  };

@@ -1,12 +1,19 @@
 import { FastifyPluginCallback } from "fastify";
+import * as RegisterController from "../controllers/RegisterController";
+
 
 export const registerRoutes: FastifyPluginCallback =
-(instance, _opts, next) => {
-  instance.get("/", (req, res) => {
-    res.view("/src/views/pages/register.ejs");
-  });
-  instance.post("/", (req, res) => {
-    res.send(req.raw.method);
-  });
-  next();
-};
+  (instance, _opts, next) => {
+    instance.addHook("preHandler",
+      (req, res, done) => {
+        if (req.session.user) {
+          return res.redirect("/dashboard");
+        }
+        done();
+      }
+    );
+
+    instance.get("/", RegisterController.show);
+    instance.post("/", RegisterController.register);
+    next();
+  };
