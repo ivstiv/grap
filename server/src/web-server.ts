@@ -10,6 +10,7 @@ import { dashboardRoutes } from "./routes/dashboard";
 import fastifyCookiePlugin from "@fastify/cookie";
 import fastifySessionPlugin from "@fastify/session";
 import { logoutRoutes } from "./routes/logout";
+import * as ErrorController from "./controllers/ErrorController";
 
 
 declare module "fastify" {
@@ -49,3 +50,5 @@ fastify.register(loginRoutes, { prefix: "login" });
 fastify.register(logoutRoutes, { prefix: "logout" });
 fastify.register(registerRoutes, { prefix: "register" });
 fastify.register(dashboardRoutes, { prefix: "dashboard" });
+
+fastify.setNotFoundHandler(ErrorController.notFound);

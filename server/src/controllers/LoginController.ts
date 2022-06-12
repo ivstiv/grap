@@ -33,7 +33,6 @@ export const login: FastifyHandler<UserAccountFormHandler> =
       return res.view("/src/views/pages/login.ejs", { error: "Wrong email or password." });
     }
 
-    // TO-DO: log the user in
     req.session.user = { id: user.id };
     return res.redirect("/dashboard");
   };

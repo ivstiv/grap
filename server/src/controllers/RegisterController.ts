@@ -1,6 +1,8 @@
+import { User } from "../models/User";
 import {
   UserAccountFormHandler,
   FastifyHandler,
+  userAccountSchema,
 } from "./ControllerUtilities";
 
 
@@ -9,4 +11,24 @@ export const show: FastifyHandler =
 
 
 export const register: FastifyHandler<UserAccountFormHandler> = 
-  async (_req, res) => res.redirect("/dashboard");
+  async (req, res) => {
+    // validate the submitted form
+    const errors = await userAccountSchema.validate(req.body)
+      .then(() => [])
+      .catch(e => e.errors);
+
+    if (errors.length > 0) {
+      return res.view("/src/views/pages/register.ejs", { error: errors[0] });
+    }
+
+    const userWithTheSameEmail = await User.getByEmail(req.body.email);
+
+    if (userWithTheSameEmail) {
+      return res.view("/src/views/pages/register.ejs", { error: "User with that email already exists." });
+    }
+
+    const user = await User.register(req.body.email, req.body.password);
+
+    req.session.user = { id: user.id };
+    return res.redirect("/dashboard");
+  };
