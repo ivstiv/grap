@@ -18,23 +18,23 @@ then
   exit 1
 fi
 
-containerIp=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' email-proj-backend)
+containerIp=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' grap-backend)
 
 {
     sleep 1; \
-    echo "EHLO server.example.com"; \
+    echo "EHLO server.example.test"; \
     sleep 1; \
-    echo "MAIL FROM: <test@test.com>"; \
+    echo "MAIL FROM: <test@example.test>"; \
     sleep 1; \
-    echo "RCPT TO: <test@test.com>"; \
+    echo "RCPT TO: <test@example.test>"; \
     sleep 1; \
     echo "DATA"; \
     sleep 1; \
     echo "Subject: Testing email"; \
     sleep 1; \
-    echo "From: Test Script <testingscript@fakemail.test>"; \
+    echo "From: Test Script <test@example.test>"; \
     sleep 1; \
-    echo "To: generatedemail@fakemail2.test"; \
+    echo "To: test@example.test"; \
     sleep 1; \
     echo "."; \
     sleep 1; \
