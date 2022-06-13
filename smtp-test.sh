@@ -26,7 +26,7 @@ containerIp=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}
     sleep 1; \
     echo "MAIL FROM: <test@example.test>"; \
     sleep 1; \
-    echo "RCPT TO: <test@example.test>"; \
+    echo "RCPT TO: <ivory.raccoon@grap.email>"; \
     sleep 1; \
     echo "DATA"; \
     sleep 1; \
@@ -34,7 +34,13 @@ containerIp=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}
     sleep 1; \
     echo "From: Test Script <test@example.test>"; \
     sleep 1; \
-    echo "To: test@example.test"; \
+    echo "To: ivory.raccoon@grap.email"; \
+    sleep 1; \
+    echo "Html: <div dir=\"ltr\">Hello World from Gmail</div>\n"; \
+    sleep 1; \
+    echo "Text: Hello, this is my testing email."; \
+    sleep 1; \
+    echo "TextAsHtml: <p>Hello, this is my testing email.</p>"; \
     sleep 1; \
     echo "."; \
     sleep 1; \

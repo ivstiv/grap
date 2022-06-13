@@ -1,4 +1,5 @@
 import { Model } from "objection";
+import { Email } from "./Email";
 import { User } from "./User";
 
 
@@ -13,7 +14,18 @@ export class EmailAddress extends Model {
 
 
   async getOwner () {
-    return this.$relatedQuery<User>("user");
+    return this.$relatedQuery<User>("user").first();
+  }
+
+  async getEmails () {
+    return this.$relatedQuery<Email>("emails");
+  }
+
+  async destroy () {
+    const emails = await this.getEmails();
+    const deletionPromises = emails.map(e => e.destroy());
+    await Promise.all(deletionPromises);
+    await this.$query().delete().where({ id: this.id });
   }
 
   expiresIn () {
@@ -28,7 +40,7 @@ export class EmailAddress extends Model {
   }
 
 
-  static get relationMappings () {
+  static relationMappings () {
     return {
       user: {
         relation: Model.BelongsToOneRelation,
@@ -36,6 +48,14 @@ export class EmailAddress extends Model {
         join: {
           from: "addresses.owner",
           to: "users.id",
+        },
+      },
+      emails: {
+        relation: Model.HasManyRelation,
+        modelClass: Email,
+        join: {
+          from: "addresses.id",
+          to: "emails.address",
         },
       },
     };

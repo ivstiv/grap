@@ -50,6 +50,7 @@ export class User extends Model {
   }
 
   async destroy () {
+    // TO-DO: destroy all related email addresses
     await this.$relatedQuery<Role>("roles").unrelate();
     await this.$query().delete().where({ id: this.id });
   }
@@ -81,7 +82,7 @@ export class User extends Model {
   }
 
 
-  static get relationMappings () {
+  static relationMappings () {
     return {
       roles: {
         relation: Model.ManyToManyRelation,

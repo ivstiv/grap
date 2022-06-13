@@ -1,4 +1,3 @@
-import { EmailAddress } from "../models/EmailAddress";
 import { User } from "../models/User";
 import { FastifyHandler } from "./ControllerUtilities";
 import * as yup from "yup";
@@ -12,11 +11,17 @@ export const index: FastifyHandler =
 
     const user = await User.getById(req.session.user.id);
     const addresses = await user.addresses();
+
+    const emailsPromises = addresses.map(adr => adr.getEmails());
+    const emails = (await Promise.all(emailsPromises)).flat();
+
     const formattedAddresses = addresses.map(adr => ({
       id: adr.id,
       address: adr.address,
       expiresIn: adr.expiresIn(),
-      inboxEmails: 0,
+      inboxEmails: emails
+        .filter(e => e.address === adr.id)
+        .reduce((sum, _curr) => sum+1, 0),
     }));
 
     const flashMessage = req.session.flashMessage;
@@ -65,7 +70,14 @@ export const deleteAddress: FastifyHandler<DeleteAddressHandler> =
       return res.redirect("/dashboard");
     }
 
-    await EmailAddress.query().delete().where({ id: parseInt(req.body.address) });
-    req.session.flashMessage = "Address deleted successfully!";
+    const addressToDelete = userAddresses
+      .find(adr => adr.id === parseInt(req.body.address));
+
+    if (addressToDelete) {
+      await addressToDelete.destroy();
+      req.session.flashMessage = "Address deleted successfully!";
+    } else {
+      req.session.flashMessage = "Failed to delete due to internal error.";
+    }
     return res.redirect("/dashboard");
   };

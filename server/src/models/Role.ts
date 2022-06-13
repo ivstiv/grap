@@ -15,7 +15,7 @@ export class Role extends Model {
     return this.$relatedQuery<User>("users");
   }
 
-  static get relationMappings () {
+  static relationMappings () {
     return {
       users: {
         relation: Model.ManyToManyRelation,
