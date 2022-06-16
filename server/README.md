@@ -30,13 +30,11 @@ Check [npm-check-updates's documentation](https://www.npmjs.com/package/npm-chec
 
 Todos:
 
-- inbox preview
-- parsing and saving emails
 - auto-delete addresses and related inboxes
 - implement hardcoded limit for max addresses
 - creating/deleting account tokens
 - fetching inbox contents
-- csrf, cors, may be improve dev environment with a domain and nginx proxy?
+- SameSite session cookie, may be improve dev environment with a domain and nginx proxy?
 - ask the user if old addresses can be deleted on generation if the limit is reached
 - change password setting
 - delete user account setting

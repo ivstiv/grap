@@ -1,6 +1,7 @@
 import { User } from "../models/User";
 import { FastifyHandler } from "./ControllerUtilities";
 import * as yup from "yup";
+import { Email } from "../models/Email";
 
 
 export const index: FastifyHandler = 
@@ -80,4 +81,103 @@ export const deleteAddress: FastifyHandler<DeleteAddressHandler> =
       req.session.flashMessage = "Failed to delete due to internal error.";
     }
     return res.redirect("/dashboard");
+  };
+
+
+interface ShowInboxHandler {
+  Params: {
+    id: string
+  }
+} 
+export const showInbox: FastifyHandler<ShowInboxHandler> = 
+  async (req, res) => {
+    if (!req.session.user) {
+      throw new Error("Session user is missing!");
+    }
+
+    const { id } = req.params;
+    const parsedId = parseInt(id);
+    if(isNaN(parsedId)) {
+      return res.code(400).view("/src/views/pages/400.ejs", {
+        isLoggedIn: !!req.session.user,
+      });
+    }
+
+    const user = await User.getById(req.session.user.id);
+    const addrs = await user.addresses();
+    const addr = addrs.find(a => a.id === parseInt(id));
+
+    if(!addr) {
+      return res.view("/src/views/pages/404.ejs", {
+        isLoggedIn: !!req.session.user,
+      });
+    }
+
+    const emails = await addr.getEmails();
+    emails.sort((a, b ) => b.id - a.id);
+
+    const flashMessage = req.session.flashMessage;
+    req.session.flashMessage = undefined; // reset the variable
+
+    return res.view("/src/views/pages/inbox.ejs", {
+      isLoggedIn: !!req.session.user,
+      emails,
+      flashMessage,
+    });
+  };
+
+
+interface DeleteEmailHandler {
+  Body: {
+    email: string
+  }
+} 
+export const deleteEmail: FastifyHandler<DeleteEmailHandler> = 
+  async (req, res) => {
+    if (!req.session.user) {
+      throw new Error("Session user is missing!");
+    }
+
+    const schema = yup.object().shape({
+      email: yup.number().min(1).required(),
+    });
+
+    // validate the submitted form
+    const errors = await schema.validate(req.body)
+      .then(() => [])
+      .catch(e => e.errors);
+
+    if (errors.length > 0) {
+      req.session.flashMessage = errors[0];
+      return res.redirect("/dashboard");
+    }
+
+    const email = await Email.query()
+      .where({ id: req.body.email })
+      .first();
+    if (!email) {
+      req.session.flashMessage = "Email not found!";
+      return res.redirect("/dashboard");
+    }
+
+    const relatedAddr = await email.getAddress();
+    if (!relatedAddr) {
+      req.session.flashMessage = "Email address not found!";
+      return res.redirect("/dashboard");
+    }
+
+    const relatedUser = await relatedAddr.getOwner();
+    if (!relatedUser) {
+      req.session.flashMessage = "Related user not found!";
+      return res.redirect("/dashboard");
+    }
+
+    if (relatedUser.id !== req.session.user.id) {
+      req.session.flashMessage = "You don't own the email that you are trying to delete.";
+      return res.redirect("/dashboard");
+    }
+
+    await email.destroy();
+    req.session.flashMessage = "Address deleted successfully!";
+    return res.redirect(`/dashboard/inbox/${relatedAddr.id}`);
   };

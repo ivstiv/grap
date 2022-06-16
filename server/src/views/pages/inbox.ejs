@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body>
+    <header>
+        <%- include('../partials/header'); %>
+    </header>
+    <h1>Inbox</h1>
+    <h4><a href="/dashboard"><< Back</a></h4>
+    <% if (typeof flashMessage !== "undefined") { %>
+        <p><mark><%= flashMessage %></mark></p>
+    <% } %>
+    <% if (emails.length === 0) { %>
+        <p>No emails received yet.</p>
+    <% } %>
+    <article>
+        <label for="auto-refresh">Auto refresh</label>
+        <input type="checkbox" id="auto-refresh" checked>
+        <progress id="refresh-progress" value="0" max="10"></progress>
+    </article>
+    <div>
+        <% for (email of emails) { %>
+            <details>
+                <summary><%= email.subject %> | <%= email.createdAt %></summary>
+                <form method="post" action="email">
+                    <button type="button" class="preview-btn" data-ismarkup="false" data-id=<%= email.id %>>
+                        Show markup
+                    </button>
+                    <input type="hidden" name="email" value=<%= email.id %>>
+                    <button type="submit">Delete</button>
+                </form>
+                <br>
+                <code style="display: none" data-id=<%= email.id %>>
+                    <%= email.content %>
+                </code>
+                <div data-id=<%= email.id %>>
+                    <%- email.content %>
+                </div>
+            </details>
+        <% } %>
+    </div>
+
+    <script>
+        const previewBtns = document.querySelectorAll(".preview-btn");
+        previewBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const id = btn.getAttribute("data-id");
+                const isMarkupPreview = btn.getAttribute("data-ismarkup") === "true";
+                const codeElement = document.querySelector(`code[data-id='${id}']`);
+                const divElement = document.querySelector(`div[data-id='${id}']`);
+
+                if (isMarkupPreview) {
+                    btn.textContent = "Show preview";
+                    btn.setAttribute("data-ismarkup", "false");
+                    codeElement.style.display = "none";
+                    divElement.style.display = "block";
+                } else {
+                    btn.textContent = "Show markup";
+                    btn.setAttribute("data-ismarkup", "true");
+                    codeElement.style.display = "block";
+                    divElement.style.display = "none";
+                }
+            })
+        });
+
+        const autoRefreshToggle = document.getElementById("auto-refresh");
+        const refreshProgress = document.getElementById("refresh-progress");
+        let refreshCounter = 0;
+        let refreshInterval;
+
+        const startInterval = () => {
+            refreshInterval = setInterval(() => {
+                refreshCounter += 1;
+                refreshProgress.value = refreshCounter;
+                if (refreshCounter > 10) {
+                    window.location.reload();
+                }
+            }, 1000);
+        };
+
+        const stopInterval = () => {
+            clearInterval(refreshInterval);
+            refreshInterval = undefined;
+        };
+        
+        if (autoRefreshToggle.checked) {
+            startInterval();
+        }
+
+        autoRefreshToggle.addEventListener("click", () => {
+            if (autoRefreshToggle.checked) {
+                startInterval();
+            } else {
+                stopInterval();
+            }
+        });
+    </script>
+</body>
+</html>

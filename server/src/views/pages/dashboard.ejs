@@ -28,7 +28,7 @@
                     <tr>
                         <td><%= addr.address %></td>
                         <td><%= addr.expiresIn %> min</td>
-                        <td><a href="#"><%= addr.inboxEmails %> emails</a></td>
+                        <td><a href=<%= `/dashboard/inbox/${addr.id}` %>><%= addr.inboxEmails %> emails</a></td>
                         <td>
                             <form method="post" action="dashboard/address">
                                 <input type="hidden" name="address" value=<%= addr.id %>>

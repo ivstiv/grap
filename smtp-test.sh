@@ -20,13 +20,18 @@ fi
 
 containerIp=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' grap-backend)
 
+if [ -z "$1" ]; then
+  echo "Please specify recipient email."
+  exit 1
+fi
+
 {
     sleep 1; \
     echo "EHLO server.example.test"; \
     sleep 1; \
     echo "MAIL FROM: <test@example.test>"; \
     sleep 1; \
-    echo "RCPT TO: <ivory.raccoon@grap.email>"; \
+    echo "RCPT TO: <$1>"; \
     sleep 1; \
     echo "DATA"; \
     sleep 1; \
@@ -34,9 +39,9 @@ containerIp=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}
     sleep 1; \
     echo "From: Test Script <test@example.test>"; \
     sleep 1; \
-    echo "To: ivory.raccoon@grap.email"; \
+    echo "To: $1"; \
     sleep 1; \
-    echo "Html: <div dir=\"ltr\">Hello World from Gmail</div>\n"; \
+    echo "Html: <div dir=\"ltr\"><h1>Hello World from Gmail</h1><p>Lorem ipsum dolor sit amet!</p></div>"; \
     sleep 1; \
     echo "Text: Hello, this is my testing email."; \
     sleep 1; \
