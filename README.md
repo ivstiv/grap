@@ -50,3 +50,12 @@ Edit the script to customise the email being sent.
 ```
 ./smtp-test.sh
 ```
+
+## Pushing an image
+
+```
+docker login
+docker build -t ivstiv/grap:latest -f .docker/prod.Dockerfile server
+docker push ivstiv/grap:latest
+docker logout
+```
