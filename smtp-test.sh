@@ -35,17 +35,51 @@ fi
     sleep 1; \
     echo "DATA"; \
     sleep 1; \
-    echo "Subject: Testing email"; \
+    printf "Received: by mail-ej1-f54.example.test with SMTP id u12so17211350eja.8\r\n"; \
     sleep 1; \
-    echo "From: Test Script <test@example.test>"; \
+    printf "DKIM-Signature: something invalid\r\n"; \
     sleep 1; \
-    echo "To: $1"; \
+    printf "X-Google-DKIM-Signature: something invalid\r\n"; \
     sleep 1; \
-    echo "Html: <div dir=\"ltr\"><h1>Hello World from Gmail</h1><p>Lorem ipsum dolor sit amet!</p></div>"; \
+    printf "X-Gm-Message-State: something invalid\r\n"; \
     sleep 1; \
-    echo "Text: Hello, this is my testing email."; \
+    printf "X-Google-Smtp-Source: something invalid\r\n"; \
     sleep 1; \
-    echo "TextAsHtml: <p>Hello, this is my testing email.</p>"; \
+    printf "X-Received: something invalid\r\n"; \
+    sleep 1; \
+    printf "MIME-Version: 1.0\r\n"; \
+    sleep 1; \
+    printf "From: Test Script <test@example.test>\r\n"; \
+    sleep 1; \
+    printf "Subject: Testing email\r\n"; \
+    sleep 1; \
+    printf "To: $1\r\n"; \
+    sleep 1; \
+    printf 'Content-Type: multipart/alternative; boundary="000000000000e412ae05e1d12662"\r\n'; \
+    sleep 1; \
+    printf "\r\n"; \
+    sleep 1; \
+    printf " --000000000000e412ae05e1d12662\r\n"; \
+    sleep 1; \
+    printf "Content-Type: text/plain; charset='UTF-8'\r\n"; \
+    sleep 1; \
+    printf "\r\n"; \
+    sleep 1; \
+    printf "Email content here!\r\n"; \
+    sleep 1; \
+    printf "\r\n"; \
+    sleep 1; \
+    printf " --000000000000e412ae05e1d12662\r\n"; \
+    sleep 1; \
+    printf "Content-Type: text/html; charset='UTF-8'\r\n"; \
+    sleep 1; \
+    printf "\r\n"; \
+    sleep 1; \
+    printf '<div dir="ltr">Email content here!<br></div>\r\n'; \
+    sleep 1; \
+    printf "\r\n"; \
+    sleep 1; \
+    printf " --000000000000e412ae05e1d12662--\r\n"; \
     sleep 1; \
     echo "."; \
     sleep 1; \

@@ -6,6 +6,7 @@ import { EmailAddress } from "./models/EmailAddress";
 export const smtpServer = new SMTPServer({
   onData (stream, session, callback) {
     stream.on("end", callback);
+
     simpleParser(stream, {}, async (err, parsed) => {
       if (err) {
         console.log("Error:", err);
@@ -24,16 +25,13 @@ export const smtpServer = new SMTPServer({
 
         const parsedSubject = parsed.headers.get("subject") as string;
         const parsedFrom = parsed.headers.get("from") as AddressObject;
-        const parsedHtml = parsed.headers.get("html") as string;
-        const parsedText = parsed.headers.get("text") as string;
-        const parsedTextAsHtml = parsed.headers.get("textAsHtml") as string;
         await Email.query().insert({
           address: address.id,
           subject: parsedSubject ?? "Missing subject",
           from: parsedFrom.text ?? "Mising sender",
-          content: parsedHtml
-            || parsedText
-            || parsedTextAsHtml
+          content: parsed.html
+            || parsed.text
+            || parsed.textAsHtml
             || "Couldn't parse the email contents. Open a github issue and let me know who the sender of the email was, so I can test and amend the parsing.",
         });
       }
