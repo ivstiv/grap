@@ -12,6 +12,7 @@ import fastifySessionPlugin from "@fastify/session";
 import { logoutRoutes } from "./routes/logout";
 import * as ErrorController from "./controllers/ErrorController";
 import { apiV1Routes } from "./routes/api-v1";
+import { settingsRoutes } from "./routes/settings";
 
 
 declare module "fastify" {
@@ -40,6 +41,7 @@ fastify.register(fastifySessionPlugin, {
   secret: SESSION_SECRET,
   cookie: {
     secure: NODE_ENV === "development" ? false : true,
+    sameSite: "strict",
   },
 });
   
@@ -53,6 +55,7 @@ fastify.register(loginRoutes, { prefix: "login" });
 fastify.register(logoutRoutes, { prefix: "logout" });
 fastify.register(registerRoutes, { prefix: "register" });
 fastify.register(dashboardRoutes, { prefix: "dashboard" });
+fastify.register(settingsRoutes, { prefix: "settings" });
 fastify.register(apiV1Routes, { prefix: "api/v1" });
 
 fastify.setNotFoundHandler(ErrorController.notFound);

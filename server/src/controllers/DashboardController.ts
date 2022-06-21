@@ -16,14 +16,16 @@ export const index: FastifyHandler =
     const emailsPromises = addresses.map(adr => adr.getEmails());
     const emails = (await Promise.all(emailsPromises)).flat();
 
-    const formattedAddresses = addresses.map(adr => ({
-      id: adr.id,
-      address: adr.address,
-      expiresIn: adr.expiresIn(),
-      inboxEmails: emails
-        .filter(e => e.address === adr.id)
-        .reduce((sum, _curr) => sum+1, 0),
-    }));
+    const formattedAddresses = addresses
+      .sort((a, b) => b.id - a.id)
+      .map(adr => ({
+        id: adr.id,
+        address: adr.address,
+        expiresIn: adr.expiresIn(),
+        inboxEmails: emails
+          .filter(e => e.address === adr.id)
+          .reduce((sum, _curr) => sum+1, 0),
+      }));
 
     const flashMessage = req.session.flashMessage;
     req.session.flashMessage = undefined; // reset the variable
@@ -31,6 +33,7 @@ export const index: FastifyHandler =
     return res.view("/src/views/pages/dashboard.ejs", {
       isLoggedIn: true,
       addresses: formattedAddresses,
+      maxAddresses: user.getLimits().maxEmailAddresses,
       flashMessage,
     });
   };
@@ -40,7 +43,7 @@ interface DeleteAddressHandler {
   Body: {
     address: string
   }
-} 
+}
 export const deleteAddress: FastifyHandler<DeleteAddressHandler> = 
   async (req, res) => {
     if (!req.session.user) {

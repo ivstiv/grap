@@ -30,14 +30,10 @@ Check [npm-check-updates's documentation](https://www.npmjs.com/package/npm-chec
 
 Todos:
 
-- auto-delete addresses and related inboxes
-- implement hardcoded limit for max addresses
-- creating/deleting account tokens
-- fetching inbox contents
-- SameSite session cookie, may be improve dev environment with a domain and nginx proxy?
+- publish image on push
+- Add corrct hrefs, fix emoji in about
 - ask the user if old addresses can be deleted on generation if the limit is reached
 - change password setting
-- delete user account setting
 - admin user list
 - impersonation
 - dynamic user limits

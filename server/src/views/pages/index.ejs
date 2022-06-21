@@ -7,6 +7,7 @@
     <header>
         <%- include('../partials/header'); %>
     </header>
+
     <h1>This is grap</h1>
     <blockquote>
         <p>a simple service for generating temporary email addresses</p>
@@ -30,22 +31,24 @@
             <code>
                 <pre>
 // generate a temporary address
-const emailAdr = await fetch('https://grap.email/api/address', {
+const emailAdr = await fetch('https://<%= domain %>/api/v1/address', {
     headers: {
         'Authorization': `Bearer ${token}`,
     },
-}).then(r => r.text());
+}).then(r => r.json());
 
 // do the user registration
 // wait for a confirmation email
 
 let email;
-while(email === undefined) {
-    email = await fetch(`https://grap.email/api/inbox/${emailAdr}`, {
+while(email?.data?.content === undefined) {
+    email = await fetch(`https://<%= domain %>/api/v1/inbox/${emailAdr.data}/latest`, {
         headers: {
             'Authorization': `Bearer ${token}`,
         },
-    });
+    }).then(email => email.json());
+    // sleep 2 seconds before we poll again
+    await new Promise(resolve => setTimeout(resolve, 2000))
 }
 // parse the contents and confirm the registration
                 </pre>

@@ -1,6 +1,6 @@
-import { CronJob } from "cron";
 import { Model } from "objection";
 import { db } from "./database/database";
+import { EmailAddress } from "./models/EmailAddress";
 import { smtpServer } from "./smtp-server";
 import { fastify } from "./web-server";
 
@@ -19,11 +19,11 @@ smtpServer.listen(25, "0.0.0.0",
 );
 
 
-new CronJob(
-  "0 */5 * * * *",
-  () => {
-    console.log(new Date(), "Address cleanup job running...");
-  },
-  null,
-  true,
-);
+setInterval(async () => {
+  console.log(new Date().toISOString(), "Address cleanup job running...");
+  const addresses = await EmailAddress.query();
+  const expiredAddrs = addresses.filter(a => a.expiresIn() < 1);
+  const deletionPromises = expiredAddrs.map(a => a.destroy());
+  await Promise.all(deletionPromises);
+  console.log(new Date().toISOString(), `${deletionPromises.length} addresses deleted.`);
+}, 1000 * 60 * 5);

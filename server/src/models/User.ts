@@ -8,6 +8,8 @@ import {
   colors,
   uniqueNamesGenerator,
 } from "unique-names-generator";
+import { Token } from "./Token";
+import { randomBytes } from "crypto";
 
 export class User extends Model {
   static tableName = "users";
@@ -17,6 +19,15 @@ export class User extends Model {
   password: string;
   createdAt: string;
 
+
+  getLimits () {
+    return{
+      maxTokens: 5,
+      maxEmailAddresses: 10,
+    };
+  }
+
+
   static async getById (id: number) {
     const user = await User.query().where({ id }).first();
     if (!user) {
@@ -25,9 +36,11 @@ export class User extends Model {
     return user;
   }
 
+
   static getByEmail (email: string) {
     return User.query().where({ email }).first();
   }
+
 
   static async register (email: string, plainPassword: string) {
     const password = await hash(plainPassword, 12);
@@ -49,9 +62,19 @@ export class User extends Model {
     return user;
   }
 
+
   async destroy () {
-    // TO-DO: destroy all related email addresses
-    await this.$relatedQuery<Role>("roles").unrelate();
+    const addresses = await this.addresses();
+    const addrDeletionPromises = addresses.map(a => a.destroy());
+
+    const tokens = await this.tokens();
+    const tokenDeletionPromises = tokens.map(a => a.destroy());
+
+    await Promise.all([
+      ...addrDeletionPromises,
+      ...tokenDeletionPromises,
+      this.$relatedQuery<Role>("roles").unrelate(),
+    ]);
     await this.$query().delete().where({ id: this.id });
   }
 
@@ -68,6 +91,19 @@ export class User extends Model {
       owner: this.id,
       address: `${randomName}@${process.env.DOMAIN}`,
     });
+  }
+
+
+  async createToken (note = "Empty token") {
+    return Token.query().insert({
+      note,
+      token: randomBytes(20).toString("hex"),
+      owner: this.id,
+    });
+  }
+
+  async tokens () {
+    return this.$relatedQuery<Token>("tokens");
   }
 
 
@@ -102,6 +138,14 @@ export class User extends Model {
         join: {
           from: "users.id",
           to: "addresses.owner",
+        },
+      },
+      tokens: {
+        relation: Model.HasManyRelation,
+        modelClass: Token,
+        join: {
+          from: "users.id",
+          to: "tokens.owner",
         },
       },
     };
