@@ -32,6 +32,7 @@ Todos:
 
 - publish image on push
 - Add corrct hrefs, fix emoji in about
+- Add system stats for admins (totalAddresses, activeAddresses, totalUsers, totalEmails, activeEmails)
 - ask the user if old addresses can be deleted on generation if the limit is reached
 - change password setting
 - admin user list

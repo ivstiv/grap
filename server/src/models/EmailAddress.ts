@@ -10,7 +10,7 @@ export class EmailAddress extends Model {
   address: string;
   owner: number;
   createdAt: string;
-  static lifetimeInMinutes = 5;
+  static lifetimeInMinutes = 30;
 
 
   async getOwner () {
