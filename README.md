@@ -35,6 +35,21 @@ You'll need the following things installed on your machine.
     ./compose.sh up server
    ```
 
+3. Wait for the server to turn on
+
+   You should see output similar to:
+
+   ```
+   grap-backend | SMTP Server listening on port 25...
+   grap-backend | {"level":30,"time":1655847332750,"pid":78,"hostname":"a328362c4b5f","msg":"Server listening at http://0.0.0.0:3000"}
+   ```
+
+4. Migrate & Seed the database
+   ```
+   ./compose.sh exec server npm run migrate:latest
+   ./compose.sh exec server npm run seed
+   ```
+
 ### Open a shell in the dev container
 
 Keep in mind that the container is based on alpine, so you will be dropped on ASH shell.
@@ -48,7 +63,7 @@ Keep in mind that the container is based on alpine, so you will be dropped on AS
 Edit the script to customise the email being sent.
 
 ```
-./smtp-test.sh
+./smtp-test.sh <recipient>
 ```
 
 ## Pushing an image
