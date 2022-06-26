@@ -38,3 +38,4 @@ Todos:
 - admin user list
 - impersonation
 - dynamic user limits
+- replace yup with zod

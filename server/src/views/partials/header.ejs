@@ -4,6 +4,9 @@
     <% if (typeof isLoggedIn !== "undefined" && isLoggedIn) { %>
         <a href="/dashboard">Dashboard</a>
         <a href="/settings">Settings</a>
+        <% if (typeof isAdmin !== "undefined" && isAdmin) { %>
+            <a href="/system-settings">System Settings</a>
+        <% } %>
         <a href="/logout">Logout</a>
     <% } else { %>
         <a href="/login">Login</a>

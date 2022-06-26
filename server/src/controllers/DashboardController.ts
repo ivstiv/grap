@@ -11,6 +11,7 @@ export const index: FastifyHandler =
     }
 
     const user = await User.getById(req.session.user.id);
+    const roles = await user.roles();
     const addresses = await user.addresses();
 
     const emailsPromises = addresses.map(adr => adr.getEmails());
@@ -32,6 +33,7 @@ export const index: FastifyHandler =
 
     return res.view("/src/views/pages/dashboard.ejs", {
       isLoggedIn: true,
+      isAdmin: roles.includes("admin"),
       addresses: formattedAddresses,
       maxAddresses: user.getLimits().maxEmailAddresses,
       flashMessage,
@@ -107,6 +109,7 @@ export const showInbox: FastifyHandler<ShowInboxHandler> =
     }
 
     const user = await User.getById(req.session.user.id);
+    const roles = await user.roles();
     const addrs = await user.addresses();
     const addr = addrs.find(a => a.id === parseInt(id));
 
@@ -124,6 +127,7 @@ export const showInbox: FastifyHandler<ShowInboxHandler> =
 
     return res.view("/src/views/pages/inbox.ejs", {
       isLoggedIn: !!req.session.user,
+      isAdmin: roles.includes("admin"),
       emails,
       flashMessage,
     });

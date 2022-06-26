@@ -11,6 +11,7 @@ export const index: FastifyHandler =
     }
 
     const user = await User.getById(req.session.user.id);
+    const roles = await user.roles();
     const tokens = await user.tokens();
 
     const adminRole = await Role.getByName("admin");
@@ -26,6 +27,7 @@ export const index: FastifyHandler =
 
     return res.view("/src/views/pages/settings.ejs", {
       isLoggedIn: true,
+      isAdmin: roles.includes("admin"),
       maxTokens: user.getLimits().maxTokens,
       isLastAdmin,
       tokens,

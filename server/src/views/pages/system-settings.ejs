@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body>
+    <header>
+        <%- include('../partials/header'); %>
+    </header>
+    <h1>System Settings</h1>
+
+    <% if (typeof flashMessage !== "undefined") { %>
+        <p><mark><%= flashMessage %></mark></p>
+    <% } %>
+    
+    <form method="post" action="system-settings">
+      <% for (setting of settings) { %>
+        <p>
+          <label><%= setting.name %></label><br/>
+          <input type="text" name=<%= setting.name %> value=<%= setting.value %> required>
+        </p>
+      <% } %>
+      <button type="submit">Save</button>
+  </form>
+</body>
+</html>

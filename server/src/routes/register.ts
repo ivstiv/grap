@@ -1,15 +1,20 @@
 import { FastifyPluginCallback } from "fastify";
 import * as RegisterController from "../controllers/RegisterController";
+import { SystemSetting } from "../models/SystemSetting";
 
 
 export const registerRoutes: FastifyPluginCallback =
   (instance, _opts, next) => {
     instance.addHook("preHandler",
-      (req, res, done) => {
+      async (req, res) => {
         if (req.session.user) {
           return res.redirect("/dashboard");
         }
-        done();
+
+        const setting = await SystemSetting.getByName("disable_register_page");
+        if (setting.value === "true") {
+          return res.redirect("/login");
+        }
       }
     );
 
