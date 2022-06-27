@@ -1,3 +1,4 @@
+import { eventBus } from "../EventBus";
 import { Token } from "../models/Token";
 import { User } from "../models/User";
 import { FastifyHandler } from "./ControllerUtilities";
@@ -31,8 +32,14 @@ export const createAddress: FastifyHandler =
       return res.code(401).send({ error: "Address limit reached! Try again later." });
     }
     
-    const { address } = await user.createEmailAddress();
-    return res.code(201).send({ data: address });
+    const address = await user.createEmailAddress();
+    eventBus.emit({
+      type: "CreateAddress",
+      detail: {
+        address,
+      },
+    });
+    return res.code(201).send({ data: address.address });
   };
 
 

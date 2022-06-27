@@ -1,3 +1,4 @@
+import { eventBus } from "../EventBus";
 import { User } from "../models/User";
 import {
   UserAccountFormHandler,
@@ -28,6 +29,12 @@ export const register: FastifyHandler<UserAccountFormHandler> =
     }
 
     const user = await User.register(req.body.email, req.body.password);
+    eventBus.emit({
+      type: "UserRegistered",
+      detail: {
+        user,
+      },
+    });
 
     req.session.user = { id: user.id };
     return res.redirect("/dashboard");

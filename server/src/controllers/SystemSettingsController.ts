@@ -2,6 +2,9 @@ import { SettingName, SystemSetting } from "../models/SystemSetting";
 import { User } from "../models/User";
 import { FastifyHandler } from "./ControllerUtilities";
 import * as yup from "yup";
+import { SystemStat } from "../models/SystemStat";
+import { EmailAddress } from "../models/EmailAddress";
+import { Email } from "../models/Email";
 
 
 
@@ -14,10 +17,25 @@ export const index: FastifyHandler =
     const [
       user,
       settings,
+      stats,
+      { userCount },
+      { addressCount },
+      { emailCount },
     ] = await Promise.all([
       User.getById(req.session.user.id),
       SystemSetting.getAll(),
+      SystemStat.getAll(),
+      User.query().count("id as userCount").first() as unknown as Promise<{userCount: number}>,
+      EmailAddress.query().count("id as addressCount").first() as unknown as Promise<{addressCount: number}>,
+      Email.query().count("id as emailCount").first() as unknown as Promise<{emailCount: number}>,
     ]);
+
+    const mashedStats = [
+      ...stats,
+      { name: "active_users", value: userCount },
+      { name: "active_addresses", value: addressCount },
+      { name: "active_emails", value: emailCount },
+    ];
 
     const roles = await user.roles();
 
@@ -29,6 +47,7 @@ export const index: FastifyHandler =
       isAdmin: roles.includes("admin"),
       flashMessage,
       settings,
+      stats: mashedStats,
     });
   };
 

@@ -1,10 +1,13 @@
 import { Model } from "objection";
 import { db } from "./database/database";
+import { loadEventListeners } from "./EventListeners";
 import { EmailAddress } from "./models/EmailAddress";
 import { smtpServer } from "./smtp-server";
 import { fastify } from "./web-server";
 
 Model.knex(db);
+
+loadEventListeners();
 
 fastify.listen({ port: 3000, host: "0.0.0.0" },
   (err, _address) => {
