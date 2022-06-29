@@ -11,15 +11,15 @@ export const index: FastifyHandler =
       return res.redirect("/login");
     }
 
-    let roles: string[] = [];
+    let isAdmin = false;
     if (req.session.user) {
       const user = await User.getById(req.session.user.id);
-      roles = await user.roles();
+      isAdmin = user.hasRole("admin");
     }
 
     return res.view("/src/views/pages/index.ejs", {
       isLoggedIn: !!req.session.user,
-      isAdmin: roles.includes("admin"),
+      isAdmin,
       domain: process.env.DOMAIN ?? "Missing domain!",
     });
   };
@@ -33,15 +33,15 @@ export const about: FastifyHandler =
         return res.redirect("/login");
       }
 
-      let roles: string[] = [];
+      let isAdmin = false;
       if (req.session.user) {
         const user = await User.getById(req.session.user.id);
-        roles = await user.roles();
+        isAdmin = user.hasRole("admin");
       }
     
       return res.view("/src/views/pages/about.ejs", {
         isLoggedIn: !!req.session.user,
-        isAdmin: roles.includes("admin"),
+        isAdmin,
         domain: process.env.DOMAIN ?? "Missing domain!",
       });
     };

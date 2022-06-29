@@ -5,7 +5,8 @@
         <a href="/dashboard">Dashboard</a>
         <a href="/settings">Settings</a>
         <% if (typeof isAdmin !== "undefined" && isAdmin) { %>
-            <a href="/system-settings">System Settings</a>
+            <a href="/admin/system-settings">System Settings</a>
+            <a href="/admin/users?page=1">Users</a>
         <% } %>
         <a href="/logout">Logout</a>
     <% } else { %>

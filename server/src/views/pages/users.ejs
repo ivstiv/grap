@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body>
+    <header>
+        <%- include('../partials/header'); %>
+    </header>
+    <h1>Users</h1>
+
+    <% if (typeof flashMessage !== "undefined") { %>
+      <p><mark><%= flashMessage %></mark></p>
+    <% } %>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Created</th>
+                <th>Max emails</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for (user of users) { %>
+                <tr>
+                    <td><%= user.id %></td>
+                    <td><%= user.email %></td>
+                    <td><%= user.createdAt %></td>
+                    <form method="post" action="admin/user">
+                        <td>
+                            <input name="max-emails" type="number" value="6" required>
+                        </td>
+                        <td>
+                            <!-- // TO-DO: needs backend -->
+                            <input type="hidden" name="user" value=<%= user.id %>>
+                            <button type="submit">Save</button>
+                        </td>
+                    </form>
+                    <td>
+                        <!-- // TO-DO: needs backend -->
+                        <form method="post" action="admin/impersonate">
+                            <input type="hidden" name="user" value=<%= user.id %>>
+                            <button type="submit">Impersonate</button>
+                        </form>
+                    </td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+    <div>
+        <!-- // TO-DO: do the pagination -->
+        <button type="button">Previous</button>
+        <h6>Page 1 of 6</h6>
+        <button type="button">Next</button>
+    </div>
+    
+</body>
+</html>

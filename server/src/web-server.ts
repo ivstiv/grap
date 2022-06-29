@@ -13,7 +13,7 @@ import { logoutRoutes } from "./routes/logout";
 import * as ErrorController from "./controllers/ErrorController";
 import { apiV1Routes } from "./routes/api-v1";
 import { settingsRoutes } from "./routes/settings";
-import { systemSettingsRoutes } from "./routes/system-settings";
+import { adminRoutes } from "./routes/admin";
 
 
 declare module "fastify" {
@@ -57,7 +57,7 @@ fastify.register(logoutRoutes, { prefix: "logout" });
 fastify.register(registerRoutes, { prefix: "register" });
 fastify.register(dashboardRoutes, { prefix: "dashboard" });
 fastify.register(settingsRoutes, { prefix: "settings" });
-fastify.register(systemSettingsRoutes, { prefix: "system-settings" });
+fastify.register(adminRoutes, { prefix: "admin" });
 fastify.register(apiV1Routes, { prefix: "api/v1" });
 
 fastify.setNotFoundHandler(ErrorController.notFound);

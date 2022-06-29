@@ -18,18 +18,24 @@ export class User extends Model {
   email: string;
   password: string;
   createdAt: string;
+  roles: Role[]; // available only withGraphFetched
+  tokens: Token[]; // available only withGraphFetched
+  addresses: EmailAddress[]; // available only withGraphFetched
 
 
   getLimits () {
     return{
       maxTokens: 5,
-      maxEmailAddresses: 10,
+      maxEmailAddresses: 10, //TO-DO move this to user_settings table
     };
   }
 
 
   static async getById (id: number) {
-    const user = await User.query().where({ id }).first();
+    const user = await User.query()
+      .where({ id })
+      .withGraphFetched("[roles, tokens, addresses]")
+      .first();
     if (!user) {
       throw new Error(`User with id: ${id} was not found!`);
     }
@@ -38,7 +44,10 @@ export class User extends Model {
 
 
   static getByEmail (email: string) {
-    return User.query().where({ email }).first();
+    return User.query()
+      .where({ email })
+      .withGraphFetched("[roles, tokens, addresses]")
+      .first();
   }
 
 
@@ -63,12 +72,14 @@ export class User extends Model {
   }
 
 
-  async destroy () {
-    const addresses = await this.addresses();
-    const addrDeletionPromises = addresses.map(a => a.destroy());
+  hasRole (role: Role["name"]) {
+    return this.roles.some(r => r.name === role);
+  }
 
-    const tokens = await this.tokens();
-    const tokenDeletionPromises = tokens.map(a => a.destroy());
+
+  async destroy () {
+    const addrDeletionPromises = this.addresses.map(a => a.destroy());
+    const tokenDeletionPromises = this.tokens.map(a => a.destroy());
 
     await Promise.all([
       ...addrDeletionPromises,
@@ -100,21 +111,6 @@ export class User extends Model {
       token: randomBytes(20).toString("hex"),
       owner: this.id,
     });
-  }
-
-  async tokens () {
-    return this.$relatedQuery<Token>("tokens");
-  }
-
-
-  async addresses () {
-    return this.$relatedQuery<EmailAddress>("addresses");
-  }
-
-
-  async roles () {
-    const roles = await this.$relatedQuery<Role>("roles");
-    return roles.map(r => r.name);
   }
 
 

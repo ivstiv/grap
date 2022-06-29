@@ -1,9 +1,10 @@
 import { FastifyPluginCallback } from "fastify";
 import * as SystemSettingsController from "../controllers/SystemSettingsController";
+import * as UsersController from "../controllers/UsersController";
 import { User } from "../models/User";
 
 
-export const systemSettingsRoutes: FastifyPluginCallback =
+export const adminRoutes: FastifyPluginCallback =
   (instance, _opts, next) => {
     instance.addHook("preHandler",
       async (req, res) => {
@@ -12,14 +13,14 @@ export const systemSettingsRoutes: FastifyPluginCallback =
         }
 
         const user = await User.getById(req.session.user.id);
-        const roles = await user.roles();
-        if(!roles.includes("admin")) {
+        if(!user.hasRole("admin")) {
           return res.redirect("/login");
         }
       }
     );
 
-    instance.get("/", SystemSettingsController.index);
-    instance.post("/", SystemSettingsController.updateSettings);
+    instance.get("/system-settings", SystemSettingsController.index);
+    instance.post("/system-settings", SystemSettingsController.updateSettings);
+    instance.get("/users", UsersController.index);
     next();
   };
