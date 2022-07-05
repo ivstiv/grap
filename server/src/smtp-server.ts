@@ -6,6 +6,9 @@ import { EmailAddress } from "./models/EmailAddress";
 
 export const smtpServer = new SMTPServer({
   onData (stream, session, callback) {
+    stream.on("error", err => {
+      console.log("SMTP Error", err);
+    });
     stream.on("end", callback);
 
     simpleParser(stream, {}, async (err, parsed) => {
