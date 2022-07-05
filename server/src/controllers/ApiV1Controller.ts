@@ -25,7 +25,7 @@ export const createAddress: FastifyHandler =
       throw new Error("User not found!");
     }
 
-    if (user.getLimits().maxEmailAddresses <= user.addresses.length) {
+    if (user.settings.maxEmailAddresses <= user.addresses.length) {
       return res.code(401).send({ error: "Address limit reached! Try again later." });
     }
     

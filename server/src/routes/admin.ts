@@ -22,5 +22,6 @@ export const adminRoutes: FastifyPluginCallback =
     instance.get("/system-settings", SystemSettingsController.index);
     instance.post("/system-settings", SystemSettingsController.updateSettings);
     instance.get("/users", UsersController.index);
+    instance.post("/user", UsersController.updateUser);
     next();
   };

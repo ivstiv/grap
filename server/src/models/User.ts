@@ -10,6 +10,8 @@ import {
 } from "unique-names-generator";
 import { Token } from "./Token";
 import { randomBytes } from "crypto";
+import { eventBus } from "../EventBus";
+import { UserSettings } from "./UserSettings";
 
 export class User extends Model {
   static tableName = "users";
@@ -21,20 +23,13 @@ export class User extends Model {
   roles: Role[]; // available only withGraphFetched
   tokens: Token[]; // available only withGraphFetched
   addresses: EmailAddress[]; // available only withGraphFetched
-
-
-  getLimits () {
-    return{
-      maxTokens: 5,
-      maxEmailAddresses: 10, //TO-DO move this to user_settings table
-    };
-  }
+  settings: UserSettings; // available only withGraphFetched
 
 
   static async getById (id: number) {
     const user = await User.query()
       .where({ id })
-      .withGraphFetched("[roles, tokens, addresses]")
+      .withGraphFetched("[roles, tokens, addresses, settings]")
       .first();
     if (!user) {
       throw new Error(`User with id: ${id} was not found!`);
@@ -46,7 +41,7 @@ export class User extends Model {
   static getByEmail (email: string) {
     return User.query()
       .where({ email })
-      .withGraphFetched("[roles, tokens, addresses]")
+      .withGraphFetched("[roles, tokens, addresses, settings]")
       .first();
   }
 
@@ -67,7 +62,18 @@ export class User extends Model {
       throw new Error("Couldn't find user role!");
     }
 
-    await user.$relatedQuery<Role>("roles").relate(userRole);
+    await Promise.all([
+      user.$relatedQuery<Role>("roles").relate(userRole),
+      UserSettings.query().insert({ user: user.id }),
+    ]);
+
+    eventBus.emit({
+      type: "UserRegistered",
+      detail: {
+        user,
+      },
+    });
+
     return user;
   }
 
@@ -85,6 +91,7 @@ export class User extends Model {
       ...addrDeletionPromises,
       ...tokenDeletionPromises,
       this.$relatedQuery<Role>("roles").unrelate(),
+      this.settings.destroy(),
     ]);
     await this.$query().delete().where({ id: this.id });
   }
@@ -142,6 +149,14 @@ export class User extends Model {
         join: {
           from: "users.id",
           to: "tokens.owner",
+        },
+      },
+      settings: {
+        relation: Model.HasOneRelation,
+        modelClass: UserSettings,
+        join: {
+          from: "users.id",
+          to: "user_settings.user",
         },
       },
     };

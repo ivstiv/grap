@@ -33,7 +33,7 @@ export const index: FastifyHandler =
       isLoggedIn: true,
       isAdmin: user.hasRole("admin"),
       addresses: formattedAddresses,
-      maxAddresses: user.getLimits().maxEmailAddresses,
+      maxAddresses: user.settings.maxEmailAddresses,
       flashMessage,
     });
   };

@@ -26,7 +26,7 @@ export const index: FastifyHandler =
     return res.view("/src/views/pages/settings.ejs", {
       isLoggedIn: true,
       isAdmin: user.hasRole("admin"),
-      maxTokens: user.getLimits().maxTokens,
+      maxTokens: user.settings.maxTokens,
       isLastAdmin,
       tokens: user.tokens,
       flashMessage,
@@ -61,7 +61,7 @@ export const createToken: FastifyHandler<CreateTokenHandler> =
 
     const user = await User.getById(req.session.user.id);
 
-    if (user.tokens.length >= user.getLimits().maxTokens) {
+    if (user.tokens.length >= user.settings.maxTokens) {
       req.session.flashMessage = "You have reached your token limit.";
       return res.redirect("/settings");
     }
