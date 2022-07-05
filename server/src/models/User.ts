@@ -10,6 +10,8 @@ import {
 } from "unique-names-generator";
 import { Token } from "./Token";
 import { randomBytes } from "crypto";
+import { eventBus } from "../EventBus";
+import { UserSettings } from "./UserSettings";
 
 export class User extends Model {
   static tableName = "users";
@@ -18,18 +20,17 @@ export class User extends Model {
   email: string;
   password: string;
   createdAt: string;
-
-
-  getLimits () {
-    return{
-      maxTokens: 5,
-      maxEmailAddresses: 10,
-    };
-  }
+  roles: Role[]; // available only withGraphFetched
+  tokens: Token[]; // available only withGraphFetched
+  addresses: EmailAddress[]; // available only withGraphFetched
+  settings: UserSettings; // available only withGraphFetched
 
 
   static async getById (id: number) {
-    const user = await User.query().where({ id }).first();
+    const user = await User.query()
+      .where({ id })
+      .withGraphFetched("[roles, tokens, addresses, settings]")
+      .first();
     if (!user) {
       throw new Error(`User with id: ${id} was not found!`);
     }
@@ -38,7 +39,10 @@ export class User extends Model {
 
 
   static getByEmail (email: string) {
-    return User.query().where({ email }).first();
+    return User.query()
+      .where({ email })
+      .withGraphFetched("[roles, tokens, addresses, settings]")
+      .first();
   }
 
 
@@ -58,22 +62,36 @@ export class User extends Model {
       throw new Error("Couldn't find user role!");
     }
 
-    await user.$relatedQuery<Role>("roles").relate(userRole);
+    await Promise.all([
+      user.$relatedQuery<Role>("roles").relate(userRole),
+      UserSettings.query().insert({ user: user.id }),
+    ]);
+
+    eventBus.emit({
+      type: "UserRegistered",
+      detail: {
+        user,
+      },
+    });
+
     return user;
   }
 
 
-  async destroy () {
-    const addresses = await this.addresses();
-    const addrDeletionPromises = addresses.map(a => a.destroy());
+  hasRole (role: Role["name"]) {
+    return this.roles.some(r => r.name === role);
+  }
 
-    const tokens = await this.tokens();
-    const tokenDeletionPromises = tokens.map(a => a.destroy());
+
+  async destroy () {
+    const addrDeletionPromises = this.addresses.map(a => a.destroy());
+    const tokenDeletionPromises = this.tokens.map(a => a.destroy());
 
     await Promise.all([
       ...addrDeletionPromises,
       ...tokenDeletionPromises,
       this.$relatedQuery<Role>("roles").unrelate(),
+      this.settings.destroy(),
     ]);
     await this.$query().delete().where({ id: this.id });
   }
@@ -100,21 +118,6 @@ export class User extends Model {
       token: randomBytes(20).toString("hex"),
       owner: this.id,
     });
-  }
-
-  async tokens () {
-    return this.$relatedQuery<Token>("tokens");
-  }
-
-
-  async addresses () {
-    return this.$relatedQuery<EmailAddress>("addresses");
-  }
-
-
-  async roles () {
-    const roles = await this.$relatedQuery<Role>("roles");
-    return roles.map(r => r.name);
   }
 
 
@@ -146,6 +149,14 @@ export class User extends Model {
         join: {
           from: "users.id",
           to: "tokens.owner",
+        },
+      },
+      settings: {
+        relation: Model.HasOneRelation,
+        modelClass: UserSettings,
+        join: {
+          from: "users.id",
+          to: "user_settings.user",
         },
       },
     };

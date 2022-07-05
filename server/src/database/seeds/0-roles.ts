@@ -19,6 +19,6 @@ export const seed = async (knex: Knex) => {
   if (roles.length < 2) {
     throw new Error("Role seeding failed!");
   } else {
-    console.log("Seeding roles finished successfully!");
+    console.log(`Seeded ${roles.length} roles.`);
   }
 };

@@ -8,9 +8,7 @@ export const createAddress: FastifyHandler =
   async (req, res) => {
     let user: User | undefined;
     if (req.session.user) {
-      user = await User.query()
-        .where({ id: req.session.user.id })
-        .first();
+      user = await User.getById(req.session.user.id);
     }
 
     if (req.headers.authorization) {
@@ -27,8 +25,7 @@ export const createAddress: FastifyHandler =
       throw new Error("User not found!");
     }
 
-    const addresses = await user.addresses();
-    if (user.getLimits().maxEmailAddresses <= addresses.length) {
+    if (user.settings.maxEmailAddresses <= user.addresses.length) {
       return res.code(401).send({ error: "Address limit reached! Try again later." });
     }
     
@@ -66,8 +63,7 @@ export const latestEmail: FastifyHandler<LatestEmailHandler> =
       throw new Error("User not found!");
     }
 
-    const addresses = await user.addresses();
-    const addressToPoll = addresses
+    const addressToPoll = user.addresses
       .find(a => a.address === req.params.address);
 
     if(!addressToPoll) {

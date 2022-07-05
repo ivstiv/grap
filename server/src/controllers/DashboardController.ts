@@ -11,13 +11,11 @@ export const index: FastifyHandler =
     }
 
     const user = await User.getById(req.session.user.id);
-    const roles = await user.roles();
-    const addresses = await user.addresses();
 
-    const emailsPromises = addresses.map(adr => adr.getEmails());
+    const emailsPromises = user.addresses.map(adr => adr.getEmails());
     const emails = (await Promise.all(emailsPromises)).flat();
 
-    const formattedAddresses = addresses
+    const formattedAddresses = user.addresses
       .sort((a, b) => b.id - a.id)
       .map(adr => ({
         id: adr.id,
@@ -33,9 +31,9 @@ export const index: FastifyHandler =
 
     return res.view("/src/views/pages/dashboard.ejs", {
       isLoggedIn: true,
-      isAdmin: roles.includes("admin"),
+      isAdmin: user.hasRole("admin"),
       addresses: formattedAddresses,
-      maxAddresses: user.getLimits().maxEmailAddresses,
+      maxAddresses: user.settings.maxEmailAddresses,
       flashMessage,
     });
   };
@@ -67,8 +65,7 @@ export const deleteAddress: FastifyHandler<DeleteAddressHandler> =
     }
 
     const user = await User.getById(req.session.user.id);
-    const userAddresses = await user.addresses();
-    const userOwnsAdrsToDelete = userAddresses
+    const userOwnsAdrsToDelete = user.addresses
       .some(adr => adr.id === parseInt(req.body.address));
 
     if(!userOwnsAdrsToDelete) {
@@ -76,7 +73,7 @@ export const deleteAddress: FastifyHandler<DeleteAddressHandler> =
       return res.redirect("/dashboard");
     }
 
-    const addressToDelete = userAddresses
+    const addressToDelete = user.addresses
       .find(adr => adr.id === parseInt(req.body.address));
 
     if (addressToDelete) {
@@ -109,9 +106,7 @@ export const showInbox: FastifyHandler<ShowInboxHandler> =
     }
 
     const user = await User.getById(req.session.user.id);
-    const roles = await user.roles();
-    const addrs = await user.addresses();
-    const addr = addrs.find(a => a.id === parseInt(id));
+    const addr = user.addresses.find(a => a.id === parseInt(id));
 
     if(!addr) {
       return res.view("/src/views/pages/404.ejs", {
@@ -127,7 +122,7 @@ export const showInbox: FastifyHandler<ShowInboxHandler> =
 
     return res.view("/src/views/pages/inbox.ejs", {
       isLoggedIn: !!req.session.user,
-      isAdmin: roles.includes("admin"),
+      isAdmin: user.hasRole("admin"),
       emails,
       flashMessage,
     });

@@ -8,6 +8,9 @@
         <%- include('../partials/header'); %>
     </header>
     <h1>404 Not found</h1>
+    <% if (typeof flashMessage !== "undefined") { %>
+        <p><mark><%= flashMessage %></mark></p>
+    <% } %>
     <p>
         The requested resource could not be found! :(
     </p>

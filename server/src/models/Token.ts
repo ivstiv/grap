@@ -19,7 +19,9 @@ export class Token extends Model {
 
 
   async getOwner () {
-    return this.$relatedQuery<User>("user").first();
+    return this.$relatedQuery<User>("user")
+      .withGraphFetched("[roles, tokens, addresses, settings]")
+      .first();
   }
 
 

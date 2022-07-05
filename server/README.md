@@ -30,11 +30,9 @@ Check [npm-check-updates's documentation](https://www.npmjs.com/package/npm-chec
 
 Todos:
 
+- testing proof of concept session cookie
 - publish image on push
 - Add corrct hrefs, fix emoji in about
-- ask the user if old addresses can be deleted on generation if the limit is reached
 - change password setting
-- admin user list
 - impersonation
-- dynamic user limits
 - replace yup with zod

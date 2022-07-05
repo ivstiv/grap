@@ -37,14 +37,12 @@ export const index: FastifyHandler =
       { name: "active_emails", value: emailCount },
     ];
 
-    const roles = await user.roles();
-
     const flashMessage = req.session.flashMessage;
     req.session.flashMessage = undefined; // reset the variable
 
     return res.view("/src/views/pages/system-settings.ejs", {
       isLoggedIn: true,
-      isAdmin: roles.includes("admin"),
+      isAdmin: user.hasRole("admin"),
       flashMessage,
       settings,
       stats: mashedStats,
@@ -80,7 +78,7 @@ export const updateSettings: FastifyHandler<SystemSettingsHandler> =
 
     if (errors.length > 0) {
       req.session.flashMessage = errors[0];
-      return res.redirect("/system-settings");
+      return res.redirect("/admin/system-settings");
     }
 
     const updatePromises = Object.entries(req.body)
@@ -91,5 +89,5 @@ export const updateSettings: FastifyHandler<SystemSettingsHandler> =
     await Promise.all(updatePromises);
 
     req.session.flashMessage = "System settings updated!";
-    return res.redirect("/system-settings");
+    return res.redirect("/admin/system-settings");
   };

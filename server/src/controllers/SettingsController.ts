@@ -11,8 +11,6 @@ export const index: FastifyHandler =
     }
 
     const user = await User.getById(req.session.user.id);
-    const roles = await user.roles();
-    const tokens = await user.tokens();
 
     const adminRole = await Role.getByName("admin");
     if(!adminRole) {
@@ -27,10 +25,10 @@ export const index: FastifyHandler =
 
     return res.view("/src/views/pages/settings.ejs", {
       isLoggedIn: true,
-      isAdmin: roles.includes("admin"),
-      maxTokens: user.getLimits().maxTokens,
+      isAdmin: user.hasRole("admin"),
+      maxTokens: user.settings.maxTokens,
       isLastAdmin,
-      tokens,
+      tokens: user.tokens,
       flashMessage,
     });
   };
@@ -62,9 +60,8 @@ export const createToken: FastifyHandler<CreateTokenHandler> =
     }
 
     const user = await User.getById(req.session.user.id);
-    const tokens = await user.tokens();
 
-    if (tokens.length >= user.getLimits().maxTokens) {
+    if (user.tokens.length >= user.settings.maxTokens) {
       req.session.flashMessage = "You have reached your token limit.";
       return res.redirect("/settings");
     }
@@ -106,9 +103,8 @@ export const destroyToken: FastifyHandler<DestroyTokenHandler> =
     }
 
     const user = await User.getById(req.session.user.id);
-    const tokens = await user.tokens();
 
-    const tokenToDelete = tokens
+    const tokenToDelete = user.tokens
       .find(t => t.id === parseInt(req.body.token));
 
     if (!tokenToDelete) {
