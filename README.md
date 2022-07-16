@@ -76,6 +76,7 @@ Edit the script to customise the email being sent.
 
 ```
 docker login
+docker pull node:18-alpine
 docker build -t ivstiv/grap:latest -f .docker/prod.Dockerfile server
 docker push ivstiv/grap:latest
 docker logout
