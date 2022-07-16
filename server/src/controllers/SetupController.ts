@@ -25,13 +25,17 @@ export const createAdmin: FastifyHandler<UserAccountFormHandler> =
       .catch(e => e.errors);
 
     if (errors.length > 0) {
-      return res.view("/src/views/pages/setup.ejs", { error: errors[0] });
+      return res
+        .code(400)
+        .view("/src/views/pages/setup.ejs", { error: errors[0] });
     }
 
     const userWithTheSameEmail = await User.getByEmail(req.body.email);
 
     if (userWithTheSameEmail) {
-      return res.view("/src/views/pages/setup.ejs", { error: "User with that email already exists." });
+      return res
+        .code(400)
+        .view("/src/views/pages/setup.ejs", { error: "User with that email already exists." });
     }
     const adminRole = await Role.getByName("admin");
     if (!adminRole) {

@@ -31,14 +31,14 @@ if (!SESSION_SECRET) {
   throw new Error("Missing env variable: SESSION_SECRET");
 }
 
-export const fastify = Fastify({
+export const webServer = Fastify({
   logger: true,
   disableRequestLogging: true,
 });
 
-fastify.register(formBodyPlugin);
-fastify.register(fastifyCookiePlugin);
-fastify.register(fastifySessionPlugin, {
+webServer.register(formBodyPlugin);
+webServer.register(fastifyCookiePlugin);
+webServer.register(fastifySessionPlugin, {
   secret: SESSION_SECRET,
   cookie: {
     secure: NODE_ENV === "development" ? false : true,
@@ -46,18 +46,18 @@ fastify.register(fastifySessionPlugin, {
   },
 });
   
-fastify.register(view, {
+webServer.register(view, {
   engine: { ejs },
 });
   
-fastify.register(rootRoutes);
-fastify.register(setupRoutes, { prefix: "setup" });
-fastify.register(loginRoutes, { prefix: "login" });
-fastify.register(logoutRoutes, { prefix: "logout" });
-fastify.register(registerRoutes, { prefix: "register" });
-fastify.register(dashboardRoutes, { prefix: "dashboard" });
-fastify.register(settingsRoutes, { prefix: "settings" });
-fastify.register(adminRoutes, { prefix: "admin" });
-fastify.register(apiV1Routes, { prefix: "api/v1" });
+webServer.register(rootRoutes);
+webServer.register(setupRoutes, { prefix: "setup" });
+webServer.register(loginRoutes, { prefix: "login" });
+webServer.register(logoutRoutes, { prefix: "logout" });
+webServer.register(registerRoutes, { prefix: "register" });
+webServer.register(dashboardRoutes, { prefix: "dashboard" });
+webServer.register(settingsRoutes, { prefix: "settings" });
+webServer.register(adminRoutes, { prefix: "admin" });
+webServer.register(apiV1Routes, { prefix: "api/v1" });
 
-fastify.setNotFoundHandler(ErrorController.notFound);
+webServer.setNotFoundHandler(ErrorController.notFound);

@@ -12,6 +12,12 @@ export const dbConfig: Knex.Config = {
   connection: {
     filename: DATABASE_PATH,
   },
+  migrations: {
+    directory: "/app/dist/database/migrations",
+  },
+  seeds: {
+    directory: "/app/dist/database/seeds",
+  },
 };
 
 export const db = knex(dbConfig);

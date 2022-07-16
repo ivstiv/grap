@@ -14,7 +14,7 @@ grap aims to be a simple SMTP server wrapped with an API and user system to:
 
 You'll need the following things installed on your machine.
 
-- linux-like shell environment (WSL should work, don't know about git-bash)
+- linux-like shell environment (WSL should work, don't know about the various bash emulators)
 - Docker
 - docker-compose
 - Common tools such as: curl, git, telnet
@@ -66,6 +66,12 @@ Edit the script to customise the email being sent.
 ./smtp-test.sh <recipient>
 ```
 
+### Run the test suite
+
+```
+./compose.sh exec server npm test
+```
+
 ## Pushing an image
 
 ```
@@ -73,4 +79,16 @@ docker login
 docker build -t ivstiv/grap:latest -f .docker/prod.Dockerfile server
 docker push ivstiv/grap:latest
 docker logout
+```
+
+## Deploy with docker-compose
+
+```
+to-do
+```
+
+## Deploy with docker cli
+
+```
+to-do
 ```
