@@ -36,8 +36,8 @@ Check [npm-check-updates's documentation](https://www.npmjs.com/package/npm-chec
 ## Todos:
 
 - Match email by partial title
-- testing proof of concept session cookie
 - publish image on push
+- check for latest release version
 - impersonation
 - replace yup with zod
 - This smtp error

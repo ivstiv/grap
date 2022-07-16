@@ -39,3 +39,12 @@ export const waitForStatToUpdate = async (name: StatName) => {
   }
   return latestStat;
 };
+
+
+export type Cookie = {
+  name: string
+  value: string
+  path: string
+  httpOnly: boolean
+  sameSite: string
+}

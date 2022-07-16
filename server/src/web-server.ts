@@ -31,6 +31,10 @@ if (!SESSION_SECRET) {
   throw new Error("Missing env variable: SESSION_SECRET");
 }
 
+if (!NODE_ENV) {
+  throw new Error("Missing env variable: NODE_ENV");
+}
+
 export const webServer = Fastify({
   logger: true,
   disableRequestLogging: true,
@@ -41,7 +45,7 @@ webServer.register(fastifyCookiePlugin);
 webServer.register(fastifySessionPlugin, {
   secret: SESSION_SECRET,
   cookie: {
-    secure: NODE_ENV === "development" ? false : true,
+    secure: ["development", "test"].includes(NODE_ENV) ? false : true,
     sameSite: "strict",
   },
 });
