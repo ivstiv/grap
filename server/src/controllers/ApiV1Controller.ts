@@ -1,4 +1,3 @@
-import { eventBus } from "../EventBus";
 import { Token } from "../models/Token";
 import { User } from "../models/User";
 import { FastifyHandler } from "./ControllerUtilities";
@@ -30,12 +29,6 @@ export const createAddress: FastifyHandler =
     }
     
     const address = await user.createEmailAddress();
-    eventBus.emit({
-      type: "CreateAddress",
-      detail: {
-        address,
-      },
-    });
     return res.code(201).send({ data: address.address });
   };
 
@@ -48,6 +41,11 @@ interface LatestEmailHandler {
 export const latestEmail: FastifyHandler<LatestEmailHandler> = 
   async (req, res) => {
     let user: User | undefined;
+
+    if (req.session.user) {
+      // not event used by the frontend but to keep them consistent
+      user = await User.getById(req.session.user.id);
+    }
 
     if (req.headers.authorization) {
       const [_bearer, token] = req.headers.authorization.split(" ");

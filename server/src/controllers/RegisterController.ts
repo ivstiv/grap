@@ -33,6 +33,10 @@ export const register: FastifyHandler<UserAccountFormHandler> =
 
     const user = await User.register(req.body.email, req.body.password);
 
+    if (!user) {
+      throw new Error("Failed to register user.");
+    }
+
     req.session.user = { id: user.id };
     return res.redirect("/dashboard");
   };

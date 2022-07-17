@@ -1,7 +1,5 @@
 import { simpleParser, AddressObject } from "mailparser";
 import { SMTPServer } from "smtp-server";
-import { eventBus } from "./EventBus";
-import { Email } from "./models/Email";
 import { EmailAddress } from "./models/EmailAddress";
 
 export const smtpServer = new SMTPServer({
@@ -29,20 +27,12 @@ export const smtpServer = new SMTPServer({
 
         const parsedSubject = parsed.headers.get("subject") as string;
         const parsedFrom = parsed.headers.get("from") as AddressObject;
-        const email = await Email.query().insertAndFetch({
-          address: address.id,
-          subject: parsedSubject ?? "Missing subject",
-          from: parsedFrom.text ?? "Mising sender",
+        await address.insertEmail({
+          subject: parsedSubject,
+          from: parsedFrom.text,
           content: parsed.html
             || parsed.text
-            || parsed.textAsHtml
-            || "Couldn't parse the email contents. Open a github issue and let me know who the sender of the email was, so I can test and amend the parsing.",
-        });
-        eventBus.emit({
-          type: "ParsedEmail",
-          detail: {
-            email,
-          },
+            || parsed.textAsHtml,
         });
       }
     });

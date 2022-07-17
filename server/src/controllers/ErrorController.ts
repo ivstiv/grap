@@ -13,9 +13,11 @@ export const notFound: FastifyHandler =
     const flashMessage = req.session.flashMessage;
     req.session.flashMessage = undefined; // reset the variable
 
-    return res.view("/src/views/pages/404.ejs", {
-      isAdmin,
-      flashMessage,
-      isLoggedIn: !!req.session.user,
-    });
+    return res
+      .code(404)
+      .view("/src/views/pages/404.ejs", {
+        isAdmin,
+        flashMessage,
+        isLoggedIn: !!req.session.user,
+      });
   };

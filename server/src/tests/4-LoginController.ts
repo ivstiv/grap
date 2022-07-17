@@ -2,17 +2,21 @@ import assert from "assert";
 import { webServer } from "../web-server";
 import { step } from "mocha-steps";
 import { User } from "../models/User";
-import { Cookie } from "./utils";
+import { Cookie, systemCleanup } from "./utils";
 
 
 describe("Login controller", () => {
+
+  after(() => systemCleanup());
+
+
   step("Should return status code 200", async () => {
     const res = await webServer.inject({
       method: "GET",
       url: "/login",
     });
 
-    assert.equal(res.statusCode, 200);
+    assert.strictEqual(res.statusCode, 200);
   });
 
 
@@ -49,7 +53,7 @@ describe("Login controller", () => {
     ]);
 
     responses.forEach(res =>
-      assert.equal(res.statusCode, 400),
+      assert.strictEqual(res.statusCode, 400),
     );
   });
 
@@ -72,8 +76,8 @@ describe("Login controller", () => {
       (c as Cookie).name === "sessionId"
     ) as Cookie;
 
-    assert.equal(res.statusCode, 302);
-    assert.equal(redirectLocation, "/dashboard");
+    assert.strictEqual(res.statusCode, 302);
+    assert.strictEqual(redirectLocation, "/dashboard");
   });
 
 
@@ -90,7 +94,7 @@ describe("Login controller", () => {
       },
     });
 
-    assert.equal(res.statusCode, 200);
+    assert.strictEqual(res.statusCode, 200);
   });
 
 
@@ -109,7 +113,7 @@ describe("Login controller", () => {
 
     const redirectLocation = res.headers["location"];
 
-    assert.equal(res.statusCode, 302);
-    assert.equal(redirectLocation, "/login");
+    assert.strictEqual(res.statusCode, 302);
+    assert.strictEqual(redirectLocation, "/login");
   });
 });

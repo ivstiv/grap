@@ -7,7 +7,7 @@
     <header>
         <%- include('../partials/header'); %>
     </header>
-    <h1>404 Not found</h1>
+    <h1 data-test-id="title">404 Not Found</h1>
     <% if (typeof flashMessage !== "undefined") { %>
         <p><mark><%= flashMessage %></mark></p>
     <% } %>
