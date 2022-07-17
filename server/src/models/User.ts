@@ -74,7 +74,15 @@ export class User extends Model {
       },
     });
 
-    return user;
+    return User.getByEmail(email);
+  }
+
+
+  refresh () {
+    return this.$query()
+      .where({ email: this.email })
+      .withGraphFetched("[roles, tokens, addresses, settings]")
+      .first();
   }
 
 
@@ -105,10 +113,19 @@ export class User extends Model {
       separator: ".",
     });
 
-    return EmailAddress.query().insert({
+    const address = await EmailAddress.query().insertAndFetch({
       owner: this.id,
       address: `${randomName}@${process.env.DOMAIN}`,
     });
+
+    eventBus.emit({
+      type: "CreateAddress",
+      detail: {
+        address,
+      },
+    });
+
+    return address;
   }
 
 

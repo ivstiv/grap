@@ -2,17 +2,21 @@ import assert from "assert";
 import { webServer } from "../web-server";
 import { step } from "mocha-steps";
 import { User } from "../models/User";
-import { waitForStatToUpdate } from "./utils";
+import { systemCleanup, waitForStatToUpdate } from "./utils";
 
 
-describe("Setup controller", () => {
+describe("Register controller", () => {
+
+  after(() => systemCleanup());
+
+
   step("Should return status code 200", async () => {
     const res = await webServer.inject({
       method: "GET",
-      url: "/setup",
+      url: "/register",
     });
 
-    assert.equal(res.statusCode, 200);
+    assert.strictEqual(res.statusCode, 200);
   });
 
 
@@ -20,12 +24,12 @@ describe("Setup controller", () => {
     const responses = await Promise.all([
       webServer.inject({
         method: "POST",
-        url: "/setup",
+        url: "/register",
         payload: {},
       }),
       webServer.inject({
         method: "POST",
-        url: "/setup",
+        url: "/register",
         payload: {
           email: "",
           password: "asdasdasdasdasdasd",
@@ -33,7 +37,7 @@ describe("Setup controller", () => {
       }),
       webServer.inject({
         method: "POST",
-        url: "/setup",
+        url: "/register",
         payload: {
           email: "someemail@somewhere.dontknowwhere",
           password: "12345",
@@ -41,7 +45,7 @@ describe("Setup controller", () => {
       }),
       webServer.inject({
         method: "POST",
-        url: "/setup",
+        url: "/register",
         payload: {
           email: "someemail@somewhere.dontknowwhere",
         },
@@ -49,44 +53,56 @@ describe("Setup controller", () => {
     ]);
 
     responses.forEach(res =>
-      assert.equal(res.statusCode, 400),
+      assert.strictEqual(res.statusCode, 400),
     );
   });
 
 
-  step("Should create first admin", async () => {
+  step("Should register user", async () => {
     const userListBefore = await User.query();
 
+    const userListPromise = waitForStatToUpdate("total_users");
     const res = await webServer.inject({
       method: "POST",
-      url: "/setup",
+      url: "/register",
       payload: {
-        email: "admin@admin.admin",
+        email: "user1@grap.email",
         password: "123456",
       },
     });
+
+    const redirectLocation = res.headers["location"];
 
     const [
       userListAfter,
       totalUsers,
     ] = await Promise.all([
       User.query(),
-      waitForStatToUpdate("total_users"),
+      userListPromise,
     ]);
 
-    assert.equal(res.statusCode, 302);
-    assert.equal(userListBefore.length, 0);
-    assert.equal(userListAfter.length, 1);
-    assert.equal(userListAfter.length, parseInt(totalUsers.value));
+    assert.strictEqual(res.statusCode, 302);
+    assert.strictEqual(redirectLocation, "/dashboard");
+    assert.strictEqual(userListBefore.length < userListAfter.length, true);
+    assert.strictEqual(userListAfter.length, parseInt(totalUsers.value));
   });
 
 
-  step("Should return status code 302", async () => {
+  step("Should fail to register user with the same email", async () => {
+    const userListBefore = await User.query();
+
     const res = await webServer.inject({
-      method: "GET",
-      url: "/setup",
+      method: "POST",
+      url: "/register",
+      payload: {
+        email: "user1@grap.email",
+        password: "123456",
+      },
     });
 
-    assert.equal(res.statusCode, 302);
+    const userListAfter = await User.query();
+
+    assert.strictEqual(res.statusCode, 400);
+    assert.strictEqual(userListBefore.length === userListAfter.length, true);
   });
 });

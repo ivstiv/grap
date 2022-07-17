@@ -2,6 +2,7 @@ import { Model } from "objection";
 import { db } from "../database/database";
 import { loadEventListeners } from "../EventListeners";
 import { StatName, SystemStat } from "../models/SystemStat";
+import { User } from "../models/User";
 
 export const mochaGlobalSetup = async () => {
   console.log("Global setup...");
@@ -18,6 +19,17 @@ export const mochaGlobalTeardown = async () => {
   Model.knex().destroy();
 };
 
+export const systemCleanup = async () => {
+  const users = await User.query()
+    .withGraphFetched("[roles, tokens, addresses, settings]");
+  const userDeletionPromises = users.map(u => u.destroy());
+  await Promise.all([
+    ...userDeletionPromises,
+    SystemStat.updateByName("total_users", "0"),
+    SystemStat.updateByName("total_emails", "0"),
+    SystemStat.updateByName("total_addresses", "0"),
+  ]);
+};
 
 export const sleep = (ms: number) =>
   new Promise(r => setTimeout(r, ms));
@@ -28,7 +40,6 @@ export const waitForStatToUpdate = async (name: StatName) => {
 
   // 10 sec timeout
   const forceStopAt = Date.now() + 1000 * 10;
-
   while (initialStat.value === latestStat.value) {
     if (Date.now() > forceStopAt) {
       throw new Error(`System stat did not change ${name}`);
@@ -39,7 +50,6 @@ export const waitForStatToUpdate = async (name: StatName) => {
   }
   return latestStat;
 };
-
 
 export type Cookie = {
   name: string

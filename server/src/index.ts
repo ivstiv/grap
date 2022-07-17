@@ -25,7 +25,7 @@ smtpServer.listen(25, "0.0.0.0",
 setInterval(async () => {
   console.log(new Date().toISOString(), "Address cleanup job running...");
   const addresses = await EmailAddress.query();
-  const expiredAddrs = addresses.filter(a => a.expiresIn() < 1);
+  const expiredAddrs = addresses.filter(a => a.expiresInMins() < 1);
   const deletionPromises = expiredAddrs.map(a => a.destroy());
   await Promise.all(deletionPromises);
   console.log(new Date().toISOString(), `${deletionPromises.length} addresses deleted.`);

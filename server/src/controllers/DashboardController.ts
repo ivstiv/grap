@@ -20,7 +20,7 @@ export const index: FastifyHandler =
       .map(adr => ({
         id: adr.id,
         address: adr.address,
-        expiresIn: adr.expiresIn(),
+        expiresIn: adr.expiresInMins(),
         inboxEmails: emails
           .filter(e => e.address === adr.id)
           .reduce((sum, _curr) => sum+1, 0),
