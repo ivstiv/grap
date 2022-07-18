@@ -22,9 +22,8 @@ jobs:
           npm run coverage
           npm run coverage-badge
       - name: Commit changes
-        uses: EndBug/add-and-commit@v8
+        uses: EndBug/add-and-commit@v9
         with:
-          author_name: job
-          author_email: job@example.com
+          author_name: generate-coverage-badge-job
+          author_email: 25481564+ivstiv@users.noreply.github.com
           message: "Updated test coverage badge"
-          add: "server/coverage/badge.svg"
