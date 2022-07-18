@@ -1,16 +1,46 @@
 <nav>
-    <a href="/">Home</a>
-    <a href="/about">About</a>
-    <% if (typeof isLoggedIn !== "undefined" && isLoggedIn) { %>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/settings">Settings</a>
-        <% if (typeof isAdmin !== "undefined" && isAdmin) { %>
-            <a href="/admin/system-settings">System Settings</a>
-            <a href="/admin/users?page=1">Users</a>
+    <h1>gr@p</h1>
+    <ul>
+        <li>
+            <a href="/">Home</a>
+        </li>
+        <li>
+            <a href="/about">About</a>
+        </li>
+        <% if (typeof isLoggedIn !== "undefined" && isLoggedIn) { %>
+            <li>
+                <a href="/dashboard">Dashboard</a>
+            </li>
+            <li>
+                <a href="/settings">Settings</a>
+            </li>
+            <% if (typeof isAdmin !== "undefined" && isAdmin) { %>
+                <li>
+                    <a href="/admin/system-settings">System Settings</a>
+                </li>
+                <li>
+                    <a href="/admin/users?page=1">Users</a>
+                </li>
+            <% } %>
+            <li>
+                <a href="/logout">Logout</a>
+            </li>
+        <% } else { %>
+            <li>
+                <a href="/login">Login</a>
+            </li>
+            <li>
+                <a href="/register">Register</a>
+            </li
         <% } %>
-        <a href="/logout">Logout</a>
-    <% } else { %>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
-    <% } %>
+    </ul>
 </nav>
+
+<script defer>
+    const navLinks = document.querySelectorAll("nav a");
+    const activeLink = Array.from(navLinks)
+        .find(l => l.href === window.location.href);
+    if (activeLink) {
+        activeLink.classList.add('active');
+    }
+</script>

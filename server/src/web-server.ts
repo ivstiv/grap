@@ -9,11 +9,13 @@ import { registerRoutes } from "./routes/register";
 import { dashboardRoutes } from "./routes/dashboard";
 import fastifyCookiePlugin from "@fastify/cookie";
 import fastifySessionPlugin from "@fastify/session";
+import fastifyStaticPlugin from "@fastify/static";
 import { logoutRoutes } from "./routes/logout";
 import * as ErrorController from "./controllers/ErrorController";
 import { apiV1Routes } from "./routes/api-v1";
 import { settingsRoutes } from "./routes/settings";
 import { adminRoutes } from "./routes/admin";
+import path from "path/posix";
 
 
 declare module "fastify" {
@@ -40,6 +42,10 @@ export const webServer = Fastify({
   disableRequestLogging: true,
 });
 
+webServer.register(fastifyStaticPlugin, {
+  root: path.join(__dirname, "public"),
+  prefix: "/public/",
+});
 webServer.register(formBodyPlugin);
 webServer.register(fastifyCookiePlugin);
 webServer.register(fastifySessionPlugin, {
