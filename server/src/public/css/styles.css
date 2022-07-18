@@ -1,0 +1,67 @@
+/* @import url(https://fonts.bunny.net/css?family=aldrich:400); */
+@import url(https://fonts.bunny.net/css?family=exo:500);
+
+:root {
+  --font-size-large: 1.25rem;
+  --font-size-normal: 1rem;
+  --font-size-small: 0.75rem;
+
+  --main-color: #151922;
+  --secondary-color: rgb(85, 85, 164);
+  --background-color: #fff;
+
+  --spacing-large: 1.25rem;
+  --spacing-normal: 1rem;
+  --spacing-small: 0.75rem;
+}
+
+html,
+body {
+  /* font-family: "Aldrich", sans-serif; */
+  font-family: "Exo", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--main-color);
+  padding: 0 var(--spacing-small);
+}
+
+nav h1 {
+  color: var(--background-color);
+  width: 20%;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+}
+
+nav ul li {
+  margin: 0 var(--spacing-normal);
+}
+
+nav ul a {
+  font-size: var(--font-size-large);
+  color: var(--background-color);
+  text-decoration: none;
+}
+
+nav ul .active {
+  font-size: var(--font-size-large);
+  color: var(--background-color);
+  border-bottom: 5px solid var(--secondary-color);
+  text-decoration: none;
+  transition: all 0.1s ease-in-out;
+}
+
+nav ul a:hover {
+  font-size: var(--font-size-large);
+  color: var(--background-color);
+  border-bottom: 5px solid var(--secondary-color);
+  text-decoration: none;
+  transition: all 0.1s ease-in-out;
+}
