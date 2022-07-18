@@ -1,5 +1,8 @@
 # grap - Simple email grabbing for testing and CI/CD
 
+![Coverage](./server/coverage/badge.svg)
+<img src="./server/coverage/badge.svg">
+
 I got tired of endless email capturing services with stupid pricing justified
 by a ton of features that I will never use.
 
