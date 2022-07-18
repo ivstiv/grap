@@ -1,0 +1,25 @@
+name: Pull request pipeline
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  test_pull_request:
+    runs-on: ubuntu-latest
+    container: node:18-alpine
+    env:
+      NODE_ENV: test
+      DATABASE_PATH: /database-volume/database.sqlite
+      SESSION_SECRET: i-hope-you-update-me-on-prod-i-need-to-be-at-least-32-chars
+      DOMAIN: grap.email
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup and run tests
+        run: |
+          mkdir /database-volume
+          cd server
+          npm install
+          npm run lint
+          npm run build
+          npm test

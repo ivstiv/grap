@@ -13,10 +13,10 @@ export const dbConfig: Knex.Config = {
     filename: DATABASE_PATH,
   },
   migrations: {
-    directory: "/app/dist/database/migrations",
+    directory: `${__dirname}/migrations`,
   },
   seeds: {
-    directory: "/app/dist/database/seeds",
+    directory: `${__dirname}/seeds`,
   },
 };
 
