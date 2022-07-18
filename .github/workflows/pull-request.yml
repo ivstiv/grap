@@ -16,3 +16,8 @@ jobs:
       - run: cd server && npm run lint
       - run: cd server && npm run build
       - run: cd server && npm test
+        env:
+          NODE_ENV: test
+          DATABASE_PATH: /database-volume/database.sqlite
+          SESSION_SECRET: i-hope-you-update-me-on-prod-i-need-to-be-at-least-32-chars
+          DOMAIN: grap.email
