@@ -1,11 +1,10 @@
-name: Manual jobs
+name: Generate coverage badge
 
 on: workflow_dispatch
 
 jobs:
   generate-coverage-badge:
     runs-on: ubuntu-latest
-    container: node:18-alpine
     env:
       NODE_ENV: test
       DATABASE_PATH: /database-volume/database.sqlite
@@ -13,6 +12,9 @@ jobs:
       DOMAIN: grap.email
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
       - name: Setup, Run tests & Generate badge
         run: |
           mkdir /database-volume
