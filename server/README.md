@@ -35,6 +35,7 @@ Check [npm-check-updates's documentation](https://www.npmjs.com/package/npm-chec
 
 ## Todos:
 
+- redo setup and register tests
 - 90% code coverage
 - api docs page
 - Match email by partial title

@@ -8,7 +8,7 @@ export const seed = async (knex: Knex) => {
   console.log("Seeding roles...");
 
   await Role.query().delete();
-  
+
 
   await Promise.all([
     Role.query().insert({ id: 1, name: "user" }),

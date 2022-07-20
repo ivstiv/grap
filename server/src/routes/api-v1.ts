@@ -19,7 +19,7 @@ export const apiV1Routes: FastifyPluginCallback =
           const [_bearer, token] = req.headers.authorization.split(" ");
           hasValidToken = await Token.isTokenValid(token);
         }
-        
+
         if (!hasUser && !hasValidToken) {
           return res.code(403).send("Unauthorized");
         }

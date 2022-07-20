@@ -42,7 +42,7 @@ export const smtpServer = new SMTPServer({
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isAddressObject = (x: any): x is AddressObject => 
+const isAddressObject = (x: any): x is AddressObject =>
   Object.hasOwn(x, "value")
     && x.value.length > 0
     && !!x.value[0].address;

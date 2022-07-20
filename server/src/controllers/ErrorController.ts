@@ -2,7 +2,7 @@ import { User } from "../models/User";
 import { FastifyHandler } from "./ControllerUtilities";
 
 
-export const notFound: FastifyHandler = 
+export const notFound: FastifyHandler =
   async (req, res) => {
     let isAdmin = false;
     if (req.session.user) {

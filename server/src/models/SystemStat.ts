@@ -1,7 +1,7 @@
 import { Model } from "objection";
 
 
-export type StatName = 
+export type StatName =
   | "total_users"
   | "total_emails"
   | "total_addresses";

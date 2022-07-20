@@ -4,7 +4,7 @@ import * as yup from "yup";
 import { Role } from "../models/Role";
 
 
-export const index: FastifyHandler = 
+export const index: FastifyHandler =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
@@ -39,7 +39,7 @@ interface CreateTokenHandler {
     note: string
   }
 }
-export const createToken: FastifyHandler<CreateTokenHandler> = 
+export const createToken: FastifyHandler<CreateTokenHandler> =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
@@ -72,7 +72,7 @@ export const createToken: FastifyHandler<CreateTokenHandler> =
       await user.createToken();
     }
 
-    req.session.flashMessage = "Access token created sucessfully!";
+    req.session.flashMessage = "Access token created successfully!";
     return res.redirect("/settings");
   };
 
@@ -82,7 +82,7 @@ interface DestroyTokenHandler {
     token: string
   }
 }
-export const destroyToken: FastifyHandler<DestroyTokenHandler> = 
+export const destroyToken: FastifyHandler<DestroyTokenHandler> =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
@@ -114,12 +114,12 @@ export const destroyToken: FastifyHandler<DestroyTokenHandler> =
 
     await tokenToDelete.destroy();
 
-    req.session.flashMessage = "Access token deleted sucessfully!";
+    req.session.flashMessage = "Access token deleted successfully!";
     return res.redirect("/settings");
   };
 
 
-export const destroyUser: FastifyHandler = 
+export const destroyUser: FastifyHandler =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");

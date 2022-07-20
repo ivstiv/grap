@@ -55,11 +55,11 @@ webServer.register(fastifySessionPlugin, {
     sameSite: "strict",
   },
 });
-  
+
 webServer.register(view, {
   engine: { ejs },
 });
-  
+
 webServer.register(rootRoutes);
 webServer.register(setupRoutes, { prefix: "setup" });
 webServer.register(loginRoutes, { prefix: "login" });
