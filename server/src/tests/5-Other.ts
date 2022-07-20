@@ -12,6 +12,7 @@ describe("System setting", () => {
     assert.strictEqual(settings.length, 3);
   });
 
+
   it("Should update a setting", async () => {
     const settingBefore = await SystemSetting
       .getByName("disable_about_page");

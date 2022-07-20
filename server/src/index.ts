@@ -16,8 +16,8 @@ webServer.listen({ port: 3000, host: "0.0.0.0" },
       process.exit(1);
     }
   });
-  
-smtpServer.listen(25, "0.0.0.0", 
+
+smtpServer.listen(25, "0.0.0.0",
   () => console.log("SMTP Server listening on port 25...")
 );
 

@@ -3,7 +3,7 @@ import { webServer } from "../web-server";
 import { parse } from "node-html-parser";
 
 
-describe("Index page", () => {
+describe("/", () => {
   it("Should return status code 200", async () => {
     const res = await webServer.inject({
       method: "GET",
@@ -15,7 +15,7 @@ describe("Index page", () => {
 });
 
 
-describe("About page", () => {
+describe("/about", () => {
   it("Should return status code 200", async () => {
     const res = await webServer.inject({
       method: "GET",
@@ -27,11 +27,11 @@ describe("About page", () => {
 });
 
 
-describe("404 page", () => {
+describe("/not-exist-expect-404", () => {
   it("Should return 404 page", async () => {
     const res = await webServer.inject({
       method: "GET",
-      url: "/not-exist",
+      url: "/not-exist-expect-404",
     });
 
     const root = parse(res.body);

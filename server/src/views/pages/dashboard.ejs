@@ -10,7 +10,7 @@
     <h1>Dashboard</h1>
     <p>You are using <%= addresses.length %> out of <%= maxAddresses %> email addresses.</p>
     <% if (typeof flashMessage !== "undefined") { %>
-        <p><mark><%= flashMessage %></mark></p>
+        <p><mark data-test-id="flash-message"><%= flashMessage %></mark></p>
     <% } %>
     <section>
         <h3>Your email addresses</h3>

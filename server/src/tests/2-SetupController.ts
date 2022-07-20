@@ -5,7 +5,7 @@ import { User } from "../models/User";
 import { systemCleanup, waitForStatToUpdate } from "./utils";
 
 
-describe("Setup controller", () => {
+describe("/setup", () => {
 
   after(() => systemCleanup());
 

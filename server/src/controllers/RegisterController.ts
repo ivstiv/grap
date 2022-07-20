@@ -6,11 +6,11 @@ import {
 } from "./ControllerUtilities";
 
 
-export const show: FastifyHandler = 
+export const show: FastifyHandler =
   async (_req, res) => res.view("/src/views/pages/register.ejs");
 
 
-export const register: FastifyHandler<UserAccountFormHandler> = 
+export const register: FastifyHandler<UserAccountFormHandler> =
   async (req, res) => {
     // validate the submitted form
     const errors = await userAccountSchema.validate(req.body)

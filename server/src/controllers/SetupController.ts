@@ -8,11 +8,11 @@ import {
 } from "./ControllerUtilities";
 
 
-export const show: FastifyHandler = 
+export const show: FastifyHandler =
   async (_req, res) => res.view("/src/views/pages/setup.ejs");
 
 
-export const createAdmin: FastifyHandler<UserAccountFormHandler> = 
+export const createAdmin: FastifyHandler<UserAccountFormHandler> =
   async (req, res) => {
     // only handle this if there are no admins yet
     if(await numOfAdmins() > 0) {

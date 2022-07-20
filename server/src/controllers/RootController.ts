@@ -3,7 +3,7 @@ import { User } from "../models/User";
 import { FastifyHandler } from "./ControllerUtilities";
 
 
-export const index: FastifyHandler = 
+export const index: FastifyHandler =
   async (req, res) => {
 
     const setting = await SystemSetting.getByName("disable_index_page");
@@ -25,7 +25,7 @@ export const index: FastifyHandler =
   };
 
 
-export const about: FastifyHandler = 
+export const about: FastifyHandler =
     async (req, res) => {
 
       const setting = await SystemSetting.getByName("disable_about_page");
@@ -38,11 +38,11 @@ export const about: FastifyHandler =
         const user = await User.getById(req.session.user.id);
         isAdmin = user.hasRole("admin");
       }
-    
+
       return res.view("/src/views/pages/about.ejs", {
         isLoggedIn: !!req.session.user,
         isAdmin,
         domain: process.env.DOMAIN ?? "Missing domain!",
       });
     };
-      
+

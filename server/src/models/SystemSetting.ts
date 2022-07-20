@@ -1,7 +1,7 @@
 import { Model } from "objection";
 
 
-export type SettingName = 
+export type SettingName =
   | "disable_register_page"
   | "disable_index_page"
   | "disable_about_page";

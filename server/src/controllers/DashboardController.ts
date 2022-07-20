@@ -4,7 +4,7 @@ import * as yup from "yup";
 import { Email } from "../models/Email";
 
 
-export const index: FastifyHandler = 
+export const index: FastifyHandler =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
@@ -44,7 +44,7 @@ interface DeleteAddressHandler {
     address: string
   }
 }
-export const deleteAddress: FastifyHandler<DeleteAddressHandler> = 
+export const deleteAddress: FastifyHandler<DeleteAddressHandler> =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
@@ -90,8 +90,8 @@ interface ShowInboxHandler {
   Params: {
     id: string
   }
-} 
-export const showInbox: FastifyHandler<ShowInboxHandler> = 
+}
+export const showInbox: FastifyHandler<ShowInboxHandler> =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
@@ -109,7 +109,7 @@ export const showInbox: FastifyHandler<ShowInboxHandler> =
     const addr = user.addresses.find(a => a.id === parseInt(id));
 
     if(!addr) {
-      return res.view("/src/views/pages/404.ejs", {
+      return res.code(404).view("/src/views/pages/404.ejs", {
         isLoggedIn: !!req.session.user,
       });
     }
@@ -133,8 +133,8 @@ interface DeleteEmailHandler {
   Body: {
     email: string
   }
-} 
-export const deleteEmail: FastifyHandler<DeleteEmailHandler> = 
+}
+export const deleteEmail: FastifyHandler<DeleteEmailHandler> =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");

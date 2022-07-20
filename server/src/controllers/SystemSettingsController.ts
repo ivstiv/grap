@@ -8,7 +8,7 @@ import { Email } from "../models/Email";
 
 
 
-export const index: FastifyHandler = 
+export const index: FastifyHandler =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
@@ -57,7 +57,7 @@ interface SystemSettingsHandler {
     disable_about_page: "true" | "false",
   }
 }
-export const updateSettings: FastifyHandler<SystemSettingsHandler> = 
+export const updateSettings: FastifyHandler<SystemSettingsHandler> =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");

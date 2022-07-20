@@ -3,7 +3,7 @@ import { User } from "../models/User";
 import { FastifyHandler } from "./ControllerUtilities";
 
 
-export const createAddress: FastifyHandler = 
+export const createAddress: FastifyHandler =
   async (req, res) => {
     let user: User | undefined;
     if (req.session.user) {
@@ -19,7 +19,7 @@ export const createAddress: FastifyHandler =
       }
       user = await fetchedToken.getOwner();
     }
-    
+
     if (!user) {
       throw new Error("User not found!");
     }
@@ -27,7 +27,7 @@ export const createAddress: FastifyHandler =
     if (user.settings.maxEmailAddresses <= user.addresses.length) {
       return res.code(401).send({ error: "Address limit reached! Try again later." });
     }
-    
+
     const address = await user.createEmailAddress();
     return res.code(201).send({ data: address.address });
   };
@@ -38,7 +38,7 @@ interface LatestEmailHandler {
     address: string
   }
 }
-export const latestEmail: FastifyHandler<LatestEmailHandler> = 
+export const latestEmail: FastifyHandler<LatestEmailHandler> =
   async (req, res) => {
     let user: User | undefined;
 
@@ -56,7 +56,7 @@ export const latestEmail: FastifyHandler<LatestEmailHandler> =
       }
       user = await fetchedToken.getOwner();
     }
-    
+
     if (!user) {
       throw new Error("User not found!");
     }

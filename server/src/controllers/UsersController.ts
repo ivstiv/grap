@@ -8,8 +8,8 @@ interface IndexUsersHandler {
   Querystring: {
     page: string
   }
-} 
-export const index: FastifyHandler<IndexUsersHandler> = 
+}
+export const index: FastifyHandler<IndexUsersHandler> =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
@@ -61,7 +61,7 @@ interface UpdateUserHandler {
     user: string
   }
 }
-export const updateUser: FastifyHandler<UpdateUserHandler> = 
+export const updateUser: FastifyHandler<UpdateUserHandler> =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
