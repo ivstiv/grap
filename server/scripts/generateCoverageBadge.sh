@@ -12,7 +12,7 @@ checkDependencies() {
 
 checkDependencies
 
-SUMMARY="coverage/coverage-summary.json"
+SUMMARY="server/coverage/coverage-summary.json"
 coveragePct=$(jq '.total.statements.pct' "$SUMMARY")
 coverageInt=$(printf "%.0f\n" "$coveragePct")
 colour="red"
@@ -22,4 +22,4 @@ echo "Coverage: $coveragePct"
 [ "$coverageInt" -gt 80 ] && colour="yellow"
 [ "$coverageInt" -gt 90 ] && colour="brightgreen"
 
-wget -O coverage/badge.svg "https://img.shields.io/badge/Coverage-$coveragePct%25-${colour}.svg?style=flat-square"
+wget -O server/coverage/badge.svg "https://img.shields.io/badge/Coverage-$coveragePct%25-${colour}.svg?style=flat-square"
