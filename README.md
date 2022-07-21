@@ -1,9 +1,10 @@
 # grap - Simple email grabbing for testing and CI/CD
 
 ![Coverage](./server/coverage/badge.svg)
-[![Known Vulnerabilities](https://snyk.io/test/github/ivstiv/grap/badge.svg?targetFile=server/package.json&style=flat-square)](https://snyk.io/test/github/ivstiv/grap?targetFile=server/package.json)
-[![Docker Pulls](https://img.shields.io/docker/pulls/ivstiv/grap?logo=docker&logoColor=white&style=flat-square)](https://hub.docker.com/r/ivstiv/grap "open on dockerhub")
-[![Discord](https://img.shields.io/discord/663517902258962473?color=blue&label=Need%20help%3F&logo=discord&logoColor=white&style=flat-square)](https://discord.gg/VMSDGVD)
+[![Known Vulnerabilities](https://snyk.io/test/github/ivstiv/grap/badge.svg?targetFile=server/package.json&style=flat)](https://snyk.io/test/github/ivstiv/grap?targetFile=server/package.json)
+[![Maintainability](https://api.codeclimate.com/v1/badges/41d71d73a5255fc1da5a/maintainability)](https://codeclimate.com/github/ivstiv/grap/maintainability)
+[![Docker Pulls](https://img.shields.io/docker/pulls/ivstiv/grap?logo=docker&logoColor=white&style=flat)](https://hub.docker.com/r/ivstiv/grap "open on dockerhub")
+[![Discord](https://img.shields.io/discord/663517902258962473?color=blue&label=Need%20help%3F&logo=discord&logoColor=white&style=flat)](https://discord.gg/VMSDGVD)
 
 I got tired of endless email capturing services with stupid pricing justified
 by a ton of features that I will never use.

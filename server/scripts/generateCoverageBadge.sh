@@ -22,4 +22,4 @@ echo "Coverage: $coveragePct"
 [ "$coverageInt" -gt 80 ] && colour="yellow"
 [ "$coverageInt" -gt 90 ] && colour="brightgreen"
 
-wget -O server/coverage/badge.svg "https://img.shields.io/badge/Coverage-$coveragePct%25-${colour}.svg?style=flat-square"
+wget -O server/coverage/badge.svg "https://img.shields.io/badge/Coverage-$coveragePct%25-${colour}.svg"
