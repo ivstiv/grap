@@ -1,0 +1,34 @@
+name: Generate coverage badge
+
+on: workflow_dispatch
+
+jobs:
+  generate-coverage-badge:
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+      DATABASE_PATH: ./database-volume/database.sqlite
+      SESSION_SECRET: i-hope-you-update-me-on-prod-i-need-to-be-at-least-32-chars
+      DOMAIN: grap.email
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Setup & run tests
+        run: |
+          mkdir server/database-volume
+          cd server
+          npm install
+          npm run build
+          npm run coverage
+      - name: Generate coverage badge
+        uses: sergeysova/jq-action@v2
+        with:
+          cmd: './server/scripts/generateCoverageBadge.sh'
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: generate-coverage-badge-job
+          author_email: 25481564+ivstiv@users.noreply.github.com
+          message: "Updated test coverage badge"

@@ -10,7 +10,7 @@ WORKDIR /app
 COPY --from=build /app/package.json /app
 COPY --from=build /app/package-lock.json /app
 RUN npm install --omit=dev
-COPY --from=build /app/entrypoint.sh /app
+COPY --from=build /app/scripts/entrypoint.sh /app
 COPY --from=build /app/dist /app/dist
 COPY --from=build /app/src/views /app/src/views
 
