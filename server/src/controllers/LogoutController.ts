@@ -6,5 +6,5 @@ export const logout: FastifyHandler =
     if (req.session.user) {
       req.session.destroy();
     }
-    return res.redirect("/dashboard");
+    return res.redirect("/login");
   };

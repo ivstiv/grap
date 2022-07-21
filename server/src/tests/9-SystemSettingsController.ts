@@ -30,6 +30,7 @@ describe("System settings routes", () => {
 
   afterEach(async () => {
     admin = undefined as unknown as User;
+    notAdmin = undefined as unknown as User;
     await systemCleanup();
   });
 

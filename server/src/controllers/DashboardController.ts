@@ -65,23 +65,16 @@ export const deleteAddress: FastifyHandler<DeleteAddressHandler> =
     }
 
     const user = await User.getById(req.session.user.id);
-    const userOwnsAdrsToDelete = user.addresses
-      .some(adr => adr.id === parseInt(req.body.address));
+    const addressToDelete = user.addresses
+      .find(adr => adr.id === parseInt(req.body.address));
 
-    if(!userOwnsAdrsToDelete) {
+    if(!addressToDelete) {
       req.session.flashMessage = "You don't own the address that you are trying to delete.";
       return res.redirect("/dashboard");
     }
 
-    const addressToDelete = user.addresses
-      .find(adr => adr.id === parseInt(req.body.address));
-
-    if (addressToDelete) {
-      await addressToDelete.destroy();
-      req.session.flashMessage = "Address deleted successfully!";
-    } else {
-      req.session.flashMessage = "Failed to delete due to internal error.";
-    }
+    await addressToDelete.destroy();
+    req.session.flashMessage = "Address deleted successfully!";
     return res.redirect("/dashboard");
   };
 

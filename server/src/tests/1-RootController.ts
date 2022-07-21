@@ -1,43 +1,217 @@
 import assert from "assert";
 import { webServer } from "../web-server";
 import { parse } from "node-html-parser";
+import { SystemSetting } from "../models/SystemSetting";
+import { Cookie, systemCleanup } from "./utils";
+import { User } from "../models/User";
+import { Role } from "../models/Role";
 
+describe("Root pages", () => {
+  let admin: User;
+  let notAdmin: User;
 
-describe("/", () => {
-  it("Should return status code 200", async () => {
-    const res = await webServer.inject({
-      method: "GET",
-      url: "/",
-    });
+  beforeEach(async () => {
+    const [
+      registered1,
+      adminRole,
+    ] = await Promise.all([
+      User.register("user1@grap.email", "123456"),
+      Role.getByName("admin"),
+    ]);
 
-    assert.strictEqual(res.statusCode, 200);
+    const registered2 = await User.register("user2@grap.email", "123456");
+    if (!registered1 || !registered2 || !adminRole) {
+      throw new Error("Failed to register user.");
+    }
+    admin = registered1;
+    notAdmin = registered2;
+
+    await admin.$relatedQuery<Role>("roles").relate(adminRole);
+    admin = await admin.refresh();
   });
-});
 
-
-describe("/about", () => {
-  it("Should return status code 200", async () => {
-    const res = await webServer.inject({
-      method: "GET",
-      url: "/about",
-    });
-
-    assert.strictEqual(res.statusCode, 200);
+  afterEach(async () => {
+    admin = undefined as unknown as User;
+    notAdmin = undefined as unknown as User;
+    await systemCleanup();
   });
-});
 
+  describe("GET /", () => {
+    after(() => systemCleanup());
 
-describe("/not-exist-expect-404", () => {
-  it("Should return 404 page", async () => {
-    const res = await webServer.inject({
-      method: "GET",
-      url: "/not-exist-expect-404",
+    it("Should return status code 200", async () => {
+      const res = await webServer.inject({
+        method: "GET",
+        url: "/",
+      });
+
+      assert.strictEqual(res.statusCode, 200);
     });
 
-    const root = parse(res.body);
-    const title = root.querySelector("h1[data-test-id='title']");
 
-    assert.strictEqual(res.statusCode, 404);
-    assert.strictEqual(title?.innerText, "404 Not Found");
+    it("Should return the page with a user session", async () => {
+      const [
+        loginResUser,
+        loginResAdmin,
+      ] = await Promise.all([
+        webServer.inject({
+          method: "POST",
+          url: "/login",
+          payload: {
+            email: notAdmin.email,
+            password: "123456",
+          },
+        }),
+        webServer.inject({
+          method: "POST",
+          url: "/login",
+          payload: {
+            email: admin.email,
+            password: "123456",
+          },
+        }),
+      ]);
+
+      const sessionCookieUser = loginResUser.cookies.find(c =>
+        (c as Cookie).name === "sessionId"
+      ) as Cookie;
+
+      const sessionCookieAdmin = loginResAdmin.cookies.find(c =>
+        (c as Cookie).name === "sessionId"
+      ) as Cookie;
+
+      const [
+        resUser,
+        resAdmin,
+      ] = await Promise.all([
+        webServer.inject({
+          method: "GET",
+          url: "/",
+          cookies: {
+            [sessionCookieUser.name]: `${sessionCookieUser.value}`,
+          },
+        }),
+        webServer.inject({
+          method: "GET",
+          url: "/",
+          cookies: {
+            [sessionCookieAdmin.name]: `${sessionCookieAdmin.value}`,
+          },
+        }),
+      ]);
+
+      assert.strictEqual(resUser.statusCode, 200);
+      assert.strictEqual(resAdmin.statusCode, 200);
+    });
+
+
+    it("Should redirect to login because index is disabled", async () => {
+      await SystemSetting.updateByName("disable_index_page", "true");
+      const res = await webServer.inject({
+        method: "GET",
+        url: "/",
+      });
+
+      const redirectLocation = res.headers["location"];
+      assert.strictEqual(res.statusCode, 302);
+      assert.strictEqual(redirectLocation, "/login");
+    });
+  });
+
+
+  describe("GET /about", () => {
+    it("Should return status code 200", async () => {
+      const res = await webServer.inject({
+        method: "GET",
+        url: "/about",
+      });
+
+      assert.strictEqual(res.statusCode, 200);
+    });
+
+
+    it("Should return the page with a user session", async () => {
+      const [
+        loginResUser,
+        loginResAdmin,
+      ] = await Promise.all([
+        webServer.inject({
+          method: "POST",
+          url: "/login",
+          payload: {
+            email: notAdmin.email,
+            password: "123456",
+          },
+        }),
+        webServer.inject({
+          method: "POST",
+          url: "/login",
+          payload: {
+            email: admin.email,
+            password: "123456",
+          },
+        }),
+      ]);
+
+      const sessionCookieUser = loginResUser.cookies.find(c =>
+        (c as Cookie).name === "sessionId"
+      ) as Cookie;
+
+      const sessionCookieAdmin = loginResAdmin.cookies.find(c =>
+        (c as Cookie).name === "sessionId"
+      ) as Cookie;
+
+      const [
+        resUser,
+        resAdmin,
+      ] = await Promise.all([
+        webServer.inject({
+          method: "GET",
+          url: "/about",
+          cookies: {
+            [sessionCookieUser.name]: `${sessionCookieUser.value}`,
+          },
+        }),
+        webServer.inject({
+          method: "GET",
+          url: "/about",
+          cookies: {
+            [sessionCookieAdmin.name]: `${sessionCookieAdmin.value}`,
+          },
+        }),
+      ]);
+
+      assert.strictEqual(resUser.statusCode, 200);
+      assert.strictEqual(resAdmin.statusCode, 200);
+    });
+
+
+    it("Should redirect to login because about is disabled", async () => {
+      await SystemSetting.updateByName("disable_about_page", "true");
+      const res = await webServer.inject({
+        method: "GET",
+        url: "/about",
+      });
+
+      const redirectLocation = res.headers["location"];
+      assert.strictEqual(res.statusCode, 302);
+      assert.strictEqual(redirectLocation, "/login");
+    });
+  });
+
+
+  describe("GET /not-exist-expect-404", () => {
+    it("Should return 404 page", async () => {
+      const res = await webServer.inject({
+        method: "GET",
+        url: "/not-exist-expect-404",
+      });
+
+      const root = parse(res.body);
+      const title = root.querySelector("h1[data-test-id='title']");
+
+      assert.strictEqual(res.statusCode, 404);
+      assert.strictEqual(title?.innerText, "404 Not Found");
+    });
   });
 });

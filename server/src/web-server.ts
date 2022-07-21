@@ -18,11 +18,13 @@ import { adminRoutes } from "./routes/admin";
 import path from "path/posix";
 
 
+export type SessionUser = {
+  id: number
+}
+
 declare module "fastify" {
   interface Session {
-      user?: {
-        id: number
-      }
+      user?: SessionUser
       flashMessage?: string
   }
 }

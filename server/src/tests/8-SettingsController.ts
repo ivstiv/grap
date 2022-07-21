@@ -149,7 +149,7 @@ describe("Settings routes", () => {
           [sessionCookie.name]: `${sessionCookie.value}`,
         },
         payload: {
-          note: "",
+          note: "note here",
         },
       });
 
