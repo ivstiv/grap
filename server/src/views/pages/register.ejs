@@ -19,7 +19,7 @@
         </p>
         <p>
             <% if (typeof error !== "undefined") { %>
-                <p><mark><%= error %></mark></p>
+                <p><mark data-test-id="error"><%= error %></mark></p>
             <% } %>
         </p>
         <button type="submit">Submit</button>

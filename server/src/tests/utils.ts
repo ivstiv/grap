@@ -1,6 +1,7 @@
 import { Model } from "objection";
 import { db } from "../database/database";
 import { loadEventListeners } from "../EventListeners";
+import { SystemSetting } from "../models/SystemSetting";
 import { StatName, SystemStat } from "../models/SystemStat";
 import { User } from "../models/User";
 
@@ -28,6 +29,9 @@ export const systemCleanup = async () => {
     SystemStat.updateByName("total_users", "0"),
     SystemStat.updateByName("total_emails", "0"),
     SystemStat.updateByName("total_addresses", "0"),
+    SystemSetting.updateByName("disable_about_page", "false"),
+    SystemSetting.updateByName("disable_index_page", "false"),
+    SystemSetting.updateByName("disable_register_page", "false"),
   ]);
 };
 
