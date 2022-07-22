@@ -41,12 +41,11 @@ Check [npm-check-updates's documentation](https://www.npmjs.com/package/npm-chec
 ## Todos:
 
 - 90% code coverage
-- api docs page
 - Match email by partial title
-- publish image on push
-- check for latest release version
-- impersonation
+- publish image on new version
+- delete users
 - replace yup with zod
+- check for latest release version (may be pure frontend, public github api?)
 - This smtp error
 
 ```
