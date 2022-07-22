@@ -46,3 +46,20 @@ export const about: FastifyHandler =
       });
     };
 
+
+export const docs: FastifyHandler =
+    async (req, res) => {
+
+      let isAdmin = false;
+      if (req.session.user) {
+        const user = await User.getById(req.session.user.id);
+        isAdmin = user.hasRole("admin");
+      }
+
+      return res.view("/src/views/pages/docs.ejs", {
+        isLoggedIn: !!req.session.user,
+        isAdmin,
+        domain: process.env.DOMAIN ?? "Missing domain!",
+      });
+    };
+
