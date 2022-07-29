@@ -93,11 +93,11 @@ describe("Dashboard routes", () => {
       const testScenarios = [
         {
           payload: {},
-          expectedError: "address is a required field",
+          expectedError: "Address is required",
         },
         {
           payload: { address: "asd" },
-          expectedError: "address must be a `number` type, but the final value was: `NaN` (cast from the value `&#34;asd&#34;`).",
+          expectedError: "Address must be a number",
         },
         {
           payload: { address: -1 },

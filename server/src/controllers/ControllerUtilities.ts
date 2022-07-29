@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import * as yup from "yup";
 import { SessionUser } from "../web-server";
+import { z } from "zod";
 
 
 export type FastifyHandler<T = void> = (
@@ -17,9 +17,17 @@ export interface UserAccountFormHandler {
   Body: UserAccountPostBody
 }
 
-export const userAccountSchema = yup.object().shape({
-  email: yup.string().email().required(),
-  password: yup.string().min(6).required(),
+export const userAccountSchema = z.object({
+  email: z.string({
+    required_error: "Email is required",
+    invalid_type_error: "Email must be a string",
+  }).email(),
+  password: z.string({
+    required_error: "Password is required",
+    invalid_type_error: "Password must be a string",
+  }).min(6, {
+    message: "Password must be at least 6 characters",
+  }),
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

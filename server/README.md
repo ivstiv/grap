@@ -28,7 +28,7 @@ npx npm-check-updates -u -t minor && npm install
 npx npm-check-updates -u -t latest && npm install
 ```
 
-4. Run `npm update` to update nested depedencies
+4. Run `npm update` to update nested dependencies
 
 5. Check in the end just in case something has slipped
 

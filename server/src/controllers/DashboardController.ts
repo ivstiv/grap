@@ -1,7 +1,7 @@
 import { User } from "../models/User";
 import { FastifyHandler } from "./ControllerUtilities";
-import * as yup from "yup";
 import { Email } from "../models/Email";
+import { z } from "zod";
 
 
 export const index: FastifyHandler =
@@ -50,17 +50,27 @@ export const deleteAddress: FastifyHandler<DeleteAddressHandler> =
       throw new Error("Session user is missing!");
     }
 
-    const schema = yup.object().shape({
-      address: yup.number().min(1).required(),
+    const schema = z.object({
+      address: z.preprocess(
+        a => {
+          try{
+            return parseInt(z.string().parse(a), 10);
+          // eslint-disable-next-line no-empty
+          } catch(e){}
+        },
+        z.number({
+          required_error: "Address is required",
+          invalid_type_error: "Address must be a number",
+        }).positive(),
+      ),
     });
 
     // validate the submitted form
-    const errors = await schema.validate(req.body)
-      .then(() => [])
-      .catch(e => e.errors);
+    const parsedBody = schema.safeParse(req.body);
 
-    if (errors.length > 0) {
-      req.session.flashMessage = errors[0];
+    if (!parsedBody.success) {
+      const { address } = parsedBody.error.flatten().fieldErrors;
+      req.session.flashMessage = address?.at(0);
       return res.redirect("/dashboard");
     }
 
@@ -133,17 +143,19 @@ export const deleteEmail: FastifyHandler<DeleteEmailHandler> =
       throw new Error("Session user is missing!");
     }
 
-    const schema = yup.object().shape({
-      email: yup.number().min(1).required(),
+    const schema = z.object({
+      email: z.preprocess(
+        () => z.string().transform(Number),
+        z.number().positive(),
+      ),
     });
 
     // validate the submitted form
-    const errors = await schema.validate(req.body)
-      .then(() => [])
-      .catch(e => e.errors);
+    const parsedBody = schema.safeParse(req.body);
 
-    if (errors.length > 0) {
-      req.session.flashMessage = errors[0];
+    if (!parsedBody.success) {
+      const { email } = parsedBody.error.flatten().fieldErrors;
+      req.session.flashMessage = email?.at(0);
       return res.redirect("/dashboard");
     }
 
