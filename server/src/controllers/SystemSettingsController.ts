@@ -1,10 +1,10 @@
 import { SettingName, SystemSetting } from "../models/SystemSetting";
 import { User } from "../models/User";
 import { FastifyHandler } from "./ControllerUtilities";
-import * as yup from "yup";
 import { SystemStat } from "../models/SystemStat";
 import { EmailAddress } from "../models/EmailAddress";
 import { Email } from "../models/Email";
+import { z } from "zod";
 
 
 
@@ -63,21 +63,35 @@ export const updateSettings: FastifyHandler<SystemSettingsHandler> =
       throw new Error("Session user is missing!");
     }
 
-    const constraint = yup.string().oneOf(["false", "true"]).required();
+    const constraint = z
+      .string({
+        required_error: "Setting is required",
+        invalid_type_error: "Setting must be a string",
+      })
+      .refine(
+        val => ["true", "false"].includes(val),
+        "Setting must have a value of true or false."
+      );
 
-    const schema = yup.object().shape({
+    const schema = z.object({
       disable_register_page: constraint,
       disable_index_page: constraint,
       disable_about_page: constraint,
     });
 
     // validate the submitted form
-    const errors = await schema.validate(req.body)
-      .then(() => [])
-      .catch(e => e.errors);
+    const parsedBody = schema.safeParse(req.body);
 
-    if (errors.length > 0) {
-      req.session.flashMessage = errors[0];
+    if (!parsedBody.success) {
+      const {
+        disable_about_page,
+        disable_index_page,
+        disable_register_page,
+      } = parsedBody.error.flatten().fieldErrors;
+      req.session.flashMessage =
+        disable_about_page?.at(0) ??
+        disable_index_page?.at(0) ??
+        disable_register_page?.at(0);
       return res.redirect("/admin/system-settings");
     }
 

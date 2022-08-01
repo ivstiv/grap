@@ -13,14 +13,18 @@ export const show: FastifyHandler =
 export const register: FastifyHandler<UserAccountFormHandler> =
   async (req, res) => {
     // validate the submitted form
-    const errors = await userAccountSchema.validate(req.body)
-      .then(() => [])
-      .catch(e => e.errors);
+    const parsedBody = userAccountSchema.safeParse(req.body);
 
-    if (errors.length > 0) {
+    if (!parsedBody.success) {
+      const {
+        email,
+        password,
+      } = parsedBody.error.flatten().fieldErrors;
       return res
         .code(400)
-        .view("/src/views/pages/register.ejs", { error: errors[0] });
+        .view("/src/views/pages/register.ejs", {
+          error: email?.at(0) ?? password?.at(0),
+        });
     }
 
     const userWithTheSameEmail = await User.getByEmail(req.body.email);

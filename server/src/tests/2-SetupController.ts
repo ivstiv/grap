@@ -51,34 +51,34 @@ describe("Setup routes", () => {
       const testScenarios = [
         {
           payload: {},
-          expectedError: "password is a required field",
+          expectedError: "Email is required",
         },
         {
           payload: {
             email: "",
             password: "asdasdasdasdasdasd",
           },
-          expectedError: "email is a required field",
+          expectedError: "Invalid email",
         },
         {
           payload: {
             email: "someemail@somewhere.dontknowwhere",
             password: "12345",
           },
-          expectedError: "password must be at least 6 characters",
+          expectedError: "Password must be at least 6 characters",
         },
         {
           payload: {
             email: "someemail@somewhere.dontknowwhere",
           },
-          expectedError: "password is a required field",
+          expectedError: "Password is required",
         },
         {
           payload: {
             email: 2340987,
             password: "123456",
           },
-          expectedError: "email must be a valid email",
+          expectedError: "Email must be a string",
         },
       ];
 

@@ -28,7 +28,7 @@ npx npm-check-updates -u -t minor && npm install
 npx npm-check-updates -u -t latest && npm install
 ```
 
-4. Run `npm update` to update nested depedencies
+4. Run `npm update` to update nested dependencies
 
 5. Check in the end just in case something has slipped
 
@@ -44,7 +44,6 @@ Check [npm-check-updates's documentation](https://www.npmjs.com/package/npm-chec
 - Match email by partial title
 - publish image on new version
 - delete users
-- replace yup with zod
 - check for latest release version (may be pure frontend, public github api?)
 - This smtp error
 
