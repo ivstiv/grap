@@ -101,11 +101,11 @@ describe("Dashboard routes", () => {
         },
         {
           payload: { address: -1 },
-          expectedError: "address must be greater than or equal to 1",
+          expectedError: "Address must be greater than 0",
         },
         {
           payload: { address: 0 },
-          expectedError: "address must be greater than or equal to 1",
+          expectedError: "Address must be greater than 0",
         },
         {
           payload: { address: 2340987 },
@@ -312,19 +312,19 @@ describe("Dashboard routes", () => {
       const testScenarios = [
         {
           payload: {},
-          expectedError: "email is a required field",
+          expectedError: "Email is required",
         },
         {
           payload: { email: "asd" },
-          expectedError: "email must be a `number` type, but the final value was: `NaN` (cast from the value `&#34;asd&#34;`).",
+          expectedError: "Email must be a number",
         },
         {
           payload: { email: -1 },
-          expectedError: "email must be greater than or equal to 1",
+          expectedError: "Email must be greater than 0",
         },
         {
           payload: { email: 0 },
-          expectedError: "email must be greater than or equal to 1",
+          expectedError: "Email must be greater than 0",
         },
         {
           payload: { email: 2340987 },

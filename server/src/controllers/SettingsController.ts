@@ -1,7 +1,7 @@
 import { User } from "../models/User";
-import { FastifyHandler } from "./ControllerUtilities";
-import * as yup from "yup";
+import { FastifyHandler, numericStringConstraint } from "./ControllerUtilities";
 import { Role } from "../models/Role";
+import { z } from "zod";
 
 
 export const index: FastifyHandler =
@@ -45,17 +45,20 @@ export const createToken: FastifyHandler<CreateTokenHandler> =
       throw new Error("Session user is missing!");
     }
 
-    const schema = yup.object().shape({
-      note: yup.string().max(15),
+    const schema = z.object({
+      note: z.string({
+        required_error: "Note is required",
+        invalid_type_error: "Note must be a string",
+      })
+        .max(15, "Note must be at most 15 characters"),
     });
 
     // validate the submitted form
-    const errors = await schema.validate(req.body)
-      .then(() => [])
-      .catch(e => e.errors);
+    const parsedBody = schema.safeParse(req.body);
 
-    if (errors.length > 0) {
-      req.session.flashMessage = errors[0];
+    if (!parsedBody.success) {
+      const { note } = parsedBody.error.flatten().fieldErrors;
+      req.session.flashMessage = note?.at(0);
       return res.redirect("/settings");
     }
 
@@ -88,17 +91,16 @@ export const destroyToken: FastifyHandler<DestroyTokenHandler> =
       throw new Error("Session user is missing!");
     }
 
-    const schema = yup.object().shape({
-      token: yup.number().min(1).required(),
+    const schema = z.object({
+      token: numericStringConstraint("token"),
     });
 
     // validate the submitted form
-    const errors = await schema.validate(req.body)
-      .then(() => [])
-      .catch(e => e.errors);
+    const parsedBody = schema.safeParse(req.body);
 
-    if (errors.length > 0) {
-      req.session.flashMessage = errors[0];
+    if (!parsedBody.success) {
+      const { token } = parsedBody.error.flatten().fieldErrors;
+      req.session.flashMessage = token?.at(0);
       return res.redirect("/settings");
     }
 

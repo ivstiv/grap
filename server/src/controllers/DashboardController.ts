@@ -1,5 +1,5 @@
 import { User } from "../models/User";
-import { FastifyHandler } from "./ControllerUtilities";
+import { FastifyHandler, numericStringConstraint } from "./ControllerUtilities";
 import { Email } from "../models/Email";
 import { z } from "zod";
 
@@ -51,18 +51,7 @@ export const deleteAddress: FastifyHandler<DeleteAddressHandler> =
     }
 
     const schema = z.object({
-      address: z.preprocess(
-        a => {
-          try{
-            return parseInt(z.string().parse(a), 10);
-          // eslint-disable-next-line no-empty
-          } catch(e){}
-        },
-        z.number({
-          required_error: "Address is required",
-          invalid_type_error: "Address must be a number",
-        }).positive(),
-      ),
+      address: numericStringConstraint("address"),
     });
 
     // validate the submitted form
@@ -144,10 +133,7 @@ export const deleteEmail: FastifyHandler<DeleteEmailHandler> =
     }
 
     const schema = z.object({
-      email: z.preprocess(
-        () => z.string().transform(Number),
-        z.number().positive(),
-      ),
+      email: numericStringConstraint("email"),
     });
 
     // validate the submitted form

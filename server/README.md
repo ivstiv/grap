@@ -44,7 +44,6 @@ Check [npm-check-updates's documentation](https://www.npmjs.com/package/npm-chec
 - Match email by partial title
 - publish image on new version
 - delete users
-- replace yup with zod
 - check for latest release version (may be pure frontend, public github api?)
 - This smtp error
 

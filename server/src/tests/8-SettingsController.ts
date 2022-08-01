@@ -93,7 +93,7 @@ describe("Settings routes", () => {
       const testScenarios = [
         {
           payload: { note: "abcdefghijklmnopqrstuvwxyz" },
-          expectedError: "note must be at most 15 characters",
+          expectedError: "Note must be at most 15 characters",
         },
       ];
 
@@ -254,19 +254,19 @@ describe("Settings routes", () => {
       const testScenarios = [
         {
           payload: {},
-          expectedError: "token is a required field",
+          expectedError: "Token is required",
         },
         {
           payload: { token: "asd" },
-          expectedError: "token must be a `number` type, but the final value was: `NaN` (cast from the value `&#34;asd&#34;`).",
+          expectedError: "Token must be a number",
         },
         {
           payload: { token: -1 },
-          expectedError: "token must be greater than or equal to 1",
+          expectedError: "Token must be greater than 0",
         },
         {
           payload: { token: 0 },
-          expectedError: "token must be greater than or equal to 1",
+          expectedError: "Token must be greater than 0",
         },
         {
           payload: { token: 2340987 },

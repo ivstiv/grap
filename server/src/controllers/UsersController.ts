@@ -1,6 +1,6 @@
 import { User } from "../models/User";
-import { FastifyHandler } from "./ControllerUtilities";
-import * as yup from "yup";
+import { FastifyHandler, numericStringConstraint } from "./ControllerUtilities";
+import { z } from "zod";
 
 const PAGE_SIZE = 10;
 
@@ -17,17 +17,16 @@ export const index: FastifyHandler<IndexUsersHandler> =
 
     const user = await User.getById(req.session.user.id);
 
-    const schema = yup.object().shape({
-      page: yup.number().min(1).max(50).required(),
+    const schema = z.object({
+      page: numericStringConstraint("page"),
     });
 
     // validate the submitted form
-    const errors = await schema.validate(req.query)
-      .then(() => [])
-      .catch(e => e.errors);
+    const parsedBody = schema.safeParse(req.query);
 
-    if (errors.length > 0) {
-      req.session.flashMessage = errors[0];
+    if (!parsedBody.success) {
+      const { page } = parsedBody.error.flatten().fieldErrors;
+      req.session.flashMessage = page?.at(0);
       return res.redirect("/404");
     }
 
@@ -67,18 +66,17 @@ export const updateUser: FastifyHandler<UpdateUserHandler> =
       throw new Error("Session user is missing!");
     }
 
-    const schema = yup.object().shape({
-      maxEmails: yup.number().min(1).max(300).required(),
-      user: yup.number().min(1).required(),
+    const schema = z.object({
+      user: numericStringConstraint("user"),
+      maxEmails: numericStringConstraint("maxEmails"),
     });
 
     // validate the submitted form
-    const errors = await schema.validate(req.body)
-      .then(() => [])
-      .catch(e => e.errors);
+    const parsedBody = schema.safeParse(req.body);
 
-    if (errors.length > 0) {
-      req.session.flashMessage = errors[0];
+    if (!parsedBody.success) {
+      const { maxEmails, user } = parsedBody.error.flatten().fieldErrors;
+      req.session.flashMessage = maxEmails?.at(0) ?? user?.at(0);
       return res.redirect("/admin/users?page=1");
     }
 
