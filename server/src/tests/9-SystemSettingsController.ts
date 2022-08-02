@@ -1,5 +1,8 @@
 import assert from "assert";
+import { unescape } from "lodash";
+import parse from "node-html-parser";
 import { Role } from "../models/Role";
+import { SystemSetting } from "../models/SystemSetting";
 import { User } from "../models/User";
 import { webServer } from "../web-server";
 import { Cookie, systemCleanup } from "./utils";
@@ -99,6 +102,172 @@ describe("System settings routes", () => {
       });
 
       assert.strictEqual(res.statusCode, 200);
+    });
+  });
+
+
+  describe("POST /admin/system-settings", () => {
+    it("Should redirect to login because not logged in", async () => {
+      const res = await webServer.inject({
+        method: "POST",
+        url: "/admin/system-settings",
+      });
+
+      const redirectLocation = res.headers["location"];
+      assert.strictEqual(res.statusCode, 302);
+      assert.strictEqual(redirectLocation, "/login");
+    });
+
+
+    it("Should redirect to login because not admin", async () => {
+      const loginRes = await webServer.inject({
+        method: "POST",
+        url: "/login",
+        payload: {
+          email: notAdmin.email,
+          password: "123456",
+        },
+      });
+
+      const sessionCookie = loginRes.cookies.find(c =>
+        (c as Cookie).name === "sessionId"
+      ) as Cookie;
+
+      const res = await webServer.inject({
+        method: "POST",
+        url: "/admin/system-settings",
+        cookies: {
+          [sessionCookie.name]: `${sessionCookie.value}`,
+        },
+      });
+
+      const redirectLocation = res.headers["location"];
+      assert.strictEqual(res.statusCode, 302);
+      assert.strictEqual(redirectLocation, "/login");
+    });
+
+
+    it("Should fail validation", async () => {
+      const loginRes = await webServer.inject({
+        method: "POST",
+        url: "/login",
+        payload: {
+          email: admin.email,
+          password: "123456",
+        },
+      });
+
+      const sessionCookie = loginRes.cookies.find(c =>
+        (c as Cookie).name === "sessionId"
+      ) as Cookie;
+
+      const testScenarios = [
+        {
+          payload: {},
+          expectedError: "disable_about_page is required",
+        },
+        {
+          payload: { disable_about_page: "asd" },
+          expectedError: "disable_about_page must have a value of true or false.",
+        },
+        {
+          payload: { disable_about_page: "true" },
+          expectedError: "disable_index_page is required",
+        },
+        {
+          payload: {
+            disable_about_page: "true",
+            disable_index_page: false,
+          },
+          expectedError: "disable_index_page must be a string",
+        },
+        {
+          payload: {
+            disable_about_page: 0,
+            disable_index_page: false,
+          },
+          expectedError: "disable_about_page must be a string",
+        },
+        {
+          payload: {
+            disable_about_page: "true",
+            disable_index_page: "false",
+          },
+          expectedError: "disable_register_page is required",
+        },
+      ];
+
+      for (const scenario of testScenarios) {
+        const updateSettingsRes = await webServer.inject({
+          method: "POST",
+          url: "/admin/system-settings",
+          cookies: {
+            [sessionCookie.name]: `${sessionCookie.value}`,
+          },
+          payload: scenario.payload,
+        });
+
+        const redirectLocation = updateSettingsRes.headers["location"];
+        assert.strictEqual(updateSettingsRes.statusCode, 302);
+        assert.strictEqual(redirectLocation, "/admin/system-settings");
+
+        const settingsRes = await webServer.inject({
+          method: "GET",
+          url: "/admin/system-settings",
+          cookies: {
+            [sessionCookie.name]: `${sessionCookie.value}`,
+          },
+        });
+
+        const root = parse(settingsRes.body);
+        const title = root.querySelector("mark[data-test-id='flash-message']");
+
+        assert.strictEqual(settingsRes.statusCode, 200);
+        assert.strictEqual(unescape(title?.innerText), scenario.expectedError);
+      }
+    });
+
+
+    it("Should update system settings", async () => {
+      const loginRes = await webServer.inject({
+        method: "POST",
+        url: "/login",
+        payload: {
+          email: admin.email,
+          password: "123456",
+        },
+      });
+
+      const sessionCookie = loginRes.cookies.find(c =>
+        (c as Cookie).name === "sessionId"
+      ) as Cookie;
+
+      const systemSettingsBefore = await SystemSetting.getAll();
+      for(const setting of systemSettingsBefore) {
+        assert.strictEqual(setting.value, "false");
+      }
+
+      const updateSettingsRes = await webServer.inject({
+        method: "POST",
+        url: "/admin/system-settings",
+        cookies: {
+          [sessionCookie.name]: `${sessionCookie.value}`,
+        },
+        payload: {
+          disable_about_page: "true",
+          disable_index_page: "true",
+          disable_register_page: "true",
+        },
+      });
+
+      const redirectLocation = updateSettingsRes.headers["location"];
+      assert.strictEqual(updateSettingsRes.statusCode, 302);
+      assert.strictEqual(redirectLocation, "/admin/system-settings");
+
+      const systemSettingsAfter = await SystemSetting.getAll();
+      for(const setting of systemSettingsAfter) {
+        assert.strictEqual(setting.value, "true");
+      }
     });
   });
 });

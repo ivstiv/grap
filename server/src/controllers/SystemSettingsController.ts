@@ -63,20 +63,20 @@ export const updateSettings: FastifyHandler<SystemSettingsHandler> =
       throw new Error("Session user is missing!");
     }
 
-    const constraint = z
+    const constraint = (name: string) => z
       .string({
-        required_error: "Setting is required",
-        invalid_type_error: "Setting must be a string",
+        required_error: `${name} is required`,
+        invalid_type_error: `${name} must be a string`,
       })
       .refine(
         val => ["true", "false"].includes(val),
-        "Setting must have a value of true or false."
+        `${name} must have a value of true or false.`
       );
 
     const schema = z.object({
-      disable_register_page: constraint,
-      disable_index_page: constraint,
-      disable_about_page: constraint,
+      disable_register_page: constraint("disable_register_page"),
+      disable_index_page: constraint("disable_index_page"),
+      disable_about_page: constraint("disable_about_page"),
     });
 
     // validate the submitted form
