@@ -1,5 +1,5 @@
 import { FastifyPluginCallback } from "fastify";
-import * as LoginController from "../controllers/LoginController";
+import LoginController from "../controllers/LoginController";
 
 
 export const loginRoutes: FastifyPluginCallback =

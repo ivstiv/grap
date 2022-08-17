@@ -7,8 +7,7 @@ import { Email } from "../models/Email";
 import { z } from "zod";
 
 
-
-export const index: FastifyHandler =
+const index: FastifyHandler =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
@@ -57,7 +56,7 @@ interface SystemSettingsHandler {
     disable_about_page: "true" | "false",
   }
 }
-export const updateSettings: FastifyHandler<SystemSettingsHandler> =
+const updateSettings: FastifyHandler<SystemSettingsHandler> =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
@@ -105,3 +104,12 @@ export const updateSettings: FastifyHandler<SystemSettingsHandler> =
     req.session.flashMessage = "System settings updated!";
     return res.redirect("/admin/system-settings");
   };
+
+
+// compiles to a cleaner imports from TS with interop
+// import * as SomeController - MESSY
+// import SomeController - CLEAN
+export default {
+  index,
+  updateSettings,
+};

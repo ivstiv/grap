@@ -6,11 +6,11 @@ import {
 } from "./ControllerUtilities";
 
 
-export const show: FastifyHandler =
+const show: FastifyHandler =
   async (_req, res) => res.view("/src/views/pages/register.ejs");
 
 
-export const register: FastifyHandler<UserAccountFormHandler> =
+const register: FastifyHandler<UserAccountFormHandler> =
   async (req, res) => {
     // validate the submitted form
     const parsedBody = userAccountSchema.safeParse(req.body);
@@ -44,3 +44,12 @@ export const register: FastifyHandler<UserAccountFormHandler> =
     req.session.user = { id: user.id };
     return res.redirect("/dashboard");
   };
+
+
+// compiles to a cleaner imports from TS with interop
+// import * as SomeController - MESSY
+// import SomeController - CLEAN
+export default {
+  show,
+  register,
+};

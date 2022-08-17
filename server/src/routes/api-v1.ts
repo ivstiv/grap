@@ -1,5 +1,5 @@
 import { FastifyPluginCallback } from "fastify";
-import * as ApiController from "../controllers/ApiV1Controller";
+import ApiController from "../controllers/ApiV1Controller";
 import { Token } from "../models/Token";
 
 

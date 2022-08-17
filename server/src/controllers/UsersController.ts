@@ -2,14 +2,14 @@ import { User } from "../models/User";
 import { FastifyHandler, numericStringConstraint } from "./ControllerUtilities";
 import { z } from "zod";
 
-const PAGE_SIZE = 10;
 
+const PAGE_SIZE = 10;
 interface IndexUsersHandler {
   Querystring: {
     page: string
   }
 }
-export const index: FastifyHandler<IndexUsersHandler> =
+const index: FastifyHandler<IndexUsersHandler> =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
@@ -60,7 +60,7 @@ interface UpdateUserHandler {
     user: string
   }
 }
-export const updateUser: FastifyHandler<UpdateUserHandler> =
+const updateUser: FastifyHandler<UpdateUserHandler> =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
@@ -76,12 +76,20 @@ export const updateUser: FastifyHandler<UpdateUserHandler> =
 
     if (!parsedBody.success) {
       const { maxEmails, user } = parsedBody.error.flatten().fieldErrors;
-      req.session.flashMessage = maxEmails?.at(0) ?? user?.at(0);
+      req.session.flashMessage = user?.at(0) ?? maxEmails?.at(0);
       return res.redirect("/admin/users?page=1");
     }
 
     const parsedMaxEmails = parseInt(req.body.maxEmails);
-    const userToUpdate = await User.getById(parseInt(req.body.user));
+
+    let userToUpdate;
+    try {
+      userToUpdate = await User.getById(parseInt(req.body.user));
+    } catch(err) {
+      if (!(err instanceof Error) || !err.message.includes("not found")) {
+        throw err;
+      }
+    }
 
     if (!userToUpdate) {
       req.session.flashMessage = "User not found";
@@ -95,3 +103,12 @@ export const updateUser: FastifyHandler<UpdateUserHandler> =
     req.session.flashMessage = "User updated successfully!";
     return res.redirect("/admin/users?page=1");
   };
+
+
+// compiles to a cleaner imports from TS with interop
+// import * as SomeController - MESSY
+// import SomeController - CLEAN
+export default {
+  index,
+  updateUser,
+};

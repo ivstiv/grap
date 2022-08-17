@@ -2,7 +2,7 @@ import { User } from "../models/User";
 import { FastifyHandler } from "./ControllerUtilities";
 
 
-export const notFound: FastifyHandler =
+const notFound: FastifyHandler =
   async (req, res) => {
     let isAdmin = false;
     if (req.session.user) {
@@ -21,3 +21,11 @@ export const notFound: FastifyHandler =
         isLoggedIn: !!req.session.user,
       });
   };
+
+
+// compiles to a cleaner imports from TS with interop
+// import * as SomeController - MESSY
+// import SomeController - CLEAN
+export default {
+  notFound,
+};

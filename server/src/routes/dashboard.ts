@@ -1,5 +1,5 @@
 import { FastifyPluginCallback } from "fastify";
-import * as DashboardController from "../controllers/DashboardController";
+import DashboardController from "../controllers/DashboardController";
 
 
 export const dashboardRoutes: FastifyPluginCallback =

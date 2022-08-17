@@ -4,7 +4,7 @@ import { Email } from "../models/Email";
 import { z } from "zod";
 
 
-export const index: FastifyHandler =
+const index: FastifyHandler =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
@@ -44,7 +44,7 @@ interface DeleteAddressHandler {
     address: string
   }
 }
-export const deleteAddress: FastifyHandler<DeleteAddressHandler> =
+const deleteAddress: FastifyHandler<DeleteAddressHandler> =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
@@ -83,7 +83,7 @@ interface ShowInboxHandler {
     id: string
   }
 }
-export const showInbox: FastifyHandler<ShowInboxHandler> =
+const showInbox: FastifyHandler<ShowInboxHandler> =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
@@ -126,7 +126,7 @@ interface DeleteEmailHandler {
     email: string
   }
 }
-export const deleteEmail: FastifyHandler<DeleteEmailHandler> =
+const deleteEmail: FastifyHandler<DeleteEmailHandler> =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
@@ -174,3 +174,14 @@ export const deleteEmail: FastifyHandler<DeleteEmailHandler> =
     req.session.flashMessage = "Address deleted successfully!";
     return res.redirect(`/dashboard/inbox/${relatedAddr.id}`);
   };
+
+
+// compiles to a cleaner imports from TS with interop
+// import * as SomeController - MESSY
+// import SomeController - CLEAN
+export default {
+  index,
+  deleteAddress,
+  showInbox,
+  deleteEmail,
+};
