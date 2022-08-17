@@ -1,5 +1,5 @@
 import { FastifyPluginCallback } from "fastify";
-import * as LogoutController from "../controllers/LogoutController";
+import LogoutController from "../controllers/LogoutController";
 
 
 export const logoutRoutes: FastifyPluginCallback =

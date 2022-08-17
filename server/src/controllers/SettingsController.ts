@@ -4,7 +4,7 @@ import { Role } from "../models/Role";
 import { z } from "zod";
 
 
-export const index: FastifyHandler =
+const index: FastifyHandler =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
@@ -39,7 +39,7 @@ interface CreateTokenHandler {
     note: string
   }
 }
-export const createToken: FastifyHandler<CreateTokenHandler> =
+const createToken: FastifyHandler<CreateTokenHandler> =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
@@ -85,7 +85,7 @@ interface DestroyTokenHandler {
     token: string
   }
 }
-export const destroyToken: FastifyHandler<DestroyTokenHandler> =
+const destroyToken: FastifyHandler<DestroyTokenHandler> =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
@@ -121,7 +121,7 @@ export const destroyToken: FastifyHandler<DestroyTokenHandler> =
   };
 
 
-export const destroyUser: FastifyHandler =
+const destroyUser: FastifyHandler =
   async (req, res) => {
     if (!req.session.user) {
       throw new Error("Session user is missing!");
@@ -133,3 +133,14 @@ export const destroyUser: FastifyHandler =
 
     return res.redirect("/login");
   };
+
+
+// compiles to a cleaner imports from TS with interop
+// import * as SomeController - MESSY
+// import SomeController - CLEAN
+export default {
+  index,
+  createToken,
+  destroyToken,
+  destroyUser,
+};

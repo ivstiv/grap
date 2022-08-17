@@ -10,7 +10,7 @@
     <h1>Users</h1>
 
     <% if (typeof flashMessage !== "undefined") { %>
-      <p><mark><%= flashMessage %></mark></p>
+      <p><mark data-test-id="flash-message"><%= flashMessage %></mark></p>
     <% } %>
 
     <table>

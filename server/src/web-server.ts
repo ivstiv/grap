@@ -11,7 +11,7 @@ import fastifyCookiePlugin from "@fastify/cookie";
 import fastifySessionPlugin from "@fastify/session";
 import fastifyStaticPlugin from "@fastify/static";
 import { logoutRoutes } from "./routes/logout";
-import * as ErrorController from "./controllers/ErrorController";
+import ErrorController from "./controllers/ErrorController";
 import { apiV1Routes } from "./routes/api-v1";
 import { settingsRoutes } from "./routes/settings";
 import { adminRoutes } from "./routes/admin";

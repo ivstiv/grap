@@ -1,6 +1,6 @@
 import { FastifyPluginCallback } from "fastify";
 import { numOfAdmins } from "../utilities/functions";
-import * as SetupController from "../controllers/SetupController";
+import SetupController from "../controllers/SetupController";
 
 
 export const setupRoutes: FastifyPluginCallback =

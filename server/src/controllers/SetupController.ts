@@ -8,11 +8,11 @@ import {
 } from "./ControllerUtilities";
 
 
-export const show: FastifyHandler =
+const show: FastifyHandler =
   async (_req, res) => res.view("/src/views/pages/setup.ejs");
 
 
-export const createAdmin: FastifyHandler<UserAccountFormHandler> =
+const createAdmin: FastifyHandler<UserAccountFormHandler> =
   async (req, res) => {
     // only handle this if there are no admins yet
     if(await numOfAdmins() > 0) {
@@ -54,3 +54,12 @@ export const createAdmin: FastifyHandler<UserAccountFormHandler> =
     req.session.user = { id: user.id };
     return res.redirect("/dashboard");
   };
+
+
+// compiles to a cleaner imports from TS with interop
+// import * as SomeController - MESSY
+// import SomeController - CLEAN
+export default {
+  show,
+  createAdmin,
+};

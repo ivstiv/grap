@@ -1,5 +1,5 @@
 import { FastifyPluginCallback } from "fastify";
-import * as RootController from "../controllers/RootController";
+import RootController from "../controllers/RootController";
 
 
 export const rootRoutes: FastifyPluginCallback =

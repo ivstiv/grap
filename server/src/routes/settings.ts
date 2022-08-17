@@ -1,5 +1,5 @@
 import { FastifyPluginCallback } from "fastify";
-import * as SettingsController from "../controllers/SettingsController";
+import SettingsController from "../controllers/SettingsController";
 
 
 export const settingsRoutes: FastifyPluginCallback =

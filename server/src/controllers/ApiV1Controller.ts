@@ -3,7 +3,7 @@ import { User } from "../models/User";
 import { FastifyHandler } from "./ControllerUtilities";
 
 
-export const createAddress: FastifyHandler =
+const createAddress: FastifyHandler =
   async (req, res) => {
     let user: User | undefined;
     if (req.session.user) {
@@ -38,7 +38,7 @@ interface LatestEmailHandler {
     address: string
   }
 }
-export const latestEmail: FastifyHandler<LatestEmailHandler> =
+const latestEmail: FastifyHandler<LatestEmailHandler> =
   async (req, res) => {
     let user: User | undefined;
 
@@ -86,3 +86,11 @@ export const latestEmail: FastifyHandler<LatestEmailHandler> =
     });
   };
 
+
+// compiles to a cleaner imports from TS with interop
+// import * as SomeController - MESSY
+// import SomeController - CLEAN
+export default {
+  createAddress,
+  latestEmail,
+};

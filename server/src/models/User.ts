@@ -78,7 +78,7 @@ export class User extends Model {
   }
 
 
-  refresh () {
+  async refresh () {
     return this.$query()
       .where({ email: this.email })
       .withGraphFetched("[roles, tokens, addresses, settings]")
