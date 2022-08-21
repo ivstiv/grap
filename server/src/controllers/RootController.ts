@@ -61,6 +61,13 @@ const docs: FastifyHandler =
   };
 
 
+const newIndex: FastifyHandler =
+  async (req, res) => res.view("/src/views/pages/new-index.ejs", {
+    isLoggedIn: !!req.session.user,
+    domain: process.env.DOMAIN ?? "Missing domain!",
+  });
+
+
 // compiles to a cleaner imports from TS with interop
 // import * as SomeController - MESSY
 // import SomeController - CLEAN
@@ -68,4 +75,9 @@ export default {
   index,
   about,
   docs,
+  newIndex,
 };
+
+
+
+

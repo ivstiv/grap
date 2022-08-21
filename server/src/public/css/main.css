@@ -1,0 +1,49 @@
+@import "components/buttons.css";
+@import "pages/index.css";
+@import url(https://fonts.bunny.net/css?family=exo:500);
+
+:root {
+  --primary-color: #5a29e4;
+  --background-color: #fff;
+
+  --primary-shadow-color: #5b29e45d;
+
+  --global-width: 60px;
+
+  --font: "Exo", sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-light: 300;
+  --font-color: #1f1c24;
+
+  font-size: 10px;
+}
+
+@media screen and (min-width: 1000px) {
+  :root {
+    --global-width: 25vw;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  :root {
+    font-size: 7px;
+  }
+}
+
+* {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  color: var(--font-color);
+  font-family: var(--font);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: "hidden";
+  background-color: var(--background-color);
+}
+
+a {
+  color: var(--primary-color);
+}

@@ -10,6 +10,7 @@
     "build": "rm -rf dist && tsc -p tsconfig.json && cp -r src/public dist",
     "start": "node -r dotenv-flow/config dist/index.js",
     "dev": "nodemon --watch src -e ts,css --exec 'npm run lint:fix && npm run build && npm run start'",
+    "dev-design": "nodemon --watch src -e js,css --exec 'cp -r src/public dist && npm run start'",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --fix --ext .ts",
     "lint:watch": "esw --quiet --watch --fix --ext .ts",
@@ -30,22 +31,21 @@
     "@fastify/session": "^9.0.0",
     "@fastify/static": "^6.5.0",
     "@fastify/view": "^7.1.0",
-    "@types/lodash": "^4.14.183",
-    "@types/mocha": "^9.1.1",
+    "fastify": "^4.5.0",
     "bcrypt": "^5.0.1",
     "dotenv-flow": "^3.2.0",
     "ejs": "^3.1.8",
-    "fastify": "^4.5.0",
     "knex": "^2.2.0",
     "lodash": "^4.17.21",
     "mailparser": "^3.5.0",
     "objection": "^3.0.1",
     "smtp-server": "^3.11.0",
     "sqlite3": "^5.0.11",
-    "unique-names-generator": "^4.7.1",
     "zod": "^3.18.0"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.183",
+    "@types/mocha": "^9.1.1",
     "@types/bcrypt": "^5.0.0",
     "@types/dotenv-flow": "^3.2.0",
     "@types/ejs": "^3.1.1",
@@ -61,6 +61,7 @@
     "node-html-parser": "^5.4.1",
     "nodemon": "^2.0.19",
     "nyc": "^15.1.0",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "unique-names-generator": "^4.7.1"
   }
 }
