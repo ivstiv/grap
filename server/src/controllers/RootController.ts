@@ -67,6 +67,12 @@ const newIndex: FastifyHandler =
     domain: process.env.DOMAIN ?? "Missing domain!",
   });
 
+const newLogin: FastifyHandler =
+  async (req, res) => res.view("/src/views/pages/new-login.ejs", {
+    isLoggedIn: !!req.session.user,
+    domain: process.env.DOMAIN ?? "Missing domain!",
+  });
+
 
 // compiles to a cleaner imports from TS with interop
 // import * as SomeController - MESSY
@@ -76,6 +82,7 @@ export default {
   about,
   docs,
   newIndex,
+  newLogin,
 };
 
 

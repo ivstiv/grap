@@ -1,4 +1,4 @@
-main {
+main.index-page {
   margin-left: calc(var(--global-width) / 2);
   width: calc(100vw - var(--global-width));
   background-color: var(--background-color);

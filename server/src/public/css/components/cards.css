@@ -1,0 +1,31 @@
+.card {
+  position: relative;
+  font-size: 1.8rem;
+  text-decoration: none;
+  padding: 1.35rem 4.136rem;
+  border-radius: 1rem;
+  transition-duration: 200ms;
+  margin: 1.5rem;
+  box-shadow: 0px 1rem 3rem rgb(0 0 0 / 10%);
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  background-color: rgba(0,0,0,0);
+}
+
+
+.card-header {
+  position: absolute;
+  top: -4rem;
+  left: 0;
+  padding: 1.35rem 4.136rem;
+  margin: 1.5rem;
+  border-radius: 1rem;
+  background: var(--primary-color);
+  color: var(--background-color);
+}
+
+
+.card-header h1 {
+  color: var(--background-color);
+  font-size: 2.5rem;
+}
