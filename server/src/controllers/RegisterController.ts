@@ -41,7 +41,10 @@ const register: FastifyHandler<UserAccountFormHandler> =
       throw new Error("Failed to register user.");
     }
 
-    req.session.user = { id: user.id };
+    req.session.user = {
+      id: user.id,
+      isAdmin: user.hasRole("admin"),
+    };
     return res.redirect("/dashboard");
   };
 

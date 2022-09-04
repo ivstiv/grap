@@ -51,7 +51,10 @@ const createAdmin: FastifyHandler<UserAccountFormHandler> =
     }
     await user.$relatedQuery<Role>("roles").relate(adminRole);
 
-    req.session.user = { id: user.id };
+    req.session.user = {
+      id: user.id,
+      isAdmin: user.hasRole("admin"),
+    };
     return res.redirect("/dashboard");
   };
 

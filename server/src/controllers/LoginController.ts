@@ -43,7 +43,10 @@ const login: FastifyHandler<UserAccountFormHandler> =
         .view("/src/views/pages/login.ejs", { error: "Wrong email or password." });
     }
 
-    req.session.user = { id: user.id };
+    req.session.user = {
+      id: user.id,
+      isAdmin: user.hasRole("admin"),
+    };
 
     if (process.env.NODE_ENV === "test") {
       return res

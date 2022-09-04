@@ -1,6 +1,6 @@
 import Fastify from "fastify";
 import view from "@fastify/view";
-import ejs from "ejs";
+import ejs from "ejs"; // TO-DO: delete ejs completely in the end of the redesign
 import { loginRoutes } from "./routes/login";
 import { rootRoutes } from "./routes/root";
 import { setupRoutes } from "./routes/setup";
@@ -16,10 +16,13 @@ import { apiV1Routes } from "./routes/api-v1";
 import { settingsRoutes } from "./routes/settings";
 import { adminRoutes } from "./routes/admin";
 import path from "path/posix";
+import { newRoutes } from "./routes/new";
+import { Liquid } from "liquidjs";
 
 
 export type SessionUser = {
   id: number
+  isAdmin: boolean
 }
 
 declare module "fastify" {
@@ -27,9 +30,17 @@ declare module "fastify" {
       user?: SessionUser
       flashMessage?: string
   }
+  interface FastifyReply { // you must reference the interface and not the type
+    locals: {
+      flashMessage?: string
+      isLoggedIn: boolean
+      isAdmin: boolean
+      domain: string
+    }
+  }
 }
 
-const { SESSION_SECRET, NODE_ENV } = process.env;
+const { SESSION_SECRET, NODE_ENV, DOMAIN } = process.env;
 
 if (!SESSION_SECRET) {
   throw new Error("Missing env variable: SESSION_SECRET");
@@ -37,6 +48,10 @@ if (!SESSION_SECRET) {
 
 if (!NODE_ENV) {
   throw new Error("Missing env variable: NODE_ENV");
+}
+
+if (!DOMAIN) {
+  throw new Error("Missing env variable: DOMAIN");
 }
 
 export const webServer = Fastify({
@@ -58,8 +73,18 @@ webServer.register(fastifySessionPlugin, {
   },
 });
 
+// webServer.register(view, {
+//   engine: { ejs },
+// });
+
+const liquid = new Liquid({
+  root: "/app/src/views/new",
+  extname: ".liquid",
+  cache: NODE_ENV === "production",
+});
+
 webServer.register(view, {
-  engine: { ejs },
+  engine: { liquid },
 });
 
 webServer.register(rootRoutes);
@@ -71,5 +96,23 @@ webServer.register(dashboardRoutes, { prefix: "dashboard" });
 webServer.register(settingsRoutes, { prefix: "settings" });
 webServer.register(adminRoutes, { prefix: "admin" });
 webServer.register(apiV1Routes, { prefix: "api/v1" });
+webServer.register(newRoutes, { prefix: "new" });
 
 webServer.setNotFoundHandler(ErrorController.notFound);
+
+webServer.decorateReply("locals", {
+  isLoggedIn: false,
+  isAdmin: false,
+  domain: DOMAIN,
+});
+
+// auto populate common variables for all views
+webServer.addHook("onRequest", async (request, reply) => {
+  reply.locals = {
+    flashMessage: request.session.flashMessage,
+    isLoggedIn: !!request.session.user,
+    isAdmin: request.session.user?.isAdmin ?? false,
+    domain: DOMAIN,
+  };
+  request.session.flashMessage = undefined;
+});
