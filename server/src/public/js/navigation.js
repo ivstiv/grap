@@ -1,4 +1,5 @@
-let isSidenavVisible = window.innerWidth > 1023;
+const BREAKPOINT = 1023;
+let isSidenavVisible = window.innerWidth > BREAKPOINT;
 const navToggles = [...document.querySelectorAll(".nav-toggle")];
 const navigation = document.querySelector("aside");
 
@@ -10,7 +11,7 @@ const toggleNavigation = () => {
 
 navToggles.forEach(el => el.addEventListener("click", toggleNavigation));
 document.addEventListener("click", event => {
-  if(window.innerWidth > 1023) {
+  if(window.innerWidth > BREAKPOINT) {
     return;
   }
 
@@ -24,10 +25,10 @@ document.addEventListener("click", event => {
 // if the sidebar was toggled off with js and resized
 // back to large screen we need to reset the state
 addEventListener("resize", () => {
-  if (!isSidenavVisible && window.innerWidth > 1023) {
+  if (!isSidenavVisible && window.innerWidth > BREAKPOINT) {
     toggleNavigation();
   }
-  if (isSidenavVisible && window.innerWidth < 1023) {
+  if (isSidenavVisible && window.innerWidth < BREAKPOINT) {
     toggleNavigation();
   }
 });

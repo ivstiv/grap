@@ -1,29 +1,50 @@
 @import url(https://fonts.bunny.net/css?family=exo:500);
 @import "navigation.css";
 @import "components/buttons.css";
+@import "components/inputs.css";
+@import "components/labels.css";
 
-:root {
-    --background-color: #fff;
-    --background-color-complimentary: #F2F2F2;
+
+:root, :root.light {
+    --background-color-primary: #fff;
+    --background-color-secondary: #F2F2F2;
     --background-color-hover: #E1E1E1;
 
     --color-primary: hsl(228deg 63% 51%);
 
+    --color-input-border: hsl(0, 0%, 84%);
+
+    --spacing-tiny: .75rem;
     --spacing-sm: 1rem;
     --spacing-md: 1.5rem;
     --spacing-lg: 4rem;
     --border-radius: .5rem;
 
     --font: "Exo", sans-serif;
-    --font-color: #1f1c24;
+    --color-contrast-lower: #1f1c24;
 
     font-size: 10px;
+
+    --dark-toggle-display: none;
+    --light-toggle-display: block;
 }
+
+
+:root.dark {
+    --background-color-secondary: #121212;
+    --background-color-primary: #1C1C1C;
+    --color-contrast-lower: #FAFAFA;
+    --background-color-hover: #242424;
+
+    --dark-toggle-display: block;
+    --light-toggle-display: none;
+}
+
 
 * {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    color: var(--font-color);
+    color: var(--color-contrast-lower);
     font-family: var(--font);
 
     margin: 0;
@@ -32,7 +53,7 @@
 }
 
 body {
-    background-color: var(--background-color);
+    background-color: var(--background-color-primary);
 }
 
 hr {
@@ -53,4 +74,16 @@ main {
     main {
         margin-left: 320px;
     }
+}
+
+.dark-toggle {
+    display: var(--dark-toggle-display);
+}
+
+.light-toggle {
+    display: var(--light-toggle-display);
+}
+
+.mobile-title {
+    font-size: 3rem;
 }

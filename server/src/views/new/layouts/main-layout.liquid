@@ -14,13 +14,16 @@
         <meta name="description" content="Simple service for generating temporary email addresses.">
         <link rel="stylesheet" href="/public/css/main.css" media="screen">
         <script src="/public/js/navigation.js" defer></script>
+        <script src="/public/js/theme.js" defer></script>
         {% block head %}
         <title>grap | Temporary email</title>
         {% endblock %}
     </head>
     <body>
         <header>
+            {% block mobile-title %}
             <h1 class="logo">gr@p</h1>
+            {% endblock %}
             <button class="nav-toggle btn btn-invisible">
                 {% render "partials/icon", name: "menu" %}
             </button>
@@ -100,8 +103,11 @@
                 <hr>
                 <div class="nav-footer">
                     <span>Theme:</span>
-                    <button class="theme-toggle btn btn-invisible">
+                    <button class="theme-toggle light-toggle btn btn-invisible">
                         {% render "partials/icon", name: "sun" %}
+                    </button>
+                    <button class="theme-toggle dark-toggle btn btn-invisible">
+                        {% render "partials/icon", name: "moon" %}
                     </button>
                 </div>
             </div>

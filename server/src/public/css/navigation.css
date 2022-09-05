@@ -10,7 +10,7 @@ aside {
     width: 100%;
     height: 100vh;
     max-width: 320px;
-    background-color: var(--background-color-complimentary);
+    background-color: var(--background-color-secondary);
 }
 
 nav {
