@@ -1,0 +1,22 @@
+form {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin: 0 auto;
+    gap: var(--spacing-md);
+    justify-items: center;
+    transform: translateY(50%);
+}
+
+.form-footer {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+@media screen and (min-width: 1023px) {
+    form {
+        width: 50%;
+    }
+}

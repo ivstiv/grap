@@ -10,6 +10,9 @@ const updateThemeInDOM = () => {
   document.documentElement.classList.add(isDarkTheme ? "dark" : "light");
 };
 
+// apply theme initially
+updateThemeInDOM();
+
 const toggleTheme = () => {
   isDarkTheme = !isDarkTheme;
   localStorage.setItem("theme", isDarkTheme ? "dark" : "light");
@@ -19,5 +22,4 @@ const toggleTheme = () => {
 const themeToggles = [...document.querySelectorAll(".theme-toggle")];
 themeToggles.forEach(el => el.addEventListener("click", toggleTheme));
 
-// apply theme initially
-updateThemeInDOM();
+

@@ -11,6 +11,7 @@ aside {
     height: 100vh;
     max-width: 320px;
     background-color: var(--background-color-secondary);
+    z-index: 10;
 }
 
 nav {
@@ -34,21 +35,28 @@ nav li a {
     font-size: 1.8rem;
     border-radius: var(--border-radius);
     padding: var(--spacing-sm);
-    gap: 1rem;
+    gap: var(--spacing-sm);
     font-weight: lighter;
 }
 
 nav li a:hover {
     text-decoration: none;
     background-color: var(--background-color-hover);
+    transition: all .2s ease;
 }
 
+nav li a:hover svg,
 nav li a:hover span {
     color: var(--color-primary);
+    stroke: var(--color-primary);
+    transition: all .2s ease;
 }
 
-nav li a:hover svg {
+nav li a.active svg,
+nav li a.active span {
     stroke: var(--color-primary);
+    color: var(--color-primary);
+    transition: all .2s ease;
 }
 
 .nav-header {

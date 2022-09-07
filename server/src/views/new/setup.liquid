@@ -1,17 +1,17 @@
 {% layout "layouts/main-layout" %}
 
 {% block mobile-title %}
-<h1 class="mobile-page-title">Login</h1>
+<h1 class="mobile-page-title">Setup</h1>
 {% endblock %}
 
 {% block head %}
 <link rel="stylesheet" href="/public/css/pages/login-register-setup.css" media="screen">
-<title>grap | Login</title>
+<title>grap | Setup</title>
 {% endblock %}
 
 {% block body %}
-<form method="post" action="login">
-    <h1 class="page-title">Login</h1>
+<form method="post" action="register">
+    <h1 class="page-title">Setup</h1>
     <div>
         <label for="email">Email</label>
         <input type="email" name="email" required>
@@ -22,7 +22,6 @@
     </div>
     <div class="form-footer">
         <button type="submit" class="btn btn-primary">Submit</button>
-        <a href="/register">Don't have an account?</a>
     </div>
 </form>
 {% endblock %}

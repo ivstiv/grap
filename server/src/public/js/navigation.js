@@ -32,3 +32,11 @@ addEventListener("resize", () => {
     toggleNavigation();
   }
 });
+
+// highlight the selected page in the navigation
+const navLinks = document.querySelectorAll("nav a");
+const activeLink = Array.from(navLinks)
+  .find(l => l.href === window.location.href);
+if (activeLink) {
+  activeLink.classList.add("active");
+}

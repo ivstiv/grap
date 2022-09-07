@@ -8,6 +8,12 @@ const index: FastifyHandler =
 const login: FastifyHandler =
   async (req, res) => res.view("/src/views/new/login");
 
+const register: FastifyHandler =
+  async (req, res) => res.view("/src/views/new/register");
+
+const setup: FastifyHandler =
+  async (req, res) => res.view("/src/views/new/setup");
+
 
 // compiles to a cleaner imports from TS with interop
 // import * as SomeController - MESSY
@@ -15,4 +21,6 @@ const login: FastifyHandler =
 export default {
   index,
   login,
+  register,
+  setup,
 };

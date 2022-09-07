@@ -13,13 +13,21 @@
         <meta property="og:url" content="https://grap.email">
         <meta name="description" content="Simple service for generating temporary email addresses.">
         <link rel="stylesheet" href="/public/css/main.css" media="screen">
+        <link rel="stylesheet" href="/public/css/navigation.css" media="screen">
+        <script type="text/javascript" defer>
+            // https://joshfrankel.me/blog/prevent-css-transitions-on-page-load-with-es6
+            document.addEventListener("DOMContentLoaded",function(){
+              let node = document.querySelector('.preload-transitions');
+              node.classList.remove('preload-transitions');
+            });
+        </script>
         <script src="/public/js/navigation.js" defer></script>
         <script src="/public/js/theme.js" defer></script>
         {% block head %}
         <title>grap | Temporary email</title>
         {% endblock %}
     </head>
-    <body>
+    <body class="preload-transitions">
         <header>
             {% block mobile-title %}
             <h1 class="logo">gr@p</h1>
@@ -50,7 +58,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="/new/register">
                             {% render "partials/icon", name: "user-plus" %}
                             <span>Register</span>
                         </a>
