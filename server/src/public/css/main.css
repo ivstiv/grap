@@ -2,6 +2,7 @@
 @import "components/buttons.css";
 @import "components/inputs.css";
 @import "components/labels.css";
+@import "components/code.css";
 
 
 :root, :root.light {
@@ -14,7 +15,8 @@
     --spacing-tiny: .75rem;
     --spacing-sm: 1rem;
     --spacing-md: 1.5rem;
-    --spacing-lg: 4rem;
+    --spacing-lg: 3rem;
+    --spacing-xl: 4rem;
     --border-radius: .5rem;
 
     --font: "Exo", sans-serif;
@@ -111,6 +113,10 @@ main {
     }
 }
 
-a, label {
+a, label, p {
     font-size: 1.5rem;
+}
+
+a {
+    color: var(--color-primary);
 }

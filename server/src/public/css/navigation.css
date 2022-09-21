@@ -68,8 +68,13 @@ nav li a.active span {
 .nav-footer {
     display: flex;
     justify-content: space-between;
-    padding: var(--spacing-md) var(--spacing-lg);
+    padding: var(--spacing-md) var(--spacing-xl);
     font-size: 1.6rem;
+}
+
+.nav-footer span {
+    display: inline-flex;
+    align-items: center;
 }
 
 /* Show the header and nav toggles only on smaller screens */
