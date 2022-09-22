@@ -1,0 +1,112 @@
+{% layout "layouts/main-layout" %}
+
+{% block head %}
+<link rel="stylesheet" href="/public/css/pages/documentation.css" media="screen">
+<title>grap | Documentation</title>
+{% endblock %}
+
+{% block mobile-title %}
+<h1 class="mobile-page-title">Documentation</h1>
+{% endblock %}
+
+{% block body %}
+<div class="documentation-wrapper">
+
+    <div>
+        <h3 class="article-heading">Authorisation</h3>
+        <div class="article">
+            <p>
+                You need to register and generate a token from the <a href="#">settings</a> page.
+                After that just include it as a header in any requests you make in the following format:
+            </p>
+<pre>
+    <code>
+    Authorization: Bearer token-here
+    </code>
+</pre>
+        </div>
+    </div>
+
+    <div>
+        <h3 class="article-heading">Generate email address</h3>
+        <div class="article">
+            <h4>GET https://{{ domain }}/api/v1/address</h4>
+            <hr>
+            <p>Example success response (code 201):</p>
+            <pre>
+                <code>
+    {"data": "random.name@grap.email"}
+                </code>
+            </pre>
+            <p>Example error response (code 401):</p>
+            <pre>
+                <code>
+    {"error": "Address limit reached! Try again later."}
+                </code>
+            </pre>
+        </div>
+    </div>
+
+    <div>
+        <h3 class="article-heading">Fetch latest email</h3>
+        <div class="article">
+            <h4>GET https://{{ domain }}/api/v1/inbox/:address/latest</h4>
+            <hr>
+            <p>Example success response (code 200):</p>
+            <pre>
+                <code>
+    {
+        "data": {
+            "subject": "email-subject",
+            "content": "email-content",
+            "from": "sender-email",
+            "createdAt": "date-here"
+        }
+    }
+                </code>
+            </pre>
+            <p>Example error response (code 404):</p>
+            <pre>
+                <code>
+    {"error": "Address not found!"}
+                </code>
+            </pre>
+        </div>
+    </div>
+
+    <div>
+        <h3 class="article-heading">Fetch emails with filter (Work in progress)</h3>
+        <div class="article">
+            <h4>GET https://{{ domain }}/api/v1/inbox/:address/filtered?subject=Email%20Title</h4>
+            <hr>
+            <p>Example success response (code 200):</p>
+            <pre>
+                <code>
+    {
+        "data": [
+            {
+                "subject": "Email Title-1",
+                "content": "email-content-1",
+                "from": "sender-email-1",
+                "createdAt": "date-here-1"
+            },
+            {
+                "subject": "Email Title-2",
+                "content": "email-content-2",
+                "from": "sender-email-2",
+                "createdAt": "date-here-2"
+            },
+        ]
+    }
+                </code>
+            </pre>
+            <p>Example error response (code 404):</p>
+            <pre>
+                <code>
+    {"error": "Address not found!"}
+                </code>
+            </pre>
+        </div>
+    </div>
+</div>
+{% endblock %}

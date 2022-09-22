@@ -3,6 +3,7 @@
 @import "components/inputs.css";
 @import "components/labels.css";
 @import "components/code.css";
+@import "components/article.css";
 
 
 :root, :root.light {

@@ -1,0 +1,18 @@
+.error-page-wrapper {
+    width: 70%;
+    margin-top: var(--spacing-xl);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.error-page-wrapper * {
+    text-align: center;
+}
+
+.error-page-wrapper h1 {
+    font-size: 4rem;
+}
+
+.error-page-wrapper h3 {
+    font-size: 2rem;
+}

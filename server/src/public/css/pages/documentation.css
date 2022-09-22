@@ -1,4 +1,4 @@
-.index-wrapper {
+.documentation-wrapper {
     width: 70%;
     margin-top: var(--spacing-xl);
     margin-left: auto;
@@ -6,13 +6,4 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-xl);
-}
-
-.intro-heading {
-    font-size: 3.5rem;
-    margin-bottom: var(--spacing-sm);
-}
-
-.intro-body, .intro-body a {
-    font-size: 2rem;
 }
