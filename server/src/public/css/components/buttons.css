@@ -21,3 +21,9 @@
 .btn-primary:hover {
     background-color: var(--btn-hover-color);
 }
+
+.btn-secondary {
+    background: var(--background-color-secondary);
+    color: var(--color-contrast-higher);
+    border: 2px solid var(--color-contrast-higher);
+}

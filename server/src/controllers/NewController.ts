@@ -23,6 +23,9 @@ const badRequest: FastifyHandler =
 const notFound: FastifyHandler =
   async (req, res) => res.view("/src/views/new/404");
 
+const dashboard: FastifyHandler =
+  async (req, res) => res.view("/src/views/new/dashboard");
+
 
 // compiles to a cleaner imports from TS with interop
 // import * as SomeController - MESSY
@@ -35,4 +38,5 @@ export default {
   documentation,
   badRequest,
   notFound,
+  dashboard,
 };

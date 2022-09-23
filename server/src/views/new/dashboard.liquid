@@ -1,0 +1,72 @@
+{% layout "layouts/main-layout" %}
+
+{% block head %}
+<link rel="stylesheet" href="/public/css/pages/dashboard.css" media="screen">
+<title>grap | Dashboard</title>
+{% endblock %}
+
+{% block mobile-title %}
+<h1 class="mobile-page-title">Dashboard</h1>
+{% endblock %}
+
+{% block body %}
+<div class="wrapper">
+    <div>
+        <div class="article">
+            <p>
+                You are using 0 out of 10 email addresses.
+            </p>
+        </div>
+    </div>
+
+    <div>
+        <h3 class="article-heading">Your email addresses (MAKE THE TABLE RESPONSIVE)</h3>
+        <div class="article">
+            <div class="buttons-wrapper">
+                <button type="submit" class="btn btn-primary">Generate a new one</button>
+                <a href="/new/dashboard">Refresh</a>
+            </div>
+            
+
+            <div class="table-wrapper">
+                <div class="table-row-header">
+                    <div>Address</div>
+                    <div>Expires in</div>
+                    <div>Inbox</div>
+                    <div>Actions</div>
+                </div>
+                <div class="table-row">
+                    <div>olive.marmot@grap.email</div>
+                    <div>26 min</div>
+                    <div><a href="#">0 emails</a></div>
+                    <div><button type="submit" class="btn btn-secondary">Delete</button></div>
+                </div>
+                <div class="table-row">
+                    <div>gray.canid@grap.email</div>
+                    <div>26 min</div>
+                    <div><a href="#">0 emails</a></div>
+                    <div><button type="submit" class="btn btn-secondary">Delete</button></div>
+                </div>
+                <div class="table-row">
+                    <div>distinct.flamingo@grap.email</div>
+                    <div>6 min</div>
+                    <div><a href="#">0 emails</a></div>
+                    <div><button type="submit" class="btn btn-secondary">Delete</button></div>
+                </div>
+                <div class="table-row">
+                    <div>coral.anteater@grap.email</div>
+                    <div>26 min</div>
+                    <div><a href="#">0 emails</a></div>
+                    <div><button type="submit" class="btn btn-secondary">Delete</button></div>
+                </div>
+                <div class="table-row">
+                    <div>bizarre.camel@grap.email</div>
+                    <div>26 min</div>
+                    <div><a href="#">0 emails</a></div>
+                    <div><button type="submit" class="btn btn-secondary">Delete</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

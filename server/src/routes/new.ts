@@ -11,5 +11,6 @@ export const newRoutes: FastifyPluginCallback =
     instance.get("/documentation", NewController.documentation);
     instance.get("/400", NewController.badRequest);
     instance.get("/404", NewController.notFound);
+    instance.get("/dashboard", NewController.dashboard);
     next();
   };
