@@ -8,12 +8,6 @@
     gap: var(--spacing-xl);
 }
 
-.buttons-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-}
-
 .table-wrapper {
     margin-top: var(--spacing-md);
     overflow-x: auto;

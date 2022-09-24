@@ -2,12 +2,16 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { SessionUser } from "../web-server";
 import { z } from "zod";
 import { capitalizeFirstLetter } from "../utilities/functions";
+import { RouteGenericInterface } from "fastify/types/route";
 
+type OptionalRouteInterface = RouteGenericInterface | void;
 
-export type FastifyHandler<T = void> = (
-  req: FastifyRequest<T>,
-  res: FastifyReply
-) => Promise<void>
+export type FastifyHandler<T extends OptionalRouteInterface = void> =
+  T extends RouteGenericInterface ?
+    (req: FastifyRequest<T>, res: FastifyReply) => Promise<void>
+  :
+    (req: FastifyRequest, res: FastifyReply) => Promise<void>
+
 
 export interface UserAccountPostBody {
   email: string;

@@ -29,7 +29,7 @@ export const systemCleanup = async () => {
     SystemStat.updateByName("total_users", "0"),
     SystemStat.updateByName("total_emails", "0"),
     SystemStat.updateByName("total_addresses", "0"),
-    SystemSetting.updateByName("disable_about_page", "false"),
+    SystemSetting.updateByName("disable_docs_page", "false"),
     SystemSetting.updateByName("disable_index_page", "false"),
     SystemSetting.updateByName("disable_register_page", "false"),
   ]);

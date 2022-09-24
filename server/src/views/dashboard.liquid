@@ -1,0 +1,83 @@
+{% layout "layouts/main-layout" %}
+
+{% block head %}
+<link rel="stylesheet" href="/public/css/pages/dashboard.css" media="screen">
+<title>grap | Dashboard</title>
+{% endblock %}
+
+{% block mobile-title %}
+<h1 class="mobile-page-title">Dashboard</h1>
+{% endblock %}
+
+{% block body %}
+<div class="wrapper">
+    {% if flashMessage %}
+        {% render "partials/alert", text: flashMessage %}
+    {% endif %}
+    <div class="article">
+        <p>
+            You are using {{ addresses.length }} out of {{ maxAddresses }} email addresses.
+        </p>
+    </div>
+
+    <div>
+        <h3 class="article-heading">Your email addresses</h3>
+        <div class="article">
+            <div class="buttons-wrapper">
+                <button
+                    id="generate"
+                    type="submit"
+                    class="btn btn-primary"
+                    {% if addresses.length >= maxAddresses %} disabled {% endif %}
+                >
+                    Generate a new one
+                </button>
+                <a href="/dashboard">Refresh</a>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Address</th>
+                            <th>Expires in</th>
+                            <th>Inbox</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for addr in addresses %}
+                            <tr>
+                                <td>{{ addr.address }}</td>
+                                <td>{{ addr.expiresIn }}</td>
+                                <td>
+                                    <a href={{ "/dashboard/inbox/" | append: addr.id }}>
+                                        {{ addr.inboxEmails }} emails
+                                    </a>
+                                </td>
+                                <td>
+                                    <form method="post" action="dashboard/address">
+                                        <input type="hidden" name="address" value={{ addr.id }}>
+                                        <button type="submit" class="btn btn-secondary">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let isGenerating = false;
+    const btn = document.getElementById("generate");
+    btn.addEventListener("click", () => {
+        // prevent spam clicking
+        if (isGenerating) return;
+        isGenerating = true;
+        fetch("/api/v1/address")
+            .then(() => window.location.reload());
+    });
+</script>
+{% endblock %}

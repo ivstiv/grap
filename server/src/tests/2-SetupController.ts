@@ -1,7 +1,7 @@
 import assert from "assert";
 import { webServer } from "../web-server";
 import { User } from "../models/User";
-import { systemCleanup, waitForStatToUpdate } from "./utils";
+import { Cookie, systemCleanup, waitForStatToUpdate } from "./utils";
 import parse from "node-html-parser";
 import { unescape } from "lodash";
 import { Role } from "../models/Role";
@@ -89,11 +89,27 @@ describe("Setup routes", () => {
           payload: scenario.payload,
         });
 
-        const root = parse(setupRes.body);
-        const title = root.querySelector("mark[data-test-id='error']");
+        const sessionCookie = setupRes.cookies.find(c =>
+          (c as Cookie).name === "sessionId"
+        ) as Cookie;
 
-        assert.strictEqual(setupRes.statusCode, 400);
-        assert.strictEqual(unescape(title?.innerText), scenario.expectedError);
+        const redirectLocation = setupRes.headers["location"];
+        assert.strictEqual(setupRes.statusCode, 302);
+        assert.strictEqual(redirectLocation, "/setup");
+
+        const setupRes2 = await webServer.inject({
+          method: "GET",
+          url: redirectLocation,
+          cookies: {
+            [sessionCookie.name]: `${sessionCookie.value}`,
+          },
+        });
+
+        const root = parse(setupRes2.body);
+        const alert = root.querySelector("p[data-test-id='alert']");
+
+        assert.strictEqual(setupRes2.statusCode, 200);
+        assert.strictEqual(unescape(alert?.innerText), scenario.expectedError);
       }
     });
 

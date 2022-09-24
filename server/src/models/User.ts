@@ -129,7 +129,7 @@ export class User extends Model {
   }
 
 
-  async createToken (note = "Empty token") {
+  async createToken (note = "Empty note") {
     return Token.query().insert({
       note,
       token: randomBytes(20).toString("hex"),

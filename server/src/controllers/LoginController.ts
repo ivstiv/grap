@@ -8,7 +8,7 @@ import {
 
 
 const show: FastifyHandler =
-  async (_req, res) => res.view("/src/views/pages/login.ejs");
+  async (_req, res) => res.view("/src/views/login");
 
 
 const login: FastifyHandler<UserAccountFormHandler> =
@@ -21,26 +21,21 @@ const login: FastifyHandler<UserAccountFormHandler> =
         email,
         password,
       } = parsedBody.error.flatten().fieldErrors;
-      return res
-        .code(400)
-        .view("/src/views/pages/login.ejs", {
-          error: email?.at(0) ?? password?.at(0),
-        });
+      req.session.flashMessage = email?.at(0) ?? password?.at(0);
+      return res.redirect("/login");
     }
 
     const user = await User.getByEmail(req.body.email);
 
     if (!user) {
-      return res
-        .code(400)
-        .view("/src/views/pages/login.ejs", { error: "Wrong email or password." });
+      req.session.flashMessage = "Wrong email or password.";
+      return res.redirect("/login");
     }
 
     const isPasswordValid = await compare(req.body.password, user.password);
     if (!isPasswordValid) {
-      return res
-        .code(400)
-        .view("/src/views/pages/login.ejs", { error: "Wrong email or password." });
+      req.session.flashMessage = "Wrong email or password.";
+      return res.redirect("/login");
     }
 
     req.session.user = {

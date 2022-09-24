@@ -8,10 +8,11 @@
     gap: var(--spacing-xl);
 }
 
-.buttons-wrapper {
+.token-form {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+    flex-flow: wrap;
+    gap: var(--spacing-md);
+    align-items: end;
 }
 
 .table-wrapper {

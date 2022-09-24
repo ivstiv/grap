@@ -27,3 +27,7 @@
     color: var(--color-contrast-higher);
     border: 2px solid var(--color-contrast-higher);
 }
+
+.btn:disabled {
+    background-color: var(--color-contrast-lower);
+}

@@ -1,6 +1,5 @@
 import Fastify from "fastify";
 import view from "@fastify/view";
-import ejs from "ejs"; // TO-DO: delete ejs completely in the end of the redesign
 import { loginRoutes } from "./routes/login";
 import { rootRoutes } from "./routes/root";
 import { setupRoutes } from "./routes/setup";
@@ -16,7 +15,6 @@ import { apiV1Routes } from "./routes/api-v1";
 import { settingsRoutes } from "./routes/settings";
 import { adminRoutes } from "./routes/admin";
 import path from "path/posix";
-import { newRoutes } from "./routes/new";
 import { Liquid } from "liquidjs";
 
 
@@ -62,6 +60,11 @@ export const webServer = Fastify({
 webServer.register(fastifyStaticPlugin, {
   root: path.join(__dirname, "public"),
   prefix: "/public/",
+  cacheControl: true,
+  maxAge: 86400000, // 1 day
+  immutable: true,
+  lastModified: true,
+  etag: true,
 });
 webServer.register(formBodyPlugin);
 webServer.register(fastifyCookiePlugin);
@@ -73,12 +76,8 @@ webServer.register(fastifySessionPlugin, {
   },
 });
 
-// webServer.register(view, {
-//   engine: { ejs },
-// });
-
 const liquid = new Liquid({
-  root: "/app/src/views/new",
+  root: "/app/src/views",
   extname: ".liquid",
   cache: NODE_ENV === "production",
 });
@@ -96,15 +95,10 @@ webServer.register(dashboardRoutes, { prefix: "dashboard" });
 webServer.register(settingsRoutes, { prefix: "settings" });
 webServer.register(adminRoutes, { prefix: "admin" });
 webServer.register(apiV1Routes, { prefix: "api/v1" });
-webServer.register(newRoutes, { prefix: "new" });
 
 webServer.setNotFoundHandler(ErrorController.notFound);
 
-webServer.decorateReply("locals", {
-  isLoggedIn: false,
-  isAdmin: false,
-  domain: DOMAIN,
-});
+webServer.decorateReply("locals", null);
 
 // auto populate common variables for all views
 webServer.addHook("onRequest", async (request, reply) => {

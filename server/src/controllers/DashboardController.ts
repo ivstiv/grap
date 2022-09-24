@@ -26,15 +26,9 @@ const index: FastifyHandler =
           .reduce((sum, _curr) => sum+1, 0),
       }));
 
-    const flashMessage = req.session.flashMessage;
-    req.session.flashMessage = undefined; // reset the variable
-
-    return res.view("/src/views/pages/dashboard.ejs", {
-      isLoggedIn: true,
-      isAdmin: user.hasRole("admin"),
+    return res.view("/src/views/dashboard", {
       addresses: formattedAddresses,
       maxAddresses: user.settings.maxEmailAddresses,
-      flashMessage,
     });
   };
 
@@ -92,7 +86,7 @@ const showInbox: FastifyHandler<ShowInboxHandler> =
     const { id } = req.params;
     const parsedId = parseInt(id);
     if(isNaN(parsedId)) {
-      return res.code(400).view("/src/views/pages/400.ejs", {
+      return res.code(400).view("/src/views/400", {
         isLoggedIn: !!req.session.user,
       });
     }
@@ -101,7 +95,7 @@ const showInbox: FastifyHandler<ShowInboxHandler> =
     const addr = user.addresses.find(a => a.id === parseInt(id));
 
     if(!addr) {
-      return res.code(404).view("/src/views/pages/404.ejs", {
+      return res.code(404).view("/src/views/404", {
         isLoggedIn: !!req.session.user,
       });
     }
@@ -109,15 +103,7 @@ const showInbox: FastifyHandler<ShowInboxHandler> =
     const emails = await addr.getEmails();
     emails.sort((a, b ) => b.id - a.id);
 
-    const flashMessage = req.session.flashMessage;
-    req.session.flashMessage = undefined; // reset the variable
-
-    return res.view("/src/views/pages/inbox.ejs", {
-      isLoggedIn: !!req.session.user,
-      isAdmin: user.hasRole("admin"),
-      emails,
-      flashMessage,
-    });
+    return res.view("/src/views/inbox", { emails, address: addr.address });
   };
 
 

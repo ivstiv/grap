@@ -136,7 +136,7 @@ describe("Dashboard routes", () => {
         });
 
         const root = parse(dashboardRes.body);
-        const title = root.querySelector("mark[data-test-id='flash-message']");
+        const title = root.querySelector("p[data-test-id='alert']");
 
         assert.strictEqual(dashboardRes.statusCode, 200);
         assert.strictEqual(unescape(title?.innerText), scenario.expectedError);
@@ -183,7 +183,7 @@ describe("Dashboard routes", () => {
       });
 
       const root = parse(dashboardRes.body);
-      const title = root.querySelector("mark[data-test-id='flash-message']");
+      const title = root.querySelector("p[data-test-id='alert']");
 
       assert.strictEqual(dashboardRes.statusCode, 200);
       assert.strictEqual(unescape(title?.innerText), "Address deleted successfully!");
@@ -359,7 +359,7 @@ describe("Dashboard routes", () => {
         });
 
         const root = parse(dashboardRes.body);
-        const title = root.querySelector("mark[data-test-id='flash-message']");
+        const title = root.querySelector("p[data-test-id='alert']");
 
         assert.strictEqual(dashboardRes.statusCode, 200);
         assert.strictEqual(unescape(title?.innerText), scenario.expectedError);
@@ -407,7 +407,7 @@ describe("Dashboard routes", () => {
       });
 
       const root = parse(dashboardRes.body);
-      const title = root.querySelector("mark[data-test-id='flash-message']");
+      const title = root.querySelector("p[data-test-id='alert']");
 
       assert.strictEqual(dashboardRes.statusCode, 200);
       assert.strictEqual(unescape(title?.innerText), "Address deleted successfully!");

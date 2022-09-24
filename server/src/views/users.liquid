@@ -1,0 +1,72 @@
+{% layout "layouts/main-layout" %}
+
+{% block mobile-title %}
+<h1 class="mobile-page-title">System Users</h1>
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/public/css/pages/users.css" media="screen">
+<title>grap | System Users</title>
+{% endblock %}
+
+{% block body %}
+<div class="wrapper">
+    {% if flashMessage %}
+        <div class="alert-wrapper">
+            {% render "partials/alert", text: flashMessage %}
+        </div>
+    {% endif %}
+
+    <div>
+        <h3 class="article-heading">System Users</h3>
+        <div class="article">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>Created at</th>
+                            <th>Max Emails</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.createdAt }}</td>
+                                    <form method="post" action="/admin/user" class="form-update">
+                                        <td>
+                                            <input name="maxEmails" type="number" value={{ user.settings.maxEmailAddresses }} required>
+                                            <input type="hidden" name="user" value={{ user.id }}>
+                                        </td>
+                                        <td>
+                                            <button type="submit" class="btn btn-secondary">Save</button>
+                                        </td>
+                                    </form>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="pagination-wrapper">
+                    <div class="pagination">
+                        <a href={{ "/admin/users?page=" | append: prevPage }}>
+                            <button class="btn btn-invisible">
+                                {% render "partials/icon", name: "arrow-left-circle" %}
+                            </button>
+                        </a>
+                        <p>Page {{ currentPage }} of {{ totalPages }}</p>
+                        <a href={{ "/admin/users?page=" | append: nextPage }}>
+                            <button class="btn btn-invisible">
+                                {% render "partials/icon", name: "arrow-right-circle" %}
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

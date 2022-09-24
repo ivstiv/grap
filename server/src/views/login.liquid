@@ -10,6 +10,13 @@
 {% endblock %}
 
 {% block body %}
+
+{% if flashMessage %}
+    <div class="alert-wrapper">
+        {% render "partials/alert", text: flashMessage %}
+    </div>
+{% endif %}
+
 <form method="post" action="login">
     <h1 class="page-title">Login</h1>
     <div>

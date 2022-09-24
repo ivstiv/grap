@@ -164,33 +164,33 @@ describe("System settings routes", () => {
       const testScenarios = [
         {
           payload: {},
-          expectedError: "disable_about_page is required",
+          expectedError: "disable_docs_page is required",
         },
         {
-          payload: { disable_about_page: "asd" },
-          expectedError: "disable_about_page must have a value of true or false.",
+          payload: { disable_docs_page: "asd" },
+          expectedError: "disable_docs_page must have a value of true or false.",
         },
         {
-          payload: { disable_about_page: "true" },
+          payload: { disable_docs_page: "true" },
           expectedError: "disable_index_page is required",
         },
         {
           payload: {
-            disable_about_page: "true",
+            disable_docs_page: "true",
             disable_index_page: false,
           },
           expectedError: "disable_index_page must be a string",
         },
         {
           payload: {
-            disable_about_page: 0,
+            disable_docs_page: 0,
             disable_index_page: false,
           },
-          expectedError: "disable_about_page must be a string",
+          expectedError: "disable_docs_page must be a string",
         },
         {
           payload: {
-            disable_about_page: "true",
+            disable_docs_page: "true",
             disable_index_page: "false",
           },
           expectedError: "disable_register_page is required",
@@ -220,7 +220,7 @@ describe("System settings routes", () => {
         });
 
         const root = parse(settingsRes.body);
-        const title = root.querySelector("mark[data-test-id='flash-message']");
+        const title = root.querySelector("p[data-test-id='alert']");
 
         assert.strictEqual(settingsRes.statusCode, 200);
         assert.strictEqual(unescape(title?.innerText), scenario.expectedError);
@@ -254,7 +254,7 @@ describe("System settings routes", () => {
           [sessionCookie.name]: `${sessionCookie.value}`,
         },
         payload: {
-          disable_about_page: "true",
+          disable_docs_page: "true",
           disable_index_page: "true",
           disable_register_page: "true",
         },

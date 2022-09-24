@@ -4,7 +4,7 @@ import { Model } from "objection";
 export type SettingName =
   | "disable_register_page"
   | "disable_index_page"
-  | "disable_about_page";
+  | "disable_docs_page";
 
 
 export class SystemSetting extends Model {
@@ -18,7 +18,7 @@ export class SystemSetting extends Model {
     const settings = await Promise.all([
       SystemSetting.getByName("disable_register_page"),
       SystemSetting.getByName("disable_index_page"),
-      SystemSetting.getByName("disable_about_page"),
+      SystemSetting.getByName("disable_docs_page"),
     ]);
     return settings;
   }
@@ -44,7 +44,7 @@ export class SystemSetting extends Model {
     const defaultValues: Record<SettingName, string> = {
       "disable_register_page": "false",
       "disable_index_page": "false",
-      "disable_about_page": "false",
+      "disable_docs_page": "false",
     };
 
     return SystemSetting.query().insertAndFetch({

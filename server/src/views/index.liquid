@@ -12,9 +12,9 @@
         <p class="intro-body">
             An extremely simple system to manage temporary email addresses.
             It ships with the bare minimum of features needed for automation.
-            You can easily <a href="#">self-host it</a> or use this demo for free
+            You can easily <a href="https://hub.docker.com/r/ivstiv/grap">self-host it</a> or use this demo for free
             to get a taste of its simplicity. Check out the documentation for 
-            its REST API <a href="/new/documentation">here</a>.
+            its REST API <a href="/documentation">here</a>.
         </p>
     </div>
 
@@ -26,11 +26,11 @@
             </p>
 <pre>
     <code>
-    curl -H "Authorization: Bearer &lt;token-here&gt;" https://grap.email/api/v1/address
+    curl -H "Authorization: Bearer &lt;token-here&gt;" https://{{ domain }}/api/v1/address
     </code>
 </pre>
             <p>
-                This will give you something like theoretical.seahorse@grap.email, a temporary address valid for 30 minutes.
+                This will give you something like theoretical.seahorse@{{ domain }}, a temporary address valid for 30 minutes.
             </p>
         </div>
     </div>
@@ -46,7 +46,7 @@
 <pre>
     <code>
     // generate a temporary address
-    const emailAdr = await fetch('https://grap.email/api/v1/address', {
+    const emailAdr = await fetch('https://{{ domain }}/api/v1/address', {
         headers: {
             'Authorization': `Bearer ${token}`,
         },
@@ -57,7 +57,7 @@
     
     let email;
     while(email?.data?.content === undefined) {
-        email = await fetch(`https://grap.email/api/v1/inbox/${emailAdr.data}/latest`, {
+        email = await fetch(`https://{{ domain }}/api/v1/inbox/${emailAdr.data}/latest`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
             },
@@ -81,7 +81,7 @@
                 At the moment everything is running from a single docker container on a tiny VPS.
                 Even the database is a file powered sqlite.
                 I am planning to keep it that way as long as I can.
-                The project is actively maintained, I am just strongly encouraging you to host it yourself.
+                The project is actively <a href="https://github.com/ivstiv/grap">maintained</a>, I am just strongly encouraging you to host it yourself.
                 If you need any help with the setup or maintenance you can find me in my <a href="https://discord.gg/VMSDGVD" target="_blank">discord server</a> or just spam the service with emails.
                 I might notice the outage and reply..
             </p>

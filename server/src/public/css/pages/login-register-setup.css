@@ -1,3 +1,10 @@
+.alert-wrapper {
+    width: 70%;
+    margin-top: var(--spacing-xl);
+    margin-left: auto;
+    margin-right: auto;
+}
+
 form {
     display: flex;
     flex-direction: column;

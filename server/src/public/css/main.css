@@ -4,6 +4,10 @@
 @import "components/labels.css";
 @import "components/code.css";
 @import "components/article.css";
+@import "components/table.css";
+@import "components/alert.css";
+@import "components/pagination.css";
+@import "components/switch.css";
 
 
 :root, :root.light {
@@ -12,6 +16,7 @@
     --background-color-hover: #E1E1E1;
 
     --color-primary: #3353D1;
+    --alert-color: #d5dcf6;
 
     --spacing-tiny: .75rem;
     --spacing-sm: 1rem;
@@ -120,4 +125,9 @@ a, label, p {
 
 a {
     color: var(--color-primary);
+}
+
+mark {
+    background-color: var(--alert-color);
+    color: black;
 }

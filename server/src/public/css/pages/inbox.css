@@ -1,0 +1,35 @@
+.wrapper {
+    width: 70%;
+    margin-top: var(--spacing-xl);
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+}
+
+.table-wrapper {
+    margin-top: var(--spacing-md);
+    overflow-x: auto;
+}
+
+.refresher {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.refresher-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.refresher progress {
+    width: 25%;
+}
+
+.button-wrapper {
+    display: flex;
+    gap: var(--spacing-sm);
+}

@@ -10,7 +10,7 @@
         <meta name="robots" content="index, follow">
         <meta property="og:title" content="grap | Temporary email">
         <meta property="og:description" content="Simple service for generating temporary email addresses.">
-        <meta property="og:url" content="https://grap.email">
+        <meta property="og:url" content="https://{{ domain }}">
         <meta name="description" content="Simple service for generating temporary email addresses.">
         <link rel="stylesheet" href="/public/css/main.css" media="screen">
         <link rel="stylesheet" href="/public/css/navigation.css" media="screen">
@@ -46,65 +46,79 @@
                 </div>
                 <ul>
                     <li>
-                        <a href="/new/index">
+                        <a href="/">
                             {% render "partials/icon", name: "home" %}
                             <span>Home</span>
                         </a>
                     </li>
+                    {% if isLoggedIn == false %}
                     <li>
-                        <a href="/new/login">
+                        <a href="/login">
                             {% render "partials/icon", name: "log-in" %}
                             <span>Login</span>
                         </a>
                     </li>
                     <li>
-                        <a href="/new/register">
+                        <a href="/register">
                             {% render "partials/icon", name: "user-plus" %}
                             <span>Register</span>
                         </a>
                     </li>
+                    {% endif %}
                     <li>
-                        <a href="/new/documentation">
+                        <a href="/documentation">
                             {% render "partials/icon", name: "file-text" %}
                             <span>Documentation</span>
                         </a>
                     </li>
                     <li>
+                        <a href="https://github.com/ivstiv/grap" target="_blank">
+                            {% render "partials/icon", name: "github" %}
+                            <span>Github</span>
+                        </a>
+                    </li>
+
+                    {% if isAdmin %}
+                    <li>
                         <hr>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="/admin/system-settings">
                             {% render "partials/icon", name: "tool" %}
                             <span>System settings</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="/admin/users?page=1">
                             {% render "partials/icon", name: "users" %}
                             <span>System users</span>
                         </a>
                     </li>
+                    {% endif %}
+
+                    {% if isLoggedIn %}
                     <li>
                         <hr>
                     </li>
                     <li>
-                        <a href="/new/dashboard">
+                        <a href="/dashboard">
                             {% render "partials/icon", name: "grid" %}
                             <span>Dashboard</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="/settings">
                             {% render "partials/icon", name: "settings" %}
                             <span>Settings</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="/logout">
                             {% render "partials/icon", name: "log-out" %}
                             <span>Logout</span>
                         </a>
                     </li>
+                    {% endif %}
                 </ul>
             </nav>
             <div>
