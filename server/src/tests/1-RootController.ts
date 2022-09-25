@@ -119,11 +119,11 @@ describe("Root pages", () => {
   });
 
 
-  describe("GET /about", () => {
+  describe("GET /documentation", () => {
     it("Should return status code 200", async () => {
       const res = await webServer.inject({
         method: "GET",
-        url: "/about",
+        url: "/documentation",
       });
 
       assert.strictEqual(res.statusCode, 200);
@@ -167,95 +167,14 @@ describe("Root pages", () => {
       ] = await Promise.all([
         webServer.inject({
           method: "GET",
-          url: "/about",
+          url: "/documentation",
           cookies: {
             [sessionCookieUser.name]: `${sessionCookieUser.value}`,
           },
         }),
         webServer.inject({
           method: "GET",
-          url: "/about",
-          cookies: {
-            [sessionCookieAdmin.name]: `${sessionCookieAdmin.value}`,
-          },
-        }),
-      ]);
-
-      assert.strictEqual(resUser.statusCode, 200);
-      assert.strictEqual(resAdmin.statusCode, 200);
-    });
-
-
-    it("Should redirect to login because about is disabled", async () => {
-      await SystemSetting.updateByName("disable_about_page", "true");
-      const res = await webServer.inject({
-        method: "GET",
-        url: "/about",
-      });
-
-      const redirectLocation = res.headers["location"];
-      assert.strictEqual(res.statusCode, 302);
-      assert.strictEqual(redirectLocation, "/login");
-    });
-  });
-
-
-  describe("GET /docs", () => {
-    it("Should return status code 200", async () => {
-      const res = await webServer.inject({
-        method: "GET",
-        url: "/docs",
-      });
-
-      assert.strictEqual(res.statusCode, 200);
-    });
-
-
-    it("Should return the page with a user session", async () => {
-      const [
-        loginResUser,
-        loginResAdmin,
-      ] = await Promise.all([
-        webServer.inject({
-          method: "POST",
-          url: "/login",
-          payload: {
-            email: notAdmin.email,
-            password: "123456",
-          },
-        }),
-        webServer.inject({
-          method: "POST",
-          url: "/login",
-          payload: {
-            email: admin.email,
-            password: "123456",
-          },
-        }),
-      ]);
-
-      const sessionCookieUser = loginResUser.cookies.find(c =>
-        (c as Cookie).name === "sessionId"
-      ) as Cookie;
-
-      const sessionCookieAdmin = loginResAdmin.cookies.find(c =>
-        (c as Cookie).name === "sessionId"
-      ) as Cookie;
-
-      const [
-        resUser,
-        resAdmin,
-      ] = await Promise.all([
-        webServer.inject({
-          method: "GET",
-          url: "/docs",
-          cookies: {
-            [sessionCookieUser.name]: `${sessionCookieUser.value}`,
-          },
-        }),
-        webServer.inject({
-          method: "GET",
-          url: "/docs",
+          url: "/documentation",
           cookies: {
             [sessionCookieAdmin.name]: `${sessionCookieAdmin.value}`,
           },

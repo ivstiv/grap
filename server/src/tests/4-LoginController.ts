@@ -63,11 +63,27 @@ describe("Login routes", () => {
           payload: scenario.payload,
         });
 
-        const root = parse(loginRes.body);
-        const title = root.querySelector("mark[data-test-id='error']");
+        const sessionCookie = loginRes.cookies.find(c =>
+          (c as Cookie).name === "sessionId"
+        ) as Cookie;
 
-        assert.strictEqual(loginRes.statusCode, 400);
-        assert.strictEqual(unescape(title?.innerText), scenario.expectedError);
+        const redirectLocation = loginRes.headers["location"];
+        assert.strictEqual(loginRes.statusCode, 302);
+        assert.strictEqual(redirectLocation, "/login");
+
+        const loginRes2 = await webServer.inject({
+          method: "GET",
+          url: redirectLocation,
+          cookies: {
+            [sessionCookie.name]: `${sessionCookie.value}`,
+          },
+        });
+
+        const root = parse(loginRes2.body);
+        const alert = root.querySelector("p[data-test-id='alert']");
+
+        assert.strictEqual(loginRes2.statusCode, 200);
+        assert.strictEqual(unescape(alert?.innerText), scenario.expectedError);
       }
     });
 

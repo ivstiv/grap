@@ -1,0 +1,100 @@
+aside {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-shrink: 0;
+    flex-grow: 1;
+    width: 100%;
+    height: 100vh;
+    max-width: 320px;
+    background-color: var(--background-color-secondary);
+    z-index: 10;
+}
+
+nav {
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-md);
+}
+
+.logo {
+    font-size: 4rem;
+    letter-spacing: .5rem;
+}
+
+nav ul {
+    list-style: none;
+}
+
+nav li a {
+    display: flex;
+    text-decoration: none;
+    font-size: 1.8rem;
+    border-radius: var(--border-radius);
+    padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
+    font-weight: lighter;
+}
+
+nav li a:hover {
+    text-decoration: none;
+    background-color: var(--background-color-hover);
+    transition: all .2s ease;
+}
+
+nav li a:hover svg,
+nav li a:hover span {
+    color: var(--color-primary);
+    stroke: var(--color-primary);
+    transition: all .2s ease;
+}
+
+nav li a.active svg,
+nav li a.active span {
+    stroke: var(--color-primary);
+    color: var(--color-primary);
+    transition: all .2s ease;
+}
+
+.nav-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5rem;
+}
+
+.nav-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: 1.6rem;
+}
+
+.nav-footer span {
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Show the header and nav toggles only on smaller screens */
+.nav-toggle, header {
+    display: none;
+}
+
+@media screen and (max-width: 1023px) {
+    .nav-toggle {
+        display: block;
+    }
+    header {
+        display: flex;
+        position: sticky;
+        justify-content: space-between;
+        padding: var(--spacing-md);
+        border-bottom: 1px solid black;
+    }
+    aside {
+        transform: translateX(-100%);
+        transition: transform .5s;
+    }
+}

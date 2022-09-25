@@ -15,8 +15,6 @@ const index: FastifyHandler<IndexUsersHandler> =
       throw new Error("Session user is missing!");
     }
 
-    const user = await User.getById(req.session.user.id);
-
     const schema = z.object({
       page: numericStringConstraint("page"),
     });
@@ -38,14 +36,8 @@ const index: FastifyHandler<IndexUsersHandler> =
 
     const totalPages = Math.ceil(userList.total/PAGE_SIZE);
 
-    const flashMessage = req.session.flashMessage;
-    req.session.flashMessage = undefined; // reset the variable
-
-    return res.view("/src/views/pages/users.ejs", {
-      flashMessage,
+    return res.view("/src/views/users", {
       users: userList.results,
-      isLoggedIn: !!req.session.user,
-      isAdmin: user.hasRole("admin"),
       totalPages,
       currentPage,
       prevPage: currentPage > 1 ? currentPage - 1 : currentPage,

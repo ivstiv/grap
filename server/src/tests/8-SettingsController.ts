@@ -120,7 +120,7 @@ describe("Settings routes", () => {
         });
 
         const root = parse(settingsRes.body);
-        const title = root.querySelector("mark[data-test-id='flash-message']");
+        const title = root.querySelector("p[data-test-id='alert']");
 
         assert.strictEqual(settingsRes.statusCode, 200);
         assert.strictEqual(unescape(title?.innerText), scenario.expectedError);
@@ -166,7 +166,7 @@ describe("Settings routes", () => {
       });
 
       const root = parse(settingsRes.body);
-      const title = root.querySelector("mark[data-test-id='flash-message']");
+      const title = root.querySelector("p[data-test-id='alert']");
 
       assert.strictEqual(settingsRes.statusCode, 200);
       assert.strictEqual(unescape(title?.innerText), "Access token created successfully!");
@@ -216,7 +216,7 @@ describe("Settings routes", () => {
       });
 
       const root = parse(settingsRes.body);
-      const title = root.querySelector("mark[data-test-id='flash-message']");
+      const title = root.querySelector("p[data-test-id='alert']");
 
       assert.strictEqual(settingsRes.statusCode, 200);
       assert.strictEqual(unescape(title?.innerText), "You have reached your token limit.");
@@ -297,7 +297,7 @@ describe("Settings routes", () => {
         });
 
         const root = parse(settingsRes.body);
-        const title = root.querySelector("mark[data-test-id='flash-message']");
+        const title = root.querySelector("p[data-test-id='alert']");
 
         assert.strictEqual(settingsRes.statusCode, 200);
         assert.strictEqual(unescape(title?.innerText), scenario.expectedError);
@@ -344,7 +344,7 @@ describe("Settings routes", () => {
       });
 
       const root = parse(settingsRes.body);
-      const title = root.querySelector("mark[data-test-id='flash-message']");
+      const title = root.querySelector("p[data-test-id='alert']");
 
       assert.strictEqual(settingsRes.statusCode, 200);
       assert.strictEqual(unescape(title?.innerText), "Access token deleted successfully!");

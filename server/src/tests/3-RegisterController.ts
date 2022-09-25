@@ -1,7 +1,7 @@
 import assert from "assert";
 import { webServer } from "../web-server";
 import { User } from "../models/User";
-import { systemCleanup, waitForStatToUpdate } from "./utils";
+import { Cookie, systemCleanup, waitForStatToUpdate } from "./utils";
 import { SystemSetting } from "../models/SystemSetting";
 import parse from "node-html-parser";
 import { unescape } from "lodash";
@@ -81,11 +81,27 @@ describe("Register routes", () => {
           payload: scenario.payload,
         });
 
-        const root = parse(registerRes.body);
-        const title = root.querySelector("mark[data-test-id='error']");
+        const sessionCookie = registerRes.cookies.find(c =>
+          (c as Cookie).name === "sessionId"
+        ) as Cookie;
 
-        assert.strictEqual(registerRes.statusCode, 400);
-        assert.strictEqual(unescape(title?.innerText), scenario.expectedError);
+        const redirectLocation = registerRes.headers["location"];
+        assert.strictEqual(registerRes.statusCode, 302);
+        assert.strictEqual(redirectLocation, "/register");
+
+        const registerRes2 = await webServer.inject({
+          method: "GET",
+          url: redirectLocation,
+          cookies: {
+            [sessionCookie.name]: `${sessionCookie.value}`,
+          },
+        });
+
+        const root = parse(registerRes2.body);
+        const alert = root.querySelector("p[data-test-id='alert']");
+
+        assert.strictEqual(registerRes2.statusCode, 200);
+        assert.strictEqual(unescape(alert?.innerText), scenario.expectedError);
       }
     });
 
@@ -136,12 +152,28 @@ describe("Register routes", () => {
         },
       });
 
+      const sessionCookie = res.cookies.find(c =>
+        (c as Cookie).name === "sessionId"
+      ) as Cookie;
+
+      const redirectLocation = res.headers["location"];
+      assert.strictEqual(res.statusCode, 302);
+      assert.strictEqual(redirectLocation, "/register");
+
+      const res2 = await webServer.inject({
+        method: "GET",
+        url: redirectLocation,
+        cookies: {
+          [sessionCookie.name]: `${sessionCookie.value}`,
+        },
+      });
+
       const userListAfter = await User.query();
 
-      const root = parse(res.body);
-      const title = root.querySelector("mark[data-test-id='error']");
+      const root = parse(res2.body);
+      const title = root.querySelector("p[data-test-id='alert']");
 
-      assert.strictEqual(res.statusCode, 400);
+      assert.strictEqual(res2.statusCode, 200);
       assert.strictEqual(userListBefore.length === userListAfter.length, true);
       assert.strictEqual(unescape(title?.innerText), "User with that email already exists.");
     });

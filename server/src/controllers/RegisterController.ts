@@ -7,7 +7,7 @@ import {
 
 
 const show: FastifyHandler =
-  async (_req, res) => res.view("/src/views/pages/register.ejs");
+  async (_req, res) => res.view("/src/views/register");
 
 
 const register: FastifyHandler<UserAccountFormHandler> =
@@ -20,19 +20,15 @@ const register: FastifyHandler<UserAccountFormHandler> =
         email,
         password,
       } = parsedBody.error.flatten().fieldErrors;
-      return res
-        .code(400)
-        .view("/src/views/pages/register.ejs", {
-          error: email?.at(0) ?? password?.at(0),
-        });
+      req.session.flashMessage = email?.at(0) ?? password?.at(0);
+      return res.redirect("/register");
     }
 
     const userWithTheSameEmail = await User.getByEmail(req.body.email);
 
     if (userWithTheSameEmail) {
-      return res
-        .code(400)
-        .view("/src/views/pages/register.ejs", { error: "User with that email already exists." });
+      req.session.flashMessage = "User with that email already exists.";
+      return res.redirect("/register");
     }
 
     const user = await User.register(req.body.email, req.body.password);
@@ -41,7 +37,10 @@ const register: FastifyHandler<UserAccountFormHandler> =
       throw new Error("Failed to register user.");
     }
 
-    req.session.user = { id: user.id };
+    req.session.user = {
+      id: user.id,
+      isAdmin: user.hasRole("admin"),
+    };
     return res.redirect("/dashboard");
   };
 

@@ -1,0 +1,13 @@
+/* using the wrapper to float the controls to the right */
+.pagination-wrapper {
+    display: flex;
+}
+
+.pagination {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+    align-items: center;
+    margin-left: auto; /* float to the right */
+    order: 2; /* float to the right */
+}

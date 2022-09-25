@@ -18,6 +18,6 @@ services:
       - ../database-volume:/database-volume
     ports:
       - 3000:3000
-      - 25:3000
+      - 25:25
     networks:
       - grap-network

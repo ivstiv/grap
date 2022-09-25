@@ -14,14 +14,12 @@ const index: FastifyHandler =
     }
 
     const [
-      user,
       settings,
       stats,
       { userCount },
       { addressCount },
       { emailCount },
     ] = await Promise.all([
-      User.getById(req.session.user.id),
       SystemSetting.getAll(),
       SystemStat.getAll(),
       User.query().count("id as userCount").first() as unknown as Promise<{userCount: number}>,
@@ -36,13 +34,7 @@ const index: FastifyHandler =
       { name: "active_emails", value: emailCount },
     ];
 
-    const flashMessage = req.session.flashMessage;
-    req.session.flashMessage = undefined; // reset the variable
-
-    return res.view("/src/views/pages/system-settings.ejs", {
-      isLoggedIn: true,
-      isAdmin: user.hasRole("admin"),
-      flashMessage,
+    return res.view("/src/views/system-settings", {
       settings,
       stats: mashedStats,
     });
@@ -53,7 +45,7 @@ interface SystemSettingsHandler {
   Body: {
     disable_register_page: "true" | "false",
     disable_index_page: "true" | "false",
-    disable_about_page: "true" | "false",
+    disable_docs_page: "true" | "false",
   }
 }
 const updateSettings: FastifyHandler<SystemSettingsHandler> =
@@ -75,7 +67,7 @@ const updateSettings: FastifyHandler<SystemSettingsHandler> =
     const schema = z.object({
       disable_register_page: constraint("disable_register_page"),
       disable_index_page: constraint("disable_index_page"),
-      disable_about_page: constraint("disable_about_page"),
+      disable_docs_page: constraint("disable_docs_page"),
     });
 
     // validate the submitted form
@@ -83,12 +75,12 @@ const updateSettings: FastifyHandler<SystemSettingsHandler> =
 
     if (!parsedBody.success) {
       const {
-        disable_about_page,
+        disable_docs_page,
         disable_index_page,
         disable_register_page,
       } = parsedBody.error.flatten().fieldErrors;
       req.session.flashMessage =
-        disable_about_page?.at(0) ??
+        disable_docs_page?.at(0) ??
         disable_index_page?.at(0) ??
         disable_register_page?.at(0);
       return res.redirect("/admin/system-settings");

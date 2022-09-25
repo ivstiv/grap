@@ -1,0 +1,133 @@
+@import url(https://fonts.bunny.net/css?family=exo:500);
+@import "components/buttons.css";
+@import "components/inputs.css";
+@import "components/labels.css";
+@import "components/code.css";
+@import "components/article.css";
+@import "components/table.css";
+@import "components/alert.css";
+@import "components/pagination.css";
+@import "components/switch.css";
+
+
+:root, :root.light {
+    --background-color-primary: #fff;
+    --background-color-secondary: #F2F2F2;
+    --background-color-hover: #E1E1E1;
+
+    --color-primary: #3353D1;
+    --alert-color: #d5dcf6;
+
+    --spacing-tiny: .75rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 3rem;
+    --spacing-xl: 4rem;
+    --border-radius: .5rem;
+
+    --font: "Exo", sans-serif;
+
+    --color-contrast-lower: #D6D6D6;
+    --color-contrast-higher: #121212;
+
+    --btn-hover-color: #303030;
+
+    --dark-toggle-display: none;
+    --light-toggle-display: block;
+
+    font-size: 10px;
+}
+
+
+:root.dark {
+    --background-color-secondary: #121212;
+    --background-color-primary: #1C1C1C;
+    --color-contrast-lower: #383838;
+    --color-contrast-higher: #FAFAFA;
+    --background-color-hover: #242424;
+
+    --dark-toggle-display: block;
+    --light-toggle-display: none;
+
+    --btn-hover-color: #CCCCCC;
+}
+
+
+* {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    color: var(--color-contrast-higher);
+    font-family: var(--font);
+    margin: 0;
+    padding: 0;
+    overflow: "hidden";
+}
+
+.preload-transitions * {
+    /* https://joshfrankel.me/blog/prevent-css-transitions-on-page-load-with-es6 */
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -ms-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
+}
+
+body {
+    background-color: var(--background-color-primary);
+}
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+
+main {
+    margin-left: 0px;
+}
+
+.dark-toggle {
+    display: var(--dark-toggle-display);
+}
+
+.light-toggle {
+    display: var(--light-toggle-display);
+}
+
+.mobile-page-title {
+    font-size: 3rem;
+}
+
+.page-title {
+    font-size: 3rem;
+    display: none;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+@media screen and (min-width: 1023px) {
+    main {
+        margin-left: 320px;
+    }
+
+    .page-title {
+        display: block;
+    }
+}
+
+a, label, p {
+    font-size: 1.5rem;
+}
+
+a {
+    color: var(--color-primary);
+}
+
+mark {
+    background-color: var(--alert-color);
+    color: black;
+}

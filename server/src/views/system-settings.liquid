@@ -1,0 +1,58 @@
+{% layout "layouts/main-layout" %}
+
+{% block mobile-title %}
+<h1 class="mobile-page-title">System Settings</h1>
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/public/css/pages/system-settings.css" media="screen">
+<title>grap | System Settings</title>
+{% endblock %}
+
+{% block body %}
+<div class="wrapper">
+    {% if flashMessage %}
+        <div class="alert-wrapper">
+            {% render "partials/alert", text: flashMessage %}
+        </div>
+    {% endif %}
+    <div>
+        <h3 class="article-heading">System Settings</h3>
+        <div class="article">
+            <form method="post" action="/admin/system-settings">
+                {% for setting in settings %}
+                <p>
+                    <label>{{ setting.name }}</label>
+                    <input type="text" name={{ setting.name }} value={{ setting.value }} required>
+                </p>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <h3 class="article-heading">System Statistics</h3>
+        <div class="article">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Stat</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in stats %}
+                            <tr>
+                                <td>{{ stat.name }}</td>
+                                <td>{{ stat.value }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

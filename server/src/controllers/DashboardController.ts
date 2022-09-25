@@ -26,15 +26,9 @@ const index: FastifyHandler =
           .reduce((sum, _curr) => sum+1, 0),
       }));
 
-    const flashMessage = req.session.flashMessage;
-    req.session.flashMessage = undefined; // reset the variable
-
-    return res.view("/src/views/pages/dashboard.ejs", {
-      isLoggedIn: true,
-      isAdmin: user.hasRole("admin"),
+    return res.view("/src/views/dashboard", {
       addresses: formattedAddresses,
       maxAddresses: user.settings.maxEmailAddresses,
-      flashMessage,
     });
   };
 
@@ -92,32 +86,20 @@ const showInbox: FastifyHandler<ShowInboxHandler> =
     const { id } = req.params;
     const parsedId = parseInt(id);
     if(isNaN(parsedId)) {
-      return res.code(400).view("/src/views/pages/400.ejs", {
-        isLoggedIn: !!req.session.user,
-      });
+      return res.code(400).view("/src/views/400");
     }
 
     const user = await User.getById(req.session.user.id);
     const addr = user.addresses.find(a => a.id === parseInt(id));
 
     if(!addr) {
-      return res.code(404).view("/src/views/pages/404.ejs", {
-        isLoggedIn: !!req.session.user,
-      });
+      return res.code(404).view("/src/views/404");
     }
 
     const emails = await addr.getEmails();
     emails.sort((a, b ) => b.id - a.id);
 
-    const flashMessage = req.session.flashMessage;
-    req.session.flashMessage = undefined; // reset the variable
-
-    return res.view("/src/views/pages/inbox.ejs", {
-      isLoggedIn: !!req.session.user,
-      isAdmin: user.hasRole("admin"),
-      emails,
-      flashMessage,
-    });
+    return res.view("/src/views/inbox", { emails, address: addr });
   };
 
 
@@ -176,6 +158,43 @@ const deleteEmail: FastifyHandler<DeleteEmailHandler> =
   };
 
 
+interface ShowEmailHandler {
+  Params: {
+    inboxId: string
+    emailId: string
+  }
+}
+const showEmail: FastifyHandler<ShowEmailHandler> =
+  async (req, res) => {
+    if (!req.session.user) {
+      throw new Error("Session user is missing!");
+    }
+
+    const { inboxId, emailId } = req.params;
+    const parsedInboxId = parseInt(inboxId);
+    const parsedEmailId = parseInt(emailId);
+    if(isNaN(parsedInboxId) || isNaN(parsedEmailId)) {
+      return res.code(400).view("/src/views/400");
+    }
+
+    const user = await User.getById(req.session.user.id);
+    const addr = user.addresses.find(a => a.id === parsedInboxId);
+
+    if(!addr) {
+      return res.code(404).view("/src/views/404");
+    }
+
+    const emails = await addr.getEmails();
+    const emailToShow = emails.find(e => e.id === parsedEmailId);
+
+    if(!emailToShow) {
+      return res.code(404).view("/src/views/404");
+    }
+
+    return res.view("/src/views/email-preview", { email: emailToShow, address: addr.address });
+  };
+
+
 // compiles to a cleaner imports from TS with interop
 // import * as SomeController - MESSY
 // import SomeController - CLEAN
@@ -184,4 +203,5 @@ export default {
   deleteAddress,
   showInbox,
   deleteEmail,
+  showEmail,
 };

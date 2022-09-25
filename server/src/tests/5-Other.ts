@@ -15,11 +15,11 @@ describe("System setting", () => {
 
   it("Should update a setting", async () => {
     const settingBefore = await SystemSetting
-      .getByName("disable_about_page");
+      .getByName("disable_docs_page");
     await SystemSetting
-      .updateByName("disable_about_page", "true");
+      .updateByName("disable_docs_page", "true");
     const settingAfter = await SystemSetting
-      .getByName("disable_about_page");
+      .getByName("disable_docs_page");
     assert.strictEqual(settingBefore.value, "false");
     assert.strictEqual(settingAfter.value, "true");
   });

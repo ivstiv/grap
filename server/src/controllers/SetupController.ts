@@ -9,7 +9,7 @@ import {
 
 
 const show: FastifyHandler =
-  async (_req, res) => res.view("/src/views/pages/setup.ejs");
+  async (_req, res) => res.view("/src/views/setup");
 
 
 const createAdmin: FastifyHandler<UserAccountFormHandler> =
@@ -27,31 +27,32 @@ const createAdmin: FastifyHandler<UserAccountFormHandler> =
         email,
         password,
       } = parsedBody.error.flatten().fieldErrors;
-      return res
-        .code(400)
-        .view("/src/views/pages/setup.ejs", {
-          error: email?.at(0) ?? password?.at(0),
-        });
+      req.session.flashMessage = email?.at(0) ?? password?.at(0);
+      return res.redirect("/setup");
     }
 
     const userWithTheSameEmail = await User.getByEmail(req.body.email);
 
     if (userWithTheSameEmail) {
-      return res
-        .code(400)
-        .view("/src/views/pages/setup.ejs", { error: "User with that email already exists." });
+      req.session.flashMessage = "User with that email already exists.";
+      return res.redirect("/setup");
     }
+
     const adminRole = await Role.getByName("admin");
     if (!adminRole) {
       throw new Error("Missing admin role!");
     }
+
     const user = await User.register(req.body.email, req.body.password);
     if (!user) {
       throw new Error("Failed to register user.");
     }
     await user.$relatedQuery<Role>("roles").relate(adminRole);
 
-    req.session.user = { id: user.id };
+    req.session.user = {
+      id: user.id,
+      isAdmin: user.hasRole("admin"),
+    };
     return res.redirect("/dashboard");
   };
 

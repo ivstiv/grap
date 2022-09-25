@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="keywords" content="grap, email, smtp, smtp-server, api, testing">
+        <meta name="author" content="ivstiv">
+        <meta name="robots" content="index, follow">
+        <meta property="og:title" content="grap | Temporary email">
+        <meta property="og:description" content="Simple service for generating temporary email addresses.">
+        <meta property="og:url" content="https://{{ domain }}">
+        <meta name="description" content="Simple service for generating temporary email addresses.">
+        <link rel="stylesheet" href="/public/css/main.css" media="screen">
+        <link rel="stylesheet" href="/public/css/navigation.css" media="screen">
+        <script type="text/javascript" defer>
+            // https://joshfrankel.me/blog/prevent-css-transitions-on-page-load-with-es6
+            document.addEventListener("DOMContentLoaded",function(){
+              let node = document.querySelector('.preload-transitions');
+              node.classList.remove('preload-transitions');
+            });
+        </script>
+        <script src="/public/js/navigation.js" defer></script>
+        <script src="/public/js/theme.js" defer></script>
+        {% block head %}
+        <title>grap | Temporary email</title>
+        {% endblock %}
+    </head>
+    <body class="preload-transitions">
+        <header>
+            {% block mobile-title %}
+            <h1 class="logo">gr@p</h1>
+            {% endblock %}
+            <button class="nav-toggle btn btn-invisible">
+                {% render "partials/icon", name: "menu" %}
+            </button>
+        </header>
+        <aside>
+            <nav>
+                <div class="nav-header">
+                    <h1 class="logo">gr@p</h1>
+                    <button class="nav-toggle btn btn-invisible">
+                        {% render "partials/icon", name: "x" %}
+                    </button>
+                </div>
+                <ul>
+                    <li>
+                        <a href="/">
+                            {% render "partials/icon", name: "home" %}
+                            <span>Home</span>
+                        </a>
+                    </li>
+                    {% if isLoggedIn == false %}
+                    <li>
+                        <a href="/login">
+                            {% render "partials/icon", name: "log-in" %}
+                            <span>Login</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/register">
+                            {% render "partials/icon", name: "user-plus" %}
+                            <span>Register</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li>
+                        <a href="/documentation">
+                            {% render "partials/icon", name: "file-text" %}
+                            <span>Documentation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/ivstiv/grap" target="_blank">
+                            {% render "partials/icon", name: "github" %}
+                            <span>Github</span>
+                        </a>
+                    </li>
+
+                    {% if isAdmin %}
+                    <li>
+                        <hr>
+                    </li>
+                    <li>
+                        <a href="/admin/system-settings">
+                            {% render "partials/icon", name: "tool" %}
+                            <span>System settings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/users?page=1">
+                            {% render "partials/icon", name: "users" %}
+                            <span>System users</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% if isLoggedIn %}
+                    <li>
+                        <hr>
+                    </li>
+                    <li>
+                        <a href="/dashboard">
+                            {% render "partials/icon", name: "grid" %}
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/settings">
+                            {% render "partials/icon", name: "settings" %}
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/logout">
+                            {% render "partials/icon", name: "log-out" %}
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <div>
+                <hr>
+                <div class="nav-footer">
+                    <span>Theme:</span>
+                    <button class="theme-toggle light-toggle btn btn-invisible">
+                        {% render "partials/icon", name: "sun" %}
+                    </button>
+                    <button class="theme-toggle dark-toggle btn btn-invisible">
+                        {% render "partials/icon", name: "moon" %}
+                    </button>
+                </div>
+            </div>
+        </aside>
+        <main>
+            {% block body %}
+            {% endblock %}
+        </main>
+    </body>
+</html>

@@ -1,0 +1,105 @@
+{% layout "layouts/main-layout" %}
+
+{% block mobile-title %}
+<h1 class="mobile-page-title">Inbox</h1>
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/public/css/pages/inbox.css" media="screen">
+<title>grap | Inbox</title>
+{% endblock %}
+
+{% block body %}
+<div class="wrapper">
+    {% render "partials/alert", text: "Emails can contain malicious code that will become part of the page. Be careful viewing emails sent by untrusted sources." %}
+    <div>
+        <a href="/dashboard"><< Back</a>
+        <h3 class="article-heading">Inbox ({{ address.address }})</h3>
+        <div class="article">
+            {% if emails.length == 0 %}
+                <p>No emails received yet.</p>
+            {% endif %}
+            <div class="refresher">
+                <div class="refresher-inner">
+                    <label class="switch">
+                        <input type="checkbox" id="auto-refresh" checked>
+                        <span class="slider round"></span>
+                    </label>
+                    <label>Auto refresh</label>
+                </div>
+                <progress id="refresh-progress" value="0" max="10"></progress>
+            </div>
+            {% if emails.length > 0 %}
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>From</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for email in emails %}
+                            <tr>
+                                <td>{{ email.subject }}</td>
+                                <td>{{ email.from }}</td>
+                                <td>
+                                    <div class="button-wrapper">
+                                        <form method="post" action="email">
+                                            <input type="hidden" name="email" value={{ email.id }}>
+                                            <button type="submit" class="btn btn-secondary">Delete</button>
+                                        </form>
+
+                                        {% capture emailPreviewUrl %}
+                                            /dashboard/inbox/{{ address.id }}/email/{{ email.id }}
+                                        {% endcapture %}
+                                        <a href={{ emailPreviewUrl }}>
+                                            <button type="submit" class="btn btn-secondary">View</button>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    const autoRefreshToggle = document.getElementById("auto-refresh");
+    const refreshProgress = document.getElementById("refresh-progress");
+    let refreshCounter = 0;
+    let refreshInterval;
+
+    const startInterval = () => {
+        refreshInterval = setInterval(() => {
+            refreshCounter += 1;
+            refreshProgress.value = refreshCounter;
+            if (refreshCounter > 10) {
+                window.location.reload();
+            }
+        }, 1000);
+    };
+
+    const stopInterval = () => {
+        clearInterval(refreshInterval);
+        refreshInterval = undefined;
+    };
+    
+    if (autoRefreshToggle.checked) {
+        startInterval();
+    }
+
+    autoRefreshToggle.addEventListener("click", () => {
+        if (autoRefreshToggle.checked) {
+            startInterval();
+        } else {
+            stopInterval();
+        }
+    });
+</script>
+{% endblock %}

@@ -20,16 +20,10 @@ const index: FastifyHandler =
     const isLastAdmin = admins.length === 1
       && admins.some(a => a.id === user.id);
 
-    const flashMessage = req.session.flashMessage;
-    req.session.flashMessage = undefined; // reset the variable
-
-    return res.view("/src/views/pages/settings.ejs", {
-      isLoggedIn: true,
-      isAdmin: user.hasRole("admin"),
+    return res.view("/src/views/settings", {
       maxTokens: user.settings.maxTokens,
       isLastAdmin,
       tokens: user.tokens,
-      flashMessage,
     });
   };
 

@@ -17,5 +17,6 @@ export const dashboardRoutes: FastifyPluginCallback =
     instance.post("/address", DashboardController.deleteAddress);
     instance.get("/inbox/:id", DashboardController.showInbox);
     instance.post("/inbox/email", DashboardController.deleteEmail);
+    instance.get("/inbox/:inboxId/email/:emailId", DashboardController.showEmail);
     next();
   };

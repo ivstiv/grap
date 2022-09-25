@@ -1,0 +1,91 @@
+{% layout "layouts/main-layout" %}
+
+{% block head %}
+<link rel="stylesheet" href="/public/css/pages/index.css" media="screen">
+<title>grap | Temporary email</title>
+{% endblock %}
+
+{% block body %}
+<div class="index-wrapper">
+    <div class="article">
+        <h2 class="intro-heading">👋 Welcome to grap</h2>
+        <p class="intro-body">
+            An extremely simple system to manage temporary email addresses.
+            It ships with the bare minimum of features needed for automation.
+            You can easily <a href="https://hub.docker.com/r/ivstiv/grap">self-host it</a> or use this demo for free
+            to get a taste of its simplicity. Check out the documentation for 
+            its REST API <a href="/documentation">here</a>.
+        </p>
+    </div>
+
+    <div>
+        <h3 class="article-heading">How does it work?</h3>
+        <div class="article">
+            <p>
+                You can either use the API endpoint or experiment with the dashboard.
+            </p>
+<pre>
+    <code>
+    curl -H "Authorization: Bearer &lt;token-here&gt;" https://{{ domain }}/api/v1/address
+    </code>
+</pre>
+            <p>
+                This will give you something like theoretical.seahorse@{{ domain }}, a temporary address valid for 30 minutes.
+            </p>
+        </div>
+    </div>
+
+    <div>
+        <h3 class="article-heading">What can I do with it?</h3>
+        <div class="article">
+            <p>
+                It is really up to you: e2e testing, email propagation, other CI/CD integrations etc.
+            </p>
+            <details>
+                <summary>Javascript example</summary>
+<pre>
+    <code>
+    // generate a temporary address
+    const emailAdr = await fetch('https://{{ domain }}/api/v1/address', {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    }).then(r => r.json());
+    
+    // do the user registration
+    // wait for a confirmation email
+    
+    let email;
+    while(email?.data?.content === undefined) {
+        email = await fetch(`https://{{ domain }}/api/v1/inbox/${emailAdr.data}/latest`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        }).then(email => email.json());
+        // sleep 2 seconds before we poll again
+        await new Promise(resolve => setTimeout(resolve, 2000))
+    }
+    // parse the contents and confirm the registration
+    </code>
+</pre>
+            </details>
+        </div>
+    </div>
+
+    <hr>
+
+    <div>
+        <h3 class="article-heading">Service & Support</h3>
+        <div class="article">
+            <p>
+                At the moment everything is running from a single docker container on a tiny VPS.
+                Even the database is a file powered sqlite.
+                I am planning to keep it that way as long as I can.
+                The project is actively <a href="https://github.com/ivstiv/grap">maintained</a>, I am just strongly encouraging you to host it yourself.
+                If you need any help with the setup or maintenance you can find me in my <a href="https://discord.gg/VMSDGVD" target="_blank">discord server</a> or just spam the service with emails.
+                I might notice the outage and reply..
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

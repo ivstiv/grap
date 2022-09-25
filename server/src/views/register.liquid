@@ -1,0 +1,35 @@
+{% layout "layouts/main-layout" %}
+
+{% block mobile-title %}
+<h1 class="mobile-page-title">Register</h1>
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/public/css/pages/login-register-setup.css" media="screen">
+<title>grap | Register</title>
+{% endblock %}
+
+{% block body %}
+
+{% if flashMessage %}
+    <div class="alert-wrapper">
+        {% render "partials/alert", text: flashMessage %}
+    </div>
+{% endif %}
+
+<form method="post" action="register">
+    <h1 class="page-title">Register</h1>
+    <div>
+        <label for="email">Email</label>
+        <input type="email" name="email" required>
+    </div>
+    <div>
+        <label for="password">Password</label>
+        <input type="password" name="password" required>
+    </div>
+    <div class="form-footer">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="/login">Already have an account?</a>
+    </div>
+</form>
+{% endblock %}
