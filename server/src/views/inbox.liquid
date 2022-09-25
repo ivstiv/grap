@@ -11,13 +11,14 @@
 
 {% block body %}
 <div class="wrapper">
+    {% render "partials/alert", text: "Emails can contain malicious code that will become part of the page. Be careful viewing emails sent by untrusted sources." %}
     <div>
         <a href="/dashboard"><< Back</a>
-        <h3 class="article-heading">Inbox ({{ address }})</h3>
+        <h3 class="article-heading">Inbox ({{ address.address }})</h3>
         <div class="article">
             {% if emails.length == 0 %}
                 <p>No emails received yet.</p>
-            {% else %}
+            {% endif %}
             <div class="refresher">
                 <div class="refresher-inner">
                     <label class="switch">
@@ -28,6 +29,7 @@
                 </div>
                 <progress id="refresh-progress" value="0" max="10"></progress>
             </div>
+            {% if emails.length > 0 %}
             <div class="table-wrapper">
                 <table>
                     <thead>
@@ -48,7 +50,13 @@
                                             <input type="hidden" name="email" value={{ email.id }}>
                                             <button type="submit" class="btn btn-secondary">Delete</button>
                                         </form>
-                                        <button type="submit" class="btn btn-secondary">View</button>
+
+                                        {% capture emailPreviewUrl %}
+                                            /dashboard/inbox/{{ address.id }}/email/{{ email.id }}
+                                        {% endcapture %}
+                                        <a href={{ emailPreviewUrl }}>
+                                            <button type="submit" class="btn btn-secondary">View</button>
+                                        </a>
                                     </div>
                                 </td>
                             </tr>

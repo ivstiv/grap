@@ -413,4 +413,93 @@ describe("Dashboard routes", () => {
       assert.strictEqual(unescape(title?.innerText), "Address deleted successfully!");
     });
   });
+
+
+  describe("GET /dashboard/inbox/:id/email/:id", () => {
+    it("Should redirect to login", async () => {
+      const res = await webServer.inject({
+        method: "GET",
+        url: "/dashboard/inbox/0/email/0",
+      });
+
+      const redirectLocation = res.headers["location"];
+      assert.strictEqual(res.statusCode, 302);
+      assert.strictEqual(redirectLocation, "/login");
+    });
+
+
+    it("Should fail validation", async () => {
+      const loginRes = await webServer.inject({
+        method: "POST",
+        url: "/login",
+        payload: {
+          email: user.email,
+          password: "123456",
+        },
+      });
+
+      const sessionCookie = loginRes.cookies.find(c =>
+        (c as Cookie).name === "sessionId"
+      ) as Cookie;
+
+      const testScenarios = [
+        {
+          url: "/dashboard/inbox/some-string/email/some-string",
+          expectedStatusCode: 400,
+        },
+        {
+          url: "/dashboard/inbox//email//",
+          expectedStatusCode: 404,
+        },
+        {
+          url: "/dashboard/inbox/-1/email/-1",
+          expectedStatusCode: 404,
+        },
+      ];
+
+      for (const scenario of testScenarios) {
+        const showInboxRes = await webServer.inject({
+          method: "GET",
+          url: scenario.url,
+          cookies: {
+            [sessionCookie.name]: `${sessionCookie.value}`,
+          },
+        });
+
+        assert.strictEqual(showInboxRes.statusCode, scenario.expectedStatusCode);
+      }
+    });
+
+    it("Should show the email", async () => {
+      const addr = await user.createEmailAddress();
+      const email = await addr.insertEmail({ subject: "Test subject" });
+
+      const loginRes = await webServer.inject({
+        method: "POST",
+        url: "/login",
+        payload: {
+          email: user.email,
+          password: "123456",
+        },
+      });
+
+      const sessionCookie = loginRes.cookies.find(c =>
+        (c as Cookie).name === "sessionId"
+      ) as Cookie;
+
+      const res = await webServer.inject({
+        method: "GET",
+        url: `/dashboard/inbox/${addr.id}/email/${email.id}`,
+        cookies: {
+          [sessionCookie.name]: `${sessionCookie.value}`,
+        },
+      });
+
+      const root = parse(res.body);
+      const title = root.querySelector("h3[data-test-id='subject']");
+
+      assert.strictEqual(res.statusCode, 200);
+      assert.strictEqual(unescape(title?.innerText), "Test subject");
+    });
+  });
 });

@@ -1,0 +1,55 @@
+{% layout "layouts/main-layout" %}
+
+{% block mobile-title %}
+<h1 class="mobile-page-title">Inbox</h1>
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/public/css/pages/email-preview.css" media="screen">
+<title>grap | Inbox</title>
+{% endblock %}
+
+{% block body %}
+<div class="wrapper">
+    <a href="/dashboard"><< Back</a>
+    <div>
+        <h3 class="article-heading" data-test-id="subject">{{ email.subject }}</h3>
+        <div class="article">
+            <button class="btn btn-primary" id="preview-btn">Show markup</button>
+        </div>
+    </div>
+    
+    <div>
+        <h3 class="article-heading">Email content</h3>
+        <div class="article">
+            <pre id="code-element" style="display: none">
+                <code>
+        {{email.content | escape}}
+                </code>
+            </pre>
+            <div id="content-element">
+                {{ email.content }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let isMarkup = false;
+    const previewBtn = document.querySelector("#preview-btn");
+    const codeElement = document.querySelector("#code-element");
+    const divElement = document.querySelector("#content-element");
+    previewBtn.addEventListener("click", () => {
+        isMarkup = !isMarkup;
+        if (isMarkup) {
+            previewBtn.textContent = "Show preview";
+            codeElement.style.display = "block";
+            divElement.style.display = "none";
+        } else {
+            previewBtn.textContent = "Show markup";
+            codeElement.style.display = "none";
+            divElement.style.display = "block";
+        }
+    })
+</script>
+{% endblock %}
