@@ -77,7 +77,7 @@ webServer.register(fastifySessionPlugin, {
 });
 
 const liquid = new Liquid({
-  root: "/app/src/views",
+  root: "src/views",
   extname: ".liquid",
   cache: NODE_ENV === "production",
 });
