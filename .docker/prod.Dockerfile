@@ -14,5 +14,6 @@ COPY --from=build /app/scripts/entrypoint.sh /app
 COPY --from=build /app/dist /app/dist
 COPY --from=build /app/src/views /app/src/views
 
+EXPOSE 3000
 
 CMD ["/bin/sh", "/app/entrypoint.sh"]
