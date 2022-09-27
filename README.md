@@ -9,12 +9,25 @@
 I got tired of endless email capturing services with stupid pricing justified
 by a ton of features that I will never use.
 
-grap aims to be a simple SMTP server wrapped with an API and user system to:
+grap aims to be a simple SMTP server wrapped with an API and user system to aid automation of email based workflows.
 
-- Generate temporary email addresses on the fly
-- Grab email contents through the api
-- Be easy to consume and parse the emails from scripts
-- Simple to self-host and setup
+Features:
+
+- Web interface to manage emails & users
+- REST API to generate addresses and grab emails
+- SMTP server to receive the emails
+
+Planned features:
+
+- Multi domain support
+- API endpoint for filtering inboxes
+- Version checker in the UI
+- Domain checker for validating DNS setup
+- Statistics and more control over users
+
+## [Deploy using docker](https://hub.docker.com/r/ivstiv/grap)
+
+> Follow the steps in the image description
 
 ## Development
 
@@ -86,16 +99,4 @@ docker pull node:18-alpine
 docker build -t ivstiv/grap:latest -f .docker/prod.Dockerfile server
 docker push ivstiv/grap:latest
 docker logout
-```
-
-## Deploy with docker-compose
-
-```
-to-do
-```
-
-## Deploy with docker cli
-
-```
-to-do
 ```
