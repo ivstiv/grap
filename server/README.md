@@ -41,8 +41,7 @@ Check [npm-check-updates's documentation](https://www.npmjs.com/package/npm-chec
 ## Todos:
 
 - Match email by partial title
-- publish image on new version
-- auto redeploy on new version
+- multiple domains??
 - delete users
 - check for latest release version (may be pure frontend, public github api?)
 - This smtp error
