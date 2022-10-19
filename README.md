@@ -35,7 +35,7 @@ You'll need the following things installed on your machine.
 
 - linux-like shell environment (WSL should work, don't know about the various bash emulators)
 - Docker
-- docker-compose
+- docker compose (not docker-compose)
 - Common tools such as: curl, git, telnet
 
 1. Clone the repository
