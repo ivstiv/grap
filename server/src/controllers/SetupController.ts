@@ -43,11 +43,12 @@ const createAdmin: FastifyHandler<UserAccountFormHandler> =
       throw new Error("Missing admin role!");
     }
 
-    const user = await User.register(req.body.email, req.body.password);
+    let user = await User.register(req.body.email, req.body.password);
     if (!user) {
       throw new Error("Failed to register user.");
     }
     await user.$relatedQuery<Role>("roles").relate(adminRole);
+    user = await user.refresh();
 
     req.session.user = {
       id: user.id,
