@@ -5,7 +5,7 @@ on:
     types: [published]
 
 jobs:
-  test_pull_request:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 
