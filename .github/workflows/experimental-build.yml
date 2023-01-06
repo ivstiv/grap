@@ -3,7 +3,7 @@ name: Experimental build
 on: workflow_dispatch
 
 jobs:
-  test_pull_request:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 
