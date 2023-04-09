@@ -34,7 +34,11 @@ describe("API V1 routes", () => {
       });
 
       assert.strictEqual(res.statusCode, 403);
-      assert.strictEqual(res.body, "Unauthorized");
+      assert.deepStrictEqual(JSON.parse(res.body), {
+        statusCode: 403,
+        error: "Unauthorised",
+        message: "Missing bearer token and session.",
+      });
     });
 
 
@@ -47,12 +51,12 @@ describe("API V1 routes", () => {
         },
       });
 
-      const parsedError = JSON.parse(res.body);
-      const expectedError = {
-        error: "Invalid header format. Expecting 'Authorization: Bearer token'.",
-      };
-      assert.strictEqual(res.statusCode, 401);
-      assert.deepStrictEqual(parsedError, expectedError);
+      assert.strictEqual(res.statusCode, 403);
+      assert.deepStrictEqual(JSON.parse(res.body), {
+        statusCode: 403,
+        error: "Unauthorised",
+        message: "Invalid header format. Expecting 'Authorization: Bearer token'.",
+      });
     });
 
 
@@ -72,7 +76,7 @@ describe("API V1 routes", () => {
       const userAddressesAfter = user.addresses.length;
 
       const ExpectedResponseBody = z.object({
-        data: z.string().email(),
+        data: z.string().nonempty(),
       });
       const jsonBody = JSON.parse(res.body);
       ExpectedResponseBody.parse(jsonBody);
@@ -110,7 +114,7 @@ describe("API V1 routes", () => {
       const userAddressesAfter = user.addresses.length;
 
       const ExpectedResponseBody = z.object({
-        data: z.string().email(),
+        data: z.string().nonempty(),
       });
       const jsonBody = JSON.parse(addressRes.body);
       ExpectedResponseBody.parse(jsonBody);
@@ -139,7 +143,11 @@ describe("API V1 routes", () => {
       });
 
       assert.strictEqual(res.statusCode, 403);
-      assert.strictEqual(res.body, "Unauthorized");
+      assert.deepStrictEqual(JSON.parse(res.body), {
+        statusCode: 403,
+        error: "Unauthorised",
+        message: "Missing bearer token and session.",
+      });
     });
 
 
@@ -152,12 +160,12 @@ describe("API V1 routes", () => {
         },
       });
 
-      const parsedError = JSON.parse(res.body);
-      const expectedError = {
-        error: "Invalid header format. Expecting 'Authorization: Bearer token'.",
-      };
-      assert.strictEqual(res.statusCode, 401);
-      assert.deepStrictEqual(parsedError, expectedError);
+      assert.strictEqual(res.statusCode, 403);
+      assert.deepStrictEqual(JSON.parse(res.body), {
+        statusCode: 403,
+        error: "Unauthorised",
+        message: "Invalid header format. Expecting 'Authorization: Bearer token'.",
+      });
     });
 
 

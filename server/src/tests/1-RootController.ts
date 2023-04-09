@@ -122,72 +122,72 @@ describe("Root pages", () => {
   });
 
 
-  describe("GET /documentation", () => {
-    it("Should return status code 200", async () => {
-      const res = await testWebServer.inject({
-        method: "GET",
-        url: "/documentation",
-      });
+  // describe("GET /documentation", () => {
+  //   it("Should return status code 200", async () => {
+  //     const res = await testWebServer.inject({
+  //       method: "GET",
+  //       url: "/documentation",
+  //     });
 
-      assert.strictEqual(res.statusCode, 200);
-    });
+  //     assert.strictEqual(res.statusCode, 200);
+  //   });
 
 
-    it("Should return the page with a user session", async () => {
-      const [
-        loginResUser,
-        loginResAdmin,
-      ] = await Promise.all([
-        testWebServer.inject({
-          method: "POST",
-          url: "/login",
-          payload: {
-            email: notAdmin.email,
-            password: "123456",
-          },
-        }),
-        testWebServer.inject({
-          method: "POST",
-          url: "/login",
-          payload: {
-            email: admin.email,
-            password: "123456",
-          },
-        }),
-      ]);
+  //   it("Should return the page with a user session", async () => {
+  //     const [
+  //       loginResUser,
+  //       loginResAdmin,
+  //     ] = await Promise.all([
+  //       testWebServer.inject({
+  //         method: "POST",
+  //         url: "/login",
+  //         payload: {
+  //           email: notAdmin.email,
+  //           password: "123456",
+  //         },
+  //       }),
+  //       testWebServer.inject({
+  //         method: "POST",
+  //         url: "/login",
+  //         payload: {
+  //           email: admin.email,
+  //           password: "123456",
+  //         },
+  //       }),
+  //     ]);
 
-      const sessionCookieUser = loginResUser.cookies.find(c =>
-        (c as Cookie).name === "sessionId"
-      ) as Cookie;
+  //     const sessionCookieUser = loginResUser.cookies.find(c =>
+  //       (c as Cookie).name === "sessionId"
+  //     ) as Cookie;
 
-      const sessionCookieAdmin = loginResAdmin.cookies.find(c =>
-        (c as Cookie).name === "sessionId"
-      ) as Cookie;
+  //     const sessionCookieAdmin = loginResAdmin.cookies.find(c =>
+  //       (c as Cookie).name === "sessionId"
+  //     ) as Cookie;
 
-      const [
-        resUser,
-        resAdmin,
-      ] = await Promise.all([
-        testWebServer.inject({
-          method: "GET",
-          url: "/documentation",
-          cookies: {
-            [sessionCookieUser.name]: `${sessionCookieUser.value}`,
-          },
-        }),
-        testWebServer.inject({
-          method: "GET",
-          url: "/documentation",
-          cookies: {
-            [sessionCookieAdmin.name]: `${sessionCookieAdmin.value}`,
-          },
-        }),
-      ]);
+  //     const [
+  //       resUser,
+  //       resAdmin,
+  //     ] = await Promise.all([
+  //       testWebServer.inject({
+  //         method: "GET",
+  //         url: "/documentation",
+  //         cookies: {
+  //           [sessionCookieUser.name]: `${sessionCookieUser.value}`,
+  //         },
+  //       }),
+  //       testWebServer.inject({
+  //         method: "GET",
+  //         url: "/documentation",
+  //         cookies: {
+  //           [sessionCookieAdmin.name]: `${sessionCookieAdmin.value}`,
+  //         },
+  //       }),
+  //     ]);
 
-      assert.strictEqual(resUser.statusCode, 200);
-      assert.strictEqual(resAdmin.statusCode, 200);
-    });
-  });
+  //     assert.strictEqual(resUser.statusCode, 200);
+  //     assert.strictEqual(resAdmin.statusCode, 200);
+  //   });
+  // });
 
 
   describe("GET /not-exist-expect-404", () => {

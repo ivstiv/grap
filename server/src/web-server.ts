@@ -17,6 +17,10 @@ import { adminRoutes } from "./routes/admin";
 import path from "path/posix";
 import { Liquid } from "liquidjs";
 import { env } from "./env";
+import { jsonSchemaTransform, serializerCompiler, validatorCompiler } from "fastify-type-provider-zod";
+import fastifySwagger from "@fastify/swagger";
+import fastifySwaggerUi from "@fastify/swagger-ui";
+import { getApiUrl } from "./utilities/functions";
 
 
 
@@ -48,6 +52,9 @@ export const getWebServer = async () => {
     disableRequestLogging: true,
   });
 
+  webServer.setValidatorCompiler(validatorCompiler);
+  webServer.setSerializerCompiler(serializerCompiler);
+
   const liquid = new Liquid({
     root: "src/views",
     extname: ".liquid",
@@ -76,6 +83,42 @@ export const getWebServer = async () => {
     }),
     webServer.register(view, { engine: { liquid } }),
 
+    webServer.register(fastifySwagger, {
+      openapi: {
+        info: {
+          title: "Grap API",
+          description: "A simple system to manage temporary email addresses for CI/CD integrations.",
+          version: "1.0.0",
+        },
+        servers: [
+          { url: getApiUrl() },
+        ],
+        security: [
+          {
+            "Bearer Auth": [],
+          },
+        ],
+        components: {
+          securitySchemes: {
+            "Bearer Auth": {
+              type: "apiKey",
+              name: "Authorization",
+              in: "header",
+            },
+          },
+        },
+      },
+      transform: jsonSchemaTransform,
+      hideUntagged: true, // spec routes need to be opt-in, otherwise all non-api routes appear
+    }),
+
+    webServer.register(fastifySwaggerUi, {
+      prefix: "/documentation",
+      uiConfig: {
+        persistAuthorization: true,
+      },
+    }),
+
     webServer.register(rootRoutes),
     webServer.register(setupRoutes, { prefix: "setup" }),
     webServer.register(loginRoutes, { prefix: "login" }),
@@ -84,10 +127,13 @@ export const getWebServer = async () => {
     webServer.register(dashboardRoutes, { prefix: "dashboard" }),
     webServer.register(settingsRoutes, { prefix: "settings" }),
     webServer.register(adminRoutes, { prefix: "admin" }),
-    webServer.register(apiV1Routes, { prefix: "api/v1" }),
+    webServer.register(apiV1Routes, { prefix: "/api/v1" }),
   ]);
 
   webServer.setNotFoundHandler(ErrorController.notFound);
+
+  // no need to decorate the locals
+  // as it is decorated by the point-of-view package
   // webServer.decorateReply("locals", null);
   // populate common variables for all views
   webServer.addHook("onRequest", async (request, reply) => {

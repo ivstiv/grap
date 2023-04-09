@@ -1,3 +1,4 @@
+import { env } from "../env";
 import { Role } from "../models/Role";
 
 export const numOfAdmins = async () => {
@@ -12,3 +13,11 @@ export const numOfAdmins = async () => {
 
 export const capitalizeFirstLetter = (string: string) =>
   string[0].toUpperCase() + string.slice(1);
+
+
+export const getApiUrl = () => {
+  if(env.NODE_ENV === "production") {
+    return `https://${env.DOMAIN}`;
+  }
+  return `http://${env.DOMAIN}`;
+};
