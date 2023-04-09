@@ -1,16 +1,17 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import { SessionUser } from "../web-server";
+import type { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { capitalizeFirstLetter } from "../utilities/functions";
-import { RouteGenericInterface } from "fastify/types/route";
+import type { RouteGenericInterface } from "fastify/types/route";
+
+
 
 type OptionalRouteInterface = RouteGenericInterface | void;
 
 export type FastifyHandler<T extends OptionalRouteInterface = void> =
   T extends RouteGenericInterface ?
     (req: FastifyRequest<T>, res: FastifyReply) => Promise<void>
-  :
-    (req: FastifyRequest, res: FastifyReply) => Promise<void>
+    :
+    (req: FastifyRequest, res: FastifyReply) => Promise<void>;
 
 
 export interface UserAccountPostBody {
@@ -55,8 +56,3 @@ export const numericStringConstraint = (name: string) =>
   }).positive({
     message: `${capitalizeFirstLetter(name)} must be greater than 0`,
   }));
-
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const isSessionAvailable = (x: any): x is SessionUser =>
-  Object.hasOwn(x, "id");

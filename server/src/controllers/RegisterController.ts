@@ -1,7 +1,8 @@
 import { User } from "../models/User";
-import {
+import type {
   UserAccountFormHandler,
-  FastifyHandler,
+  FastifyHandler } from "./ControllerUtilities";
+import {
   userAccountSchema,
 } from "./ControllerUtilities";
 

@@ -1,16 +1,14 @@
-import { Knex, knex } from "knex";
+import type { Knex } from "knex";
+import { knex } from "knex";
+import { env } from "../env";
 
-const { DATABASE_PATH } = process.env;
 
-if (!DATABASE_PATH) {
-  throw new Error("Missing env variable: DATABASE_PATH");
-}
 
 export const dbConfig: Knex.Config = {
   client: "sqlite3",
   useNullAsDefault: true,
   connection: {
-    filename: DATABASE_PATH,
+    filename: env.DATABASE_PATH,
   },
   migrations: {
     directory: `${__dirname}/migrations`,

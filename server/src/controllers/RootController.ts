@@ -1,5 +1,5 @@
 import { SystemSetting } from "../models/SystemSetting";
-import { FastifyHandler } from "./ControllerUtilities";
+import type { FastifyHandler } from "./ControllerUtilities";
 
 
 const index: FastifyHandler =

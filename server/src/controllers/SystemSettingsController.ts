@@ -1,6 +1,7 @@
-import { SettingName, SystemSetting } from "../models/SystemSetting";
+import type { SettingName } from "../models/SystemSetting";
+import { SystemSetting } from "../models/SystemSetting";
 import { User } from "../models/User";
-import { FastifyHandler } from "./ControllerUtilities";
+import type { FastifyHandler } from "./ControllerUtilities";
 import { SystemStat } from "../models/SystemStat";
 import { EmailAddress } from "../models/EmailAddress";
 import { Email } from "../models/Email";

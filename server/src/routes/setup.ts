@@ -1,4 +1,4 @@
-import { FastifyPluginCallback } from "fastify";
+import type { FastifyPluginCallback } from "fastify";
 import { numOfAdmins } from "../utilities/functions";
 import SetupController from "../controllers/SetupController";
 

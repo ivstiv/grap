@@ -1,8 +1,11 @@
 import assert from "assert";
 import { afterEach } from "mocha";
 import { User } from "../models/User";
-import { webServer } from "../web-server";
-import { Cookie, systemCleanup } from "./utils";
+import type { Cookie } from "./utils";
+import { testWebServer } from "./utils";
+import { systemCleanup } from "./utils";
+
+
 
 describe("Logout routes", () => {
   let user: User;
@@ -23,7 +26,7 @@ describe("Logout routes", () => {
 
   describe("GET /logout", () => {
     it("Should redirect to login", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/logout",
       });
@@ -35,7 +38,7 @@ describe("Logout routes", () => {
 
 
     it("Should destroy session and redirect to logout", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -48,7 +51,7 @@ describe("Logout routes", () => {
         (c as Cookie).name === "sessionId"
       ) as Cookie;
 
-      const dashboardResBeforeLogout = await webServer.inject({
+      const dashboardResBeforeLogout = await testWebServer.inject({
         method: "GET",
         url: "/dashboard",
         cookies: {
@@ -58,7 +61,7 @@ describe("Logout routes", () => {
 
       assert.strictEqual(dashboardResBeforeLogout.statusCode, 200);
 
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/logout",
         cookies: {
@@ -71,7 +74,7 @@ describe("Logout routes", () => {
       assert.strictEqual(redirectLocation, "/login");
 
 
-      const dashboardResAfterLogout = await webServer.inject({
+      const dashboardResAfterLogout = await testWebServer.inject({
         method: "GET",
         url: "/dashboard",
         cookies: {

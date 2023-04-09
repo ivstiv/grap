@@ -1,4 +1,4 @@
-import { FastifyPluginCallback } from "fastify";
+import type { FastifyPluginCallback } from "fastify";
 import SystemSettingsController from "../controllers/SystemSettingsController";
 import UsersController from "../controllers/UsersController";
 import { User } from "../models/User";

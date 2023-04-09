@@ -1,15 +1,24 @@
-FROM node:18-alpine as build
-RUN apk --no-cache add sqlite
+FROM node:18-bullseye-slim as build
+
+RUN corepack enable
+RUN corepack prepare pnpm@latest-8 --activate
+RUN pnpm config set store-dir .pnpm-store
+
 WORKDIR /app
 COPY . /app
-RUN npm install
-RUN npm run build
+RUN pnpm install --frozen-lockfile
+RUN pnpm run build
 
-FROM node:18-alpine
+FROM node:18-bullseye-slim
+
+RUN corepack enable
+RUN corepack prepare pnpm@latest-8 --activate
+RUN pnpm config set store-dir .pnpm-store
+
 WORKDIR /app
 COPY --from=build /app/package.json /app
-COPY --from=build /app/package-lock.json /app
-RUN npm install --omit=dev
+COPY --from=build /app/pnpm-lock.yaml /app
+RUN pnpm install --prod --frozen-lockfile
 COPY --from=build /app/scripts/entrypoint.sh /app
 COPY --from=build /app/dist /app/dist
 COPY --from=build /app/src/views /app/src/views

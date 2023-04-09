@@ -1,10 +1,12 @@
 import assert from "assert";
-import { webServer } from "../web-server";
 import { User } from "../models/User";
-import { Cookie, systemCleanup, waitForStatToUpdate } from "./utils";
+import type { Cookie } from "./utils";
+import { testWebServer } from "./utils";
+import { systemCleanup, waitForStatToUpdate } from "./utils";
 import parse from "node-html-parser";
 import { unescape } from "lodash";
 import { Role } from "../models/Role";
+
 
 
 describe("Setup routes", () => {
@@ -15,7 +17,7 @@ describe("Setup routes", () => {
     after(() => systemCleanup());
 
     it("Should return setup page", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/setup",
       });
@@ -34,7 +36,7 @@ describe("Setup routes", () => {
         throw new Error("Missing admin role!");
       }
       await firstAdmin.$relatedQuery<Role>("roles").relate(adminRole);
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/setup",
       });
@@ -83,7 +85,7 @@ describe("Setup routes", () => {
       ];
 
       for (const scenario of testScenarios) {
-        const setupRes = await webServer.inject({
+        const setupRes = await testWebServer.inject({
           method: "POST",
           url: "/setup",
           payload: scenario.payload,
@@ -97,7 +99,7 @@ describe("Setup routes", () => {
         assert.strictEqual(setupRes.statusCode, 302);
         assert.strictEqual(redirectLocation, "/setup");
 
-        const setupRes2 = await webServer.inject({
+        const setupRes2 = await testWebServer.inject({
           method: "GET",
           url: redirectLocation,
           cookies: {
@@ -118,7 +120,7 @@ describe("Setup routes", () => {
       const userListBefore = await User.query();
 
       const userListPromise = waitForStatToUpdate("total_users");
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "POST",
         url: "/setup",
         payload: {

@@ -1,10 +1,12 @@
 import assert from "assert";
-import { webServer } from "../web-server";
 import { User } from "../models/User";
-import { Cookie, systemCleanup, waitForStatToUpdate } from "./utils";
+import type { Cookie } from "./utils";
+import { testWebServer } from "./utils";
+import { systemCleanup, waitForStatToUpdate } from "./utils";
 import { SystemSetting } from "../models/SystemSetting";
 import parse from "node-html-parser";
 import { unescape } from "lodash";
+
 
 
 describe("Register routes", () => {
@@ -15,7 +17,7 @@ describe("Register routes", () => {
     after(() => systemCleanup());
 
     it("Should return register page", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/register",
       });
@@ -26,7 +28,7 @@ describe("Register routes", () => {
 
     it("Should redirect to login", async () => {
       await SystemSetting.updateByName("disable_register_page", "true");
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/register",
       });
@@ -75,7 +77,7 @@ describe("Register routes", () => {
       ];
 
       for (const scenario of testScenarios) {
-        const registerRes = await webServer.inject({
+        const registerRes = await testWebServer.inject({
           method: "POST",
           url: "/register",
           payload: scenario.payload,
@@ -89,7 +91,7 @@ describe("Register routes", () => {
         assert.strictEqual(registerRes.statusCode, 302);
         assert.strictEqual(redirectLocation, "/register");
 
-        const registerRes2 = await webServer.inject({
+        const registerRes2 = await testWebServer.inject({
           method: "GET",
           url: redirectLocation,
           cookies: {
@@ -110,7 +112,7 @@ describe("Register routes", () => {
       const userListBefore = await User.query();
 
       const userListPromise = waitForStatToUpdate("total_users");
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "POST",
         url: "/register",
         payload: {
@@ -143,7 +145,7 @@ describe("Register routes", () => {
       }
       const userListBefore = await User.query();
 
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "POST",
         url: "/register",
         payload: {
@@ -160,7 +162,7 @@ describe("Register routes", () => {
       assert.strictEqual(res.statusCode, 302);
       assert.strictEqual(redirectLocation, "/register");
 
-      const res2 = await webServer.inject({
+      const res2 = await testWebServer.inject({
         method: "GET",
         url: redirectLocation,
         cookies: {

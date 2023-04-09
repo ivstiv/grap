@@ -1,10 +1,10 @@
-import { FastifyHandler } from "./ControllerUtilities";
+import type { FastifyHandler } from "./ControllerUtilities";
 
 
 const logout: FastifyHandler =
   async (req, res) => {
     if (req.session.user) {
-      req.session.destroy();
+      await req.session.destroy();
     }
     return res.redirect("/login");
   };

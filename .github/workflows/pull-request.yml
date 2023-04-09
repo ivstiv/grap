@@ -7,7 +7,7 @@ on:
 jobs:
   test_pull_request:
     runs-on: ubuntu-latest
-    container: node:18-alpine
+    container: node:18-bullseye-slim
     env:
       NODE_ENV: test
       DATABASE_PATH: /database-volume/database.sqlite
@@ -19,7 +19,8 @@ jobs:
         run: |
           mkdir /database-volume
           cd server
-          npm install
-          npm run lint
-          npm run build
-          npm run coverage
+          npm install -g pnpm
+          pnpm install --frozen-lockfile
+          pnpm run lint
+          pnpm run build
+          pnpm run coverage

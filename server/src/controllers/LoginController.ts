@@ -1,10 +1,12 @@
 import { compare } from "bcrypt";
 import { User } from "../models/User";
-import {
+import type {
   UserAccountFormHandler,
+  FastifyHandler } from "./ControllerUtilities";
+import {
   userAccountSchema,
-  FastifyHandler,
 } from "./ControllerUtilities";
+import { env } from "../env";
 
 
 const show: FastifyHandler =
@@ -43,11 +45,11 @@ const login: FastifyHandler<UserAccountFormHandler> =
       isAdmin: user.hasRole("admin"),
     };
 
-    if (process.env.NODE_ENV === "test") {
+    if (env.NODE_ENV === "test") {
       return res
         .cookie("sessionId", req.session.encryptedSessionId, {
           domain: req.session.cookie.domain,
-          expires: req.session.cookie.expires,
+          expires: req.session.cookie.expires ?? undefined,
           secure: req.session.cookie.secure as boolean,
           httpOnly: req.session.cookie.httpOnly,
           maxAge: req.session.cookie.maxAge,

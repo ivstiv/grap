@@ -7,7 +7,7 @@ type EmailArgs = {
   subject?: string
   from?: string
   content?: string
-}
+};
 
 
 export class EmailAddress extends Model {

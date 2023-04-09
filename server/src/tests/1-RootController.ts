@@ -1,10 +1,13 @@
 import assert from "assert";
-import { webServer } from "../web-server";
 import { parse } from "node-html-parser";
 import { SystemSetting } from "../models/SystemSetting";
-import { Cookie, systemCleanup } from "./utils";
+import type { Cookie } from "./utils";
+import { testWebServer } from "./utils";
+import { systemCleanup } from "./utils";
 import { User } from "../models/User";
 import { Role } from "../models/Role";
+
+
 
 describe("Root pages", () => {
   let admin: User;
@@ -40,7 +43,7 @@ describe("Root pages", () => {
     after(() => systemCleanup());
 
     it("Should return status code 200", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/",
       });
@@ -54,7 +57,7 @@ describe("Root pages", () => {
         loginResUser,
         loginResAdmin,
       ] = await Promise.all([
-        webServer.inject({
+        testWebServer.inject({
           method: "POST",
           url: "/login",
           payload: {
@@ -62,7 +65,7 @@ describe("Root pages", () => {
             password: "123456",
           },
         }),
-        webServer.inject({
+        testWebServer.inject({
           method: "POST",
           url: "/login",
           payload: {
@@ -84,14 +87,14 @@ describe("Root pages", () => {
         resUser,
         resAdmin,
       ] = await Promise.all([
-        webServer.inject({
+        testWebServer.inject({
           method: "GET",
           url: "/",
           cookies: {
             [sessionCookieUser.name]: `${sessionCookieUser.value}`,
           },
         }),
-        webServer.inject({
+        testWebServer.inject({
           method: "GET",
           url: "/",
           cookies: {
@@ -107,7 +110,7 @@ describe("Root pages", () => {
 
     it("Should redirect to login because index is disabled", async () => {
       await SystemSetting.updateByName("disable_index_page", "true");
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/",
       });
@@ -121,7 +124,7 @@ describe("Root pages", () => {
 
   describe("GET /documentation", () => {
     it("Should return status code 200", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/documentation",
       });
@@ -135,7 +138,7 @@ describe("Root pages", () => {
         loginResUser,
         loginResAdmin,
       ] = await Promise.all([
-        webServer.inject({
+        testWebServer.inject({
           method: "POST",
           url: "/login",
           payload: {
@@ -143,7 +146,7 @@ describe("Root pages", () => {
             password: "123456",
           },
         }),
-        webServer.inject({
+        testWebServer.inject({
           method: "POST",
           url: "/login",
           payload: {
@@ -165,14 +168,14 @@ describe("Root pages", () => {
         resUser,
         resAdmin,
       ] = await Promise.all([
-        webServer.inject({
+        testWebServer.inject({
           method: "GET",
           url: "/documentation",
           cookies: {
             [sessionCookieUser.name]: `${sessionCookieUser.value}`,
           },
         }),
-        webServer.inject({
+        testWebServer.inject({
           method: "GET",
           url: "/documentation",
           cookies: {
@@ -189,7 +192,7 @@ describe("Root pages", () => {
 
   describe("GET /not-exist-expect-404", () => {
     it("Should return 404 page", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/not-exist-expect-404",
       });

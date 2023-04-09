@@ -2,8 +2,14 @@ import { Model } from "objection";
 import { db } from "../database/database";
 import { loadEventListeners } from "../EventListeners";
 import { SystemSetting } from "../models/SystemSetting";
-import { StatName, SystemStat } from "../models/SystemStat";
+import type { StatName } from "../models/SystemStat";
+import { SystemStat } from "../models/SystemStat";
 import { User } from "../models/User";
+import { getWebServer } from "../web-server";
+
+
+type WebServer = Awaited<ReturnType<typeof getWebServer>>;
+export let testWebServer: WebServer;
 
 export const mochaGlobalSetup = async () => {
   console.log("Global setup...");
@@ -12,12 +18,13 @@ export const mochaGlobalSetup = async () => {
   await db.seed.run();
   Model.knex(db);
   loadEventListeners();
+  testWebServer = await getWebServer();
 };
 
 export const mochaGlobalTeardown = async () => {
   console.log("Global teardown...");
   await db.migrate.rollback();
-  Model.knex().destroy();
+  await Model.knex().destroy();
 };
 
 export const systemCleanup = async () => {
@@ -50,7 +57,7 @@ export const waitForStatToUpdate = async (name: StatName) => {
     }
 
     latestStat = await SystemStat.getByName(name);
-    sleep(200);
+    await sleep(200);
   }
   return latestStat;
 };
@@ -61,4 +68,4 @@ export type Cookie = {
   path: string
   httpOnly: boolean
   sameSite: string
-}
+};

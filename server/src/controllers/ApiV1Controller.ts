@@ -1,6 +1,6 @@
 import { Token } from "../models/Token";
 import { User } from "../models/User";
-import { FastifyHandler } from "./ControllerUtilities";
+import type { FastifyHandler } from "./ControllerUtilities";
 
 
 const createAddress: FastifyHandler =

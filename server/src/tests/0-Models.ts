@@ -6,12 +6,15 @@ import { Token } from "../models/Token";
 import { User } from "../models/User";
 import { systemCleanup } from "./utils";
 
+
+
 describe("User model", () => {
 
   after(() => systemCleanup());
 
   const USER_EMAIL = "someemail@nowhere.testdev";
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   step("Should create user", async () => {
     const user = await User.register(USER_EMAIL, "");
 
@@ -25,6 +28,7 @@ describe("User model", () => {
   });
 
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   step("Should create token", async () => {
     let user = await User.getByEmail(USER_EMAIL);
 
@@ -42,6 +46,7 @@ describe("User model", () => {
   });
 
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   step("Should create address", async () => {
     let user = await User.getByEmail(USER_EMAIL);
 
@@ -61,6 +66,7 @@ describe("User model", () => {
   });
 
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   step("Should create email", async () => {
     const user = await User.getByEmail(USER_EMAIL);
 
@@ -78,6 +84,7 @@ describe("User model", () => {
   });
 
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   step("Should delete user and all related data", async () => {
     const user = await User.getByEmail(USER_EMAIL);
 

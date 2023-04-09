@@ -1,38 +1,38 @@
-import { Email } from "./models/Email";
-import { EmailAddress } from "./models/EmailAddress";
-import { User } from "./models/User";
+import type { Email } from "./models/Email";
+import type { EmailAddress } from "./models/EmailAddress";
+import type { User } from "./models/User";
 
 type UserRegisteredEvent = EventInit & {
   type: "UserRegistered"
   detail: {
     user: User
   }
-}
+};
 
 type ParsedEmailEvent = EventInit & {
   type: "ParsedEmail"
   detail: {
     email: Email
   }
-}
+};
 
 type CreateAddressEvent = EventInit & {
   type: "CreateAddress"
   detail: {
     address: EmailAddress
   }
-}
+};
 
 type AnyEventDetail =
   | CreateAddressEvent
   | ParsedEmailEvent
-  | UserRegisteredEvent
+  | UserRegisteredEvent;
 
-type EventType = AnyEventDetail["type"]
+type EventType = AnyEventDetail["type"];
 
-type EventDetail<T extends EventType> = AnyEventDetail & { type: T}
+type EventDetail<T extends EventType> = AnyEventDetail & { type: T};
 
-type EventCallback<T extends EventType> = (event: EventDetail<T>) => Promise<void>
+type EventCallback<T extends EventType> = (event: EventDetail<T>) => Promise<void>;
 
 class EventBus extends EventTarget {
   emit (event: AnyEventDetail) {
@@ -40,7 +40,7 @@ class EventBus extends EventTarget {
   }
   listen<T extends EventType> (type: T, cb: EventCallback<T>) {
     this.addEventListener(type, event =>
-      cb(event as unknown as EventDetail<T>)
+      void cb(event as unknown as EventDetail<T>)
         .catch(e => {
           console.log(`Event ${type} handler failed:`, e);
         }),

@@ -1,4 +1,4 @@
-import { FastifyPluginCallback } from "fastify";
+import type { FastifyPluginCallback } from "fastify";
 import RegisterController from "../controllers/RegisterController";
 import { SystemSetting } from "../models/SystemSetting";
 

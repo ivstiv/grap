@@ -4,8 +4,11 @@ import parse from "node-html-parser";
 import { Role } from "../models/Role";
 import { SystemSetting } from "../models/SystemSetting";
 import { User } from "../models/User";
-import { webServer } from "../web-server";
-import { Cookie, systemCleanup } from "./utils";
+import type { Cookie } from "./utils";
+import { testWebServer } from "./utils";
+import { systemCleanup } from "./utils";
+
+
 
 describe("System settings routes", () => {
   let admin: User;
@@ -40,7 +43,7 @@ describe("System settings routes", () => {
 
   describe("GET /admin/system-settings", () => {
     it("Should redirect to login because not logged in", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/admin/system-settings",
       });
@@ -52,7 +55,7 @@ describe("System settings routes", () => {
 
 
     it("Should redirect to login because not admin", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -65,7 +68,7 @@ describe("System settings routes", () => {
         (c as Cookie).name === "sessionId"
       ) as Cookie;
 
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/admin/system-settings",
         cookies: {
@@ -80,7 +83,7 @@ describe("System settings routes", () => {
 
 
     it("Should return system settings page", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -93,7 +96,7 @@ describe("System settings routes", () => {
         (c as Cookie).name === "sessionId"
       ) as Cookie;
 
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/admin/system-settings",
         cookies: {
@@ -108,7 +111,7 @@ describe("System settings routes", () => {
 
   describe("POST /admin/system-settings", () => {
     it("Should redirect to login because not logged in", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "POST",
         url: "/admin/system-settings",
       });
@@ -120,7 +123,7 @@ describe("System settings routes", () => {
 
 
     it("Should redirect to login because not admin", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -133,7 +136,7 @@ describe("System settings routes", () => {
         (c as Cookie).name === "sessionId"
       ) as Cookie;
 
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "POST",
         url: "/admin/system-settings",
         cookies: {
@@ -148,7 +151,7 @@ describe("System settings routes", () => {
 
 
     it("Should fail validation", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -198,7 +201,7 @@ describe("System settings routes", () => {
       ];
 
       for (const scenario of testScenarios) {
-        const updateSettingsRes = await webServer.inject({
+        const updateSettingsRes = await testWebServer.inject({
           method: "POST",
           url: "/admin/system-settings",
           cookies: {
@@ -211,7 +214,7 @@ describe("System settings routes", () => {
         assert.strictEqual(updateSettingsRes.statusCode, 302);
         assert.strictEqual(redirectLocation, "/admin/system-settings");
 
-        const settingsRes = await webServer.inject({
+        const settingsRes = await testWebServer.inject({
           method: "GET",
           url: "/admin/system-settings",
           cookies: {
@@ -229,7 +232,7 @@ describe("System settings routes", () => {
 
 
     it("Should update system settings", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -247,7 +250,7 @@ describe("System settings routes", () => {
         assert.strictEqual(setting.value, "false");
       }
 
-      const updateSettingsRes = await webServer.inject({
+      const updateSettingsRes = await testWebServer.inject({
         method: "POST",
         url: "/admin/system-settings",
         cookies: {

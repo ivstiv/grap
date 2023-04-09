@@ -1,5 +1,6 @@
 import { User } from "../models/User";
-import { FastifyHandler, numericStringConstraint } from "./ControllerUtilities";
+import type { FastifyHandler } from "./ControllerUtilities";
+import { numericStringConstraint } from "./ControllerUtilities";
 import { Email } from "../models/Email";
 import { z } from "zod";
 

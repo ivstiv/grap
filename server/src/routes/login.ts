@@ -1,4 +1,4 @@
-import { FastifyPluginCallback } from "fastify";
+import type { FastifyPluginCallback } from "fastify";
 import LoginController from "../controllers/LoginController";
 
 

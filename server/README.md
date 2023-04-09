@@ -5,7 +5,7 @@ compilation step, so the most convenient way to run them is with a running dev c
 
 Narrow down the test run
 ```
-npm test -- -g "Settings routes"
+pnpm test -- -g "Settings routes"
 ```
 
 ## Keep it updated
@@ -13,30 +13,27 @@ npm test -- -g "Settings routes"
 1. Do the upgrades from inside the dev container to ensure system consistency
 
 ```
-./compose.sh exec server /bin/sh
+./compose.sh run --rm server bash
 ```
 
 2. Get the minor updates and test the app
 
 ```
-npx npm-check-updates -u -t minor && npm install
+pnpm update
 ```
 
 3. Get the major updates and test the app
 
 ```
-npx npm-check-updates -u -t latest && npm install
+pnpm update --latest
 ```
 
-4. Run `npm update` to update nested dependencies
-
-5. Check in the end just in case something has slipped
+4. Check in the end just in case something has slipped
 
 ```
-npm outdated
+pnpm outdated
 ```
 
-Check [npm-check-updates's documentation](https://www.npmjs.com/package/npm-check-updates) for more details.
 
 ## Todos:
 

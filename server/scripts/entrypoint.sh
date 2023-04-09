@@ -1,4 +1,4 @@
 #!/bin/sh
-npm run migrate:latest
-npm run seed
-npm run start
+pnpm run migrate:latest
+pnpm run seed
+pnpm run start

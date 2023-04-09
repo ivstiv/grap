@@ -30,7 +30,7 @@ export currentGroup
 
 if [ "$1" = "up" ]; then
   echo "Checking for image updates..."
-  if docker pull node:18-alpine | grep "Image is up to date"; then
+  if docker pull node:18-bullseye-slim | grep "Image is up to date"; then
     docker compose -f ./.docker/docker-compose.yml "$@"
   else
     docker compose -f ./.docker/docker-compose.yml "$@" --build

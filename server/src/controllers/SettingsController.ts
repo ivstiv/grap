@@ -1,5 +1,6 @@
 import { User } from "../models/User";
-import { FastifyHandler, numericStringConstraint } from "./ControllerUtilities";
+import type { FastifyHandler } from "./ControllerUtilities";
+import { numericStringConstraint } from "./ControllerUtilities";
 import { Role } from "../models/Role";
 import { z } from "zod";
 
@@ -123,7 +124,7 @@ const destroyUser: FastifyHandler =
 
     const user = await User.getById(req.session.user.id);
     await user.destroy();
-    req.session.destroy();
+    await req.session.destroy();
 
     return res.redirect("/login");
   };

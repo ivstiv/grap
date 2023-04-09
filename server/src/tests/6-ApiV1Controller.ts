@@ -1,9 +1,13 @@
 import assert from "assert";
-import { Email } from "../models/Email";
-import { EmailAddress } from "../models/EmailAddress";
+import type { Email } from "../models/Email";
+import type { EmailAddress } from "../models/EmailAddress";
 import { User } from "../models/User";
-import { webServer } from "../web-server";
-import { Cookie, systemCleanup } from "./utils";
+import type { Cookie } from "./utils";
+import { testWebServer } from "./utils";
+import { systemCleanup } from "./utils";
+import { z } from "zod";
+
+
 
 describe("API V1 routes", () => {
   let user: User;
@@ -24,7 +28,7 @@ describe("API V1 routes", () => {
 
   describe("GET /api/v1/address", () => {
     it("Should return Unauthorized", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/api/v1/address",
       });
@@ -35,7 +39,7 @@ describe("API V1 routes", () => {
 
 
     it("Should return invalid header error", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/api/v1/address",
         headers: {
@@ -56,7 +60,7 @@ describe("API V1 routes", () => {
       const token = await user.createToken();
       const userAddressesBefore = user.addresses.length;
 
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/api/v1/address",
         headers: {
@@ -67,11 +71,11 @@ describe("API V1 routes", () => {
       user = await user.refresh();
       const userAddressesAfter = user.addresses.length;
 
-      const parsedBody = JSON.parse(res.body);
-
-      if (!parsedBody.data) {
-        throw new Error("Missing email address in response.");
-      }
+      const ExpectedResponseBody = z.object({
+        data: z.string().email(),
+      });
+      const jsonBody = JSON.parse(res.body);
+      ExpectedResponseBody.parse(jsonBody);
 
       assert.strictEqual(userAddressesBefore, 0);
       assert.strictEqual(userAddressesAfter, 1);
@@ -79,7 +83,7 @@ describe("API V1 routes", () => {
 
 
     it("Should return email address with session", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -94,7 +98,7 @@ describe("API V1 routes", () => {
 
       const userAddressesBefore = user.addresses.length;
 
-      const addressRes = await webServer.inject({
+      const addressRes = await testWebServer.inject({
         method: "GET",
         url: "/api/v1/address",
         cookies: {
@@ -105,11 +109,11 @@ describe("API V1 routes", () => {
       user = await user.refresh();
       const userAddressesAfter = user.addresses.length;
 
-      const parsedBody = JSON.parse(addressRes.body);
-
-      if (!parsedBody.data) {
-        throw new Error("Missing email address in response.");
-      }
+      const ExpectedResponseBody = z.object({
+        data: z.string().email(),
+      });
+      const jsonBody = JSON.parse(addressRes.body);
+      ExpectedResponseBody.parse(jsonBody);
 
       assert.strictEqual(userAddressesBefore, 0);
       assert.strictEqual(userAddressesAfter, 1);
@@ -129,7 +133,7 @@ describe("API V1 routes", () => {
 
 
     it("Should return Unauthorized", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: `/api/v1/inbox/${address.address}/latest`,
       });
@@ -140,7 +144,7 @@ describe("API V1 routes", () => {
 
 
     it("Should return invalid header error", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: `/api/v1/inbox/${address.address}/latest`,
         headers: {
@@ -160,7 +164,7 @@ describe("API V1 routes", () => {
     it("Should return latest email with token", async () => {
       const token = await user.createToken();
 
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: `/api/v1/inbox/${address.address}/latest`,
         headers: {
@@ -168,11 +172,16 @@ describe("API V1 routes", () => {
         },
       });
 
-      const parsedBody = JSON.parse(res.body);
-
-      if (!parsedBody.data) {
-        throw new Error("Missing email in response.");
-      }
+      const ExpectedResponseBody = z.object({
+        data: z.object({
+          subject: z.string(),
+          content: z.string(),
+          from: z.string(),
+          createdAt: z.string(),
+        }),
+      });
+      const jsonBody = JSON.parse(res.body);
+      const parsedBody = ExpectedResponseBody.parse(jsonBody);
 
       const parsedEmail = parsedBody.data;
 
@@ -184,7 +193,7 @@ describe("API V1 routes", () => {
 
 
     it("Should return latest email with session", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -197,7 +206,7 @@ describe("API V1 routes", () => {
         (c as Cookie).name === "sessionId"
       ) as Cookie;
 
-      const emailRes = await webServer.inject({
+      const emailRes = await testWebServer.inject({
         method: "GET",
         url: `/api/v1/inbox/${address.address}/latest`,
         cookies: {
@@ -205,11 +214,16 @@ describe("API V1 routes", () => {
         },
       });
 
-      const parsedBody = JSON.parse(emailRes.body);
-
-      if (!parsedBody.data) {
-        throw new Error("Missing email in response.");
-      }
+      const ExpectedResponseBody = z.object({
+        data: z.object({
+          subject: z.string(),
+          content: z.string(),
+          from: z.string(),
+          createdAt: z.string(),
+        }),
+      });
+      const jsonBody = JSON.parse(emailRes.body);
+      const parsedBody = ExpectedResponseBody.parse(jsonBody);
 
       const parsedEmail = parsedBody.data;
 
