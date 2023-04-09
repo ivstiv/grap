@@ -88,7 +88,7 @@ export const getWebServer = async () => {
   ]);
 
   webServer.setNotFoundHandler(ErrorController.notFound);
-  // instance.decorateReply("locals", null);
+  // webServer.decorateReply("locals", null);
   // populate common variables for all views
   webServer.addHook("onRequest", async (request, reply) => {
     reply.locals = {
