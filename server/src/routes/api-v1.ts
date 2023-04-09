@@ -1,4 +1,4 @@
-import { FastifyPluginCallback } from "fastify";
+import type { FastifyPluginCallback } from "fastify";
 import ApiController from "../controllers/ApiV1Controller";
 import { Token } from "../models/Token";
 
@@ -13,20 +13,27 @@ export const apiV1Routes: FastifyPluginCallback =
         if (req.headers.authorization) {
           const validFormat = /^Bearer\s[a-z0-9]+$/.test(req.headers.authorization);
           if (!validFormat) {
-            return res.code(401)
-              .send({ error: "Invalid header format. Expecting 'Authorization: Bearer token'." });
+            return res.code(403).send({
+              statusCode: 403,
+              error: "Unauthorised",
+              message: "Invalid header format. Expecting 'Authorization: Bearer token'.",
+            });
           }
           const [_bearer, token] = req.headers.authorization.split(" ");
           hasValidToken = await Token.isTokenValid(token);
         }
 
         if (!hasUser && !hasValidToken) {
-          return res.code(403).send("Unauthorized");
+          return res.code(403).send({
+            statusCode: 403,
+            error: "Unauthorised",
+            message: "Missing bearer token and session.",
+          });
         }
       }
     );
 
-    instance.get("/address", ApiController.createAddress);
-    instance.get("/inbox/:address/latest", ApiController.latestEmail);
+    ApiController.createAddress(instance);
+    ApiController.latestEmail(instance);
     next();
   };

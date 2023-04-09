@@ -1,4 +1,4 @@
-import { FastifyHandler } from "./ControllerUtilities";
+import type { FastifyHandler } from "./ControllerUtilities";
 
 
 const notFound: FastifyHandler =

@@ -1,4 +1,5 @@
-import { simpleParser, AddressObject } from "mailparser";
+import type { AddressObject } from "mailparser";
+import { simpleParser } from "mailparser";
 import { SMTPServer } from "smtp-server";
 import { EmailAddress } from "./models/EmailAddress";
 
@@ -9,6 +10,7 @@ export const smtpServer = new SMTPServer({
     });
     stream.on("end", callback);
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     simpleParser(stream, {}, async (err, parsed) => {
       if (err) {
         console.log("Error:", err);
@@ -17,6 +19,11 @@ export const smtpServer = new SMTPServer({
       const addressObj = parsed.headers.get("to");
       if(isAddressObject(addressObj)) {
         const destinationAddr = addressObj.value[0].address;
+
+        if (!destinationAddr) {
+          return console.log("Couldn't parse destination address.");
+        }
+
         const address = await EmailAddress.query().where({
           address: destinationAddr,
         }).first();
@@ -41,8 +48,8 @@ export const smtpServer = new SMTPServer({
 });
 
 
+// TO-DO: there must be a better way to do this
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isAddressObject = (x: any): x is AddressObject =>
-  Object.hasOwn(x, "value")
-    && x.value.length > 0
-    && !!x.value[0].address;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+  Object.hasOwn(x, "value") && x.value.length > 0 && !!x.value[0].address;

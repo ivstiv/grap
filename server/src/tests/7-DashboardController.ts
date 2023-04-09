@@ -3,8 +3,11 @@ import { unescape } from "lodash";
 import { afterEach } from "mocha";
 import parse from "node-html-parser";
 import { User } from "../models/User";
-import { webServer } from "../web-server";
-import { Cookie, systemCleanup } from "./utils";
+import type { Cookie } from "./utils";
+import { testWebServer } from "./utils";
+import { systemCleanup } from "./utils";
+
+
 
 describe("Dashboard routes", () => {
   let user: User;
@@ -25,7 +28,7 @@ describe("Dashboard routes", () => {
 
   describe("GET /dashboard", () => {
     it("Should redirect to login", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/dashboard",
       });
@@ -37,7 +40,7 @@ describe("Dashboard routes", () => {
 
 
     it("Should return status code 200", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -50,7 +53,7 @@ describe("Dashboard routes", () => {
         (c as Cookie).name === "sessionId"
       ) as Cookie;
 
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/dashboard",
         cookies: {
@@ -65,7 +68,7 @@ describe("Dashboard routes", () => {
 
   describe("POST /dashboard/address", () => {
     it("Should redirect to login", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "POST",
         url: "/dashboard/address",
       });
@@ -77,7 +80,7 @@ describe("Dashboard routes", () => {
 
 
     it("Should fail validation", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -114,7 +117,7 @@ describe("Dashboard routes", () => {
       ];
 
       for (const scenario of testScenarios) {
-        const deleteAddrRes = await webServer.inject({
+        const deleteAddrRes = await testWebServer.inject({
           method: "POST",
           url: "/dashboard/address",
           cookies: {
@@ -127,7 +130,7 @@ describe("Dashboard routes", () => {
         assert.strictEqual(deleteAddrRes.statusCode, 302);
         assert.strictEqual(redirectLocation, "/dashboard");
 
-        const dashboardRes = await webServer.inject({
+        const dashboardRes = await testWebServer.inject({
           method: "GET",
           url: "/dashboard",
           cookies: {
@@ -146,7 +149,7 @@ describe("Dashboard routes", () => {
 
     it("Should delete the address", async () => {
       const address = await user.createEmailAddress();
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -159,7 +162,7 @@ describe("Dashboard routes", () => {
         (c as Cookie).name === "sessionId"
       ) as Cookie;
 
-      const deleteAddrRes = await webServer.inject({
+      const deleteAddrRes = await testWebServer.inject({
         method: "POST",
         url: "/dashboard/address",
         cookies: {
@@ -174,7 +177,7 @@ describe("Dashboard routes", () => {
       assert.strictEqual(deleteAddrRes.statusCode, 302);
       assert.strictEqual(redirectLocation, "/dashboard");
 
-      const dashboardRes = await webServer.inject({
+      const dashboardRes = await testWebServer.inject({
         method: "GET",
         url: "/dashboard",
         cookies: {
@@ -193,7 +196,7 @@ describe("Dashboard routes", () => {
 
   describe("GET /dashboard/inbox/:id", () => {
     it("Should redirect to login", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/dashboard/inbox/something",
       });
@@ -205,7 +208,7 @@ describe("Dashboard routes", () => {
 
 
     it("Should fail validation", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -234,7 +237,7 @@ describe("Dashboard routes", () => {
       ];
 
       for (const scenario of testScenarios) {
-        const showInboxRes = await webServer.inject({
+        const showInboxRes = await testWebServer.inject({
           method: "GET",
           url: scenario.url,
           cookies: {
@@ -249,7 +252,7 @@ describe("Dashboard routes", () => {
 
     it("Should return inbox view", async () => {
       const address = await user.createEmailAddress();
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -262,7 +265,7 @@ describe("Dashboard routes", () => {
         (c as Cookie).name === "sessionId"
       ) as Cookie;
 
-      const showInboxRes = await webServer.inject({
+      const showInboxRes = await testWebServer.inject({
         method: "GET",
         url: `/dashboard/inbox/${address.id}`,
         cookies: {
@@ -277,7 +280,7 @@ describe("Dashboard routes", () => {
 
   describe("POST /dashboard/inbox/email", () => {
     it("Should redirect to login", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "POST",
         url: "/dashboard/inbox/email",
       });
@@ -296,7 +299,7 @@ describe("Dashboard routes", () => {
       const address = await somebodyElse.createEmailAddress();
       const somebodyElseEmail = await address.insertEmail({});
 
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -337,7 +340,7 @@ describe("Dashboard routes", () => {
       ];
 
       for (const scenario of testScenarios) {
-        const deleteEmailRes = await webServer.inject({
+        const deleteEmailRes = await testWebServer.inject({
           method: "POST",
           url: "/dashboard/inbox/email",
           cookies: {
@@ -350,7 +353,7 @@ describe("Dashboard routes", () => {
         assert.strictEqual(deleteEmailRes.statusCode, 302);
         assert.strictEqual(redirectLocation, "/dashboard");
 
-        const dashboardRes = await webServer.inject({
+        const dashboardRes = await testWebServer.inject({
           method: "GET",
           url: "/dashboard",
           cookies: {
@@ -370,7 +373,7 @@ describe("Dashboard routes", () => {
     it("Should delete email", async () => {
       const address = await user.createEmailAddress();
       const email = await address.insertEmail({});
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -383,7 +386,7 @@ describe("Dashboard routes", () => {
         (c as Cookie).name === "sessionId"
       ) as Cookie;
 
-      const deleteEmailRes = await webServer.inject({
+      const deleteEmailRes = await testWebServer.inject({
         method: "POST",
         url: "/dashboard/inbox/email",
         cookies: {
@@ -398,7 +401,7 @@ describe("Dashboard routes", () => {
       assert.strictEqual(deleteEmailRes.statusCode, 302);
       assert.strictEqual(redirectLocation, `/dashboard/inbox/${address.id}`);
 
-      const dashboardRes = await webServer.inject({
+      const dashboardRes = await testWebServer.inject({
         method: "GET",
         url: "/dashboard",
         cookies: {
@@ -417,7 +420,7 @@ describe("Dashboard routes", () => {
 
   describe("GET /dashboard/inbox/:id/email/:id", () => {
     it("Should redirect to login", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/dashboard/inbox/0/email/0",
       });
@@ -429,7 +432,7 @@ describe("Dashboard routes", () => {
 
 
     it("Should fail validation", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -458,7 +461,7 @@ describe("Dashboard routes", () => {
       ];
 
       for (const scenario of testScenarios) {
-        const showInboxRes = await webServer.inject({
+        const showInboxRes = await testWebServer.inject({
           method: "GET",
           url: scenario.url,
           cookies: {
@@ -474,7 +477,7 @@ describe("Dashboard routes", () => {
       const addr = await user.createEmailAddress();
       const email = await addr.insertEmail({ subject: "Test subject" });
 
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -487,7 +490,7 @@ describe("Dashboard routes", () => {
         (c as Cookie).name === "sessionId"
       ) as Cookie;
 
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: `/dashboard/inbox/${addr.id}/email/${email.id}`,
         cookies: {

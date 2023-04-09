@@ -3,8 +3,11 @@ import { unescape } from "lodash";
 import { afterEach } from "mocha";
 import parse from "node-html-parser";
 import { User } from "../models/User";
-import { webServer } from "../web-server";
-import { Cookie, systemCleanup } from "./utils";
+import type { Cookie } from "./utils";
+import { testWebServer } from "./utils";
+import { systemCleanup } from "./utils";
+
+
 
 describe("Settings routes", () => {
   let user: User;
@@ -25,7 +28,7 @@ describe("Settings routes", () => {
 
   describe("GET /settings", () => {
     it("Should redirect to login", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/dashboard",
       });
@@ -37,7 +40,7 @@ describe("Settings routes", () => {
 
 
     it("Should return status code 200", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -50,7 +53,7 @@ describe("Settings routes", () => {
         (c as Cookie).name === "sessionId"
       ) as Cookie;
 
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/settings",
         cookies: {
@@ -65,7 +68,7 @@ describe("Settings routes", () => {
 
   describe("POST /settings/token", () => {
     it("Should redirect to login", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "POST",
         url: "/settings/token",
       });
@@ -77,7 +80,7 @@ describe("Settings routes", () => {
 
 
     it("Should fail validation", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -98,7 +101,7 @@ describe("Settings routes", () => {
       ];
 
       for (const scenario of testScenarios) {
-        const createTokenRes = await webServer.inject({
+        const createTokenRes = await testWebServer.inject({
           method: "POST",
           url: "/settings/token",
           cookies: {
@@ -111,7 +114,7 @@ describe("Settings routes", () => {
         assert.strictEqual(createTokenRes.statusCode, 302);
         assert.strictEqual(redirectLocation, "/settings");
 
-        const settingsRes = await webServer.inject({
+        const settingsRes = await testWebServer.inject({
           method: "GET",
           url: "/settings",
           cookies: {
@@ -129,7 +132,7 @@ describe("Settings routes", () => {
 
 
     it("Should create the token", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -142,7 +145,7 @@ describe("Settings routes", () => {
         (c as Cookie).name === "sessionId"
       ) as Cookie;
 
-      const createTokenRes = await webServer.inject({
+      const createTokenRes = await testWebServer.inject({
         method: "POST",
         url: "/settings/token",
         cookies: {
@@ -157,7 +160,7 @@ describe("Settings routes", () => {
       assert.strictEqual(createTokenRes.statusCode, 302);
       assert.strictEqual(redirectLocation, "/settings");
 
-      const settingsRes = await webServer.inject({
+      const settingsRes = await testWebServer.inject({
         method: "GET",
         url: "/settings",
         cookies: {
@@ -179,7 +182,7 @@ describe("Settings routes", () => {
         user = await user.refresh();
       }
 
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -192,7 +195,7 @@ describe("Settings routes", () => {
         (c as Cookie).name === "sessionId"
       ) as Cookie;
 
-      const createTokenRes = await webServer.inject({
+      const createTokenRes = await testWebServer.inject({
         method: "POST",
         url: "/settings/token",
         cookies: {
@@ -207,7 +210,7 @@ describe("Settings routes", () => {
       assert.strictEqual(createTokenRes.statusCode, 302);
       assert.strictEqual(redirectLocation, "/settings");
 
-      const settingsRes = await webServer.inject({
+      const settingsRes = await testWebServer.inject({
         method: "GET",
         url: "/settings",
         cookies: {
@@ -226,7 +229,7 @@ describe("Settings routes", () => {
 
   describe("POST /settings/token/destroy", () => {
     it("Should redirect to login", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "POST",
         url: "/settings/token/destroy",
       });
@@ -238,7 +241,7 @@ describe("Settings routes", () => {
 
 
     it("Should fail validation", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -275,7 +278,7 @@ describe("Settings routes", () => {
       ];
 
       for (const scenario of testScenarios) {
-        const deleteTokenRes = await webServer.inject({
+        const deleteTokenRes = await testWebServer.inject({
           method: "POST",
           url: "/settings/token/destroy",
           cookies: {
@@ -288,7 +291,7 @@ describe("Settings routes", () => {
         assert.strictEqual(deleteTokenRes.statusCode, 302);
         assert.strictEqual(redirectLocation, "/settings");
 
-        const settingsRes = await webServer.inject({
+        const settingsRes = await testWebServer.inject({
           method: "GET",
           url: "/settings",
           cookies: {
@@ -307,7 +310,7 @@ describe("Settings routes", () => {
 
     it("Should delete the token", async () => {
       const token = await user.createToken();
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -320,7 +323,7 @@ describe("Settings routes", () => {
         (c as Cookie).name === "sessionId"
       ) as Cookie;
 
-      const deleteTokenRes = await webServer.inject({
+      const deleteTokenRes = await testWebServer.inject({
         method: "POST",
         url: "/settings/token/destroy",
         cookies: {
@@ -335,7 +338,7 @@ describe("Settings routes", () => {
       assert.strictEqual(deleteTokenRes.statusCode, 302);
       assert.strictEqual(redirectLocation, "/settings");
 
-      const settingsRes = await webServer.inject({
+      const settingsRes = await testWebServer.inject({
         method: "GET",
         url: "/settings",
         cookies: {
@@ -354,7 +357,7 @@ describe("Settings routes", () => {
 
   describe("POST /settings/user/destroy", () => {
     it("Should redirect to login", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "POST",
         url: "/settings/user/destroy",
       });
@@ -366,7 +369,7 @@ describe("Settings routes", () => {
 
 
     it("Should delete the user", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -379,7 +382,7 @@ describe("Settings routes", () => {
         (c as Cookie).name === "sessionId"
       ) as Cookie;
 
-      const deleteTokenRes = await webServer.inject({
+      const deleteTokenRes = await testWebServer.inject({
         method: "POST",
         url: "/settings/user/destroy",
         cookies: {

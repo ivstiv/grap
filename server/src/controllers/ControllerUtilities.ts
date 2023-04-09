@@ -1,16 +1,17 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import { SessionUser } from "../web-server";
+import type { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { capitalizeFirstLetter } from "../utilities/functions";
-import { RouteGenericInterface } from "fastify/types/route";
+import type { RouteGenericInterface } from "fastify/types/route";
+
+
 
 type OptionalRouteInterface = RouteGenericInterface | void;
 
 export type FastifyHandler<T extends OptionalRouteInterface = void> =
   T extends RouteGenericInterface ?
     (req: FastifyRequest<T>, res: FastifyReply) => Promise<void>
-  :
-    (req: FastifyRequest, res: FastifyReply) => Promise<void>
+    :
+    (req: FastifyRequest, res: FastifyReply) => Promise<void>;
 
 
 export interface UserAccountPostBody {
@@ -57,6 +58,37 @@ export const numericStringConstraint = (name: string) =>
   }));
 
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const isSessionAvailable = (x: any): x is SessionUser =>
-  Object.hasOwn(x, "id");
+export const successResponse = <T>(data: z.ZodType<T>) =>
+  z.object({ data }).describe("Successful response");
+
+
+const getErrorSchema =
+  <T extends string, U extends number>(status: U, error: T) =>
+    z.object({
+      statusCode: z.literal<U>(status),
+      error: z.literal<T>(error),
+      message: z.string().min(1),
+    }).describe(error);
+
+
+export const Responses = {
+  BAD_REQUEST: {
+    400: getErrorSchema(400, "Bad Request"),
+  },
+  NOT_FOUND: {
+    404: getErrorSchema(404, "Not Found"),
+  },
+  UNAUTHORISED: {
+    403: getErrorSchema(403, "Unauthorised"),
+  },
+  CONFLICT: {
+    409: getErrorSchema(409, "Conflict"),
+  },
+  INTERNAL_ERROR: {
+    500: getErrorSchema(500, "Internal Server Error"),
+  },
+  SHARED: {
+    400: getErrorSchema(400, "Bad Request"),
+    500: getErrorSchema(500, "Internal Server Error"),
+  },
+} as const;

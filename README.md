@@ -65,8 +65,8 @@ You'll need the following things installed on your machine.
 
 4. Migrate & Seed the database
    ```
-   ./compose.sh exec server npm run migrate:latest
-   ./compose.sh exec server npm run seed
+   ./compose.sh exec server pnpm run migrate:latest
+   ./compose.sh exec server pnpm run seed
    ```
 
 ### Open a shell in the dev container
@@ -74,7 +74,7 @@ You'll need the following things installed on your machine.
 Keep in mind that the container is based on alpine, so you will be dropped on ASH shell.
 
 ```
-./compose.sh exec server /bin/sh
+./compose.sh run --rm server bash
 ```
 
 ### Send a test email locally
@@ -88,14 +88,14 @@ Edit the script to customise the email being sent.
 ### Run the test suite
 
 ```
-./compose.sh exec server npm test
+./compose.sh run --rm server pnpm test
 ```
 
 ## Pushing an image
 
 ```
 docker login
-docker pull node:18-alpine
+docker pull node:18-bullseye-slim
 docker build -t ivstiv/grap:latest -f .docker/prod.Dockerfile server
 docker push ivstiv/grap:latest
 docker logout

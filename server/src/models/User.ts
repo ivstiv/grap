@@ -12,6 +12,7 @@ import { Token } from "./Token";
 import { randomBytes } from "crypto";
 import { eventBus } from "../EventBus";
 import { UserSettings } from "./UserSettings";
+import { env } from "../env";
 
 export class User extends Model {
   static tableName = "users";
@@ -115,7 +116,7 @@ export class User extends Model {
 
     const address = await EmailAddress.query().insertAndFetch({
       owner: this.id,
-      address: `${randomName}@${process.env.DOMAIN}`,
+      address: `${randomName}@${env.DOMAIN}`,
     });
 
     eventBus.emit({

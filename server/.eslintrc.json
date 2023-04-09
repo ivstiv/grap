@@ -1,45 +1,53 @@
 {
-    "env": {
-      "browser": true,
-      "node": true
-    },
-    "parser": "@typescript-eslint/parser",
-    "plugins": [
-      "@typescript-eslint"
-    ],
-    "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:@typescript-eslint/recommended"
-    ],
-    "rules": {
-        "array-bracket-spacing": 1,
-        "arrow-body-style": [1, "as-needed"],
-        "arrow-parens": [1, "as-needed"],
-        "arrow-spacing": 1,
-        "brace-style": 1,
-        "block-spacing": 1,
-        "comma-style": 1,
-        "curly": 1,
-        "comma-dangle": ["warn", "always-multiline"],
-        "comma-spacing": 1,
-        "computed-property-spacing": 1,
-        "eol-last": 1,
-        "eqeqeq": 1,
-        "func-call-spacing": 1,
-        "func-style": 1,
-        "indent": ["error", 2],
-        "linebreak-style": ["error", "unix"],
-        "lines-around-comment": 1,
-        "no-lone-blocks": 1,
-        "no-multi-spaces": 1,
-        "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
-        "object-curly-spacing": ["warn", "always"],
-        "prefer-const": 1,
-        "prefer-template": 1,
-        "quotes": ["error", "double"],
-        "semi": ["error", "always"],
-        "space-before-function-paren": [1, "always"],
-        "no-trailing-spaces": ["error"]
-      }
-  }
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:@typescript-eslint/recommended-requiring-type-checking"
+  ],
+  "rules": {
+      "@typescript-eslint/consistent-type-imports": "warn",
+      "@typescript-eslint/semi": "warn",
+      "@typescript-eslint/indent": ["error", 2, {
+        "ignoredNodes": ["TSTypeParameterInstantiation"]
+      }],
+      "array-bracket-spacing": 1,
+      "arrow-parens": [1, "as-needed"],
+      "arrow-spacing": 1,
+      "brace-style": 1,
+      "block-spacing": 1,
+      "comma-style": 1,
+      "curly": 1,
+      "comma-dangle": ["warn", "always-multiline"],
+      "comma-spacing": 1,
+      "computed-property-spacing": 1,
+      "eol-last": 1,
+      "eqeqeq": 1,
+      "func-call-spacing": 1,
+      "func-style": 1,
+      "indent": ["error", 2],
+      "linebreak-style": ["error", "unix"],
+      "lines-around-comment": 1,
+      "no-lone-blocks": 1,
+      "no-multi-spaces": 1,
+      "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+      "object-curly-spacing": ["warn", "always"],
+      "prefer-const": 1,
+      "prefer-template": 1,
+      "quotes": ["error", "double"],
+      "semi": ["error", "always"],
+      "space-before-function-paren": [1, "always"],
+      "no-trailing-spaces": ["error"]
+    }
+}

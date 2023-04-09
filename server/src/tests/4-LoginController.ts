@@ -1,9 +1,12 @@
 import assert from "assert";
-import { webServer } from "../web-server";
 import { User } from "../models/User";
-import { Cookie, systemCleanup } from "./utils";
+import type { Cookie } from "./utils";
+import { testWebServer } from "./utils";
+import { systemCleanup } from "./utils";
 import parse from "node-html-parser";
 import { unescape } from "lodash";
+
+
 
 describe("Login routes", () => {
 
@@ -11,7 +14,7 @@ describe("Login routes", () => {
 
   describe("GET /login", () => {
     it("Should return status code 200", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/login",
       });
@@ -57,7 +60,7 @@ describe("Login routes", () => {
       ];
 
       for (const scenario of testScenarios) {
-        const loginRes = await webServer.inject({
+        const loginRes = await testWebServer.inject({
           method: "POST",
           url: "/login",
           payload: scenario.payload,
@@ -71,7 +74,7 @@ describe("Login routes", () => {
         assert.strictEqual(loginRes.statusCode, 302);
         assert.strictEqual(redirectLocation, "/login");
 
-        const loginRes2 = await webServer.inject({
+        const loginRes2 = await testWebServer.inject({
           method: "GET",
           url: redirectLocation,
           cookies: {
@@ -91,7 +94,7 @@ describe("Login routes", () => {
     it("Should login user", async () => {
       await User.register("user2@grap.email", "123456");
 
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -112,7 +115,7 @@ describe("Login routes", () => {
         throw new Error("sessionCookie is undefined!");
       }
 
-      const dashboardRes = await webServer.inject({
+      const dashboardRes = await testWebServer.inject({
         method: "GET",
         url: "/dashboard",
         cookies: {

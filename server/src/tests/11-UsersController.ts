@@ -4,8 +4,10 @@ import { afterEach } from "mocha";
 import parse from "node-html-parser";
 import { Role } from "../models/Role";
 import { User } from "../models/User";
-import { webServer } from "../web-server";
-import { Cookie, systemCleanup } from "./utils";
+import type { Cookie } from "./utils";
+import { testWebServer } from "./utils";
+import { systemCleanup } from "./utils";
+
 
 
 describe("Users routes", () => {
@@ -41,7 +43,7 @@ describe("Users routes", () => {
 
   describe("GET /admin/users", () => {
     it("Should redirect to login", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/admin/users",
       });
@@ -53,7 +55,7 @@ describe("Users routes", () => {
 
 
     it("Should redirect to login because not admin", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -66,7 +68,7 @@ describe("Users routes", () => {
         (c as Cookie).name === "sessionId"
       ) as Cookie;
 
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/admin/users",
         cookies: {
@@ -81,7 +83,7 @@ describe("Users routes", () => {
 
 
     it("Should redirect to 404 page because missing page param", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -94,7 +96,7 @@ describe("Users routes", () => {
         (c as Cookie).name === "sessionId"
       ) as Cookie;
 
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/admin/users",
         cookies: {
@@ -109,7 +111,7 @@ describe("Users routes", () => {
 
 
     it("Should return users page", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -122,7 +124,7 @@ describe("Users routes", () => {
         (c as Cookie).name === "sessionId"
       ) as Cookie;
 
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "GET",
         url: "/admin/users?page=1",
         cookies: {
@@ -137,7 +139,7 @@ describe("Users routes", () => {
 
   describe("POST /admin/user", () => {
     it("Should redirect to login", async () => {
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "POST",
         url: "/admin/user",
       });
@@ -149,7 +151,7 @@ describe("Users routes", () => {
 
 
     it("Should redirect to login because not admin", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -162,7 +164,7 @@ describe("Users routes", () => {
         (c as Cookie).name === "sessionId"
       ) as Cookie;
 
-      const res = await webServer.inject({
+      const res = await testWebServer.inject({
         method: "POST",
         url: "/admin/user",
         cookies: {
@@ -177,7 +179,7 @@ describe("Users routes", () => {
 
 
     it("Should fail validation", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -227,7 +229,7 @@ describe("Users routes", () => {
       ];
 
       for (const scenario of testScenarios) {
-        const updateUserRes = await webServer.inject({
+        const updateUserRes = await testWebServer.inject({
           method: "POST",
           url: "/admin/user",
           cookies: {
@@ -240,7 +242,7 @@ describe("Users routes", () => {
         assert.strictEqual(updateUserRes.statusCode, 302);
         assert.strictEqual(redirectLocation, "/admin/users?page=1");
 
-        const usersRes = await webServer.inject({
+        const usersRes = await testWebServer.inject({
           method: "GET",
           url: "/admin/users?page=1",
           cookies: {
@@ -258,7 +260,7 @@ describe("Users routes", () => {
 
 
     it("Should update user settings", async () => {
-      const loginRes = await webServer.inject({
+      const loginRes = await testWebServer.inject({
         method: "POST",
         url: "/login",
         payload: {
@@ -273,7 +275,7 @@ describe("Users routes", () => {
 
       assert.strictEqual(notAdmin.settings.maxEmailAddresses, 10);
 
-      const updateUserRes = await webServer.inject({
+      const updateUserRes = await testWebServer.inject({
         method: "POST",
         url: "/admin/user",
         cookies: {
