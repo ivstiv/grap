@@ -50,6 +50,7 @@ export const getWebServer = async () => {
   const webServer = Fastify({
     logger: true,
     disableRequestLogging: true,
+    trustProxy: (_, hop) => hop === 1,
   });
 
   webServer.setValidatorCompiler(validatorCompiler);
@@ -79,6 +80,7 @@ export const getWebServer = async () => {
         secure: ["development", "test"]
           .includes(env.NODE_ENV) ? false : true,
         sameSite: "strict",
+        httpOnly: true,
       },
     }),
     webServer.register(view, { engine: { liquid } }),
