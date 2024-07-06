@@ -18,7 +18,7 @@ export const smtpServer = new SMTPServer({
 
       const addressObj = parsed.headers.get("to");
       if(isAddressObject(addressObj)) {
-        const destinationAddr = addressObj.value[0].address;
+        const destinationAddr = addressObj.value[0]?.address;
 
         if (!destinationAddr) {
           return console.log("Couldn't parse destination address.");

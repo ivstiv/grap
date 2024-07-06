@@ -11,7 +11,7 @@ type EmailArgs = {
 
 
 export class EmailAddress extends Model {
-  static tableName = "addresses";
+  static override tableName = "addresses";
 
   id: number;
   address: string;
@@ -61,7 +61,7 @@ export class EmailAddress extends Model {
   }
 
 
-  static relationMappings () {
+  static override relationMappings () {
     return {
       user: {
         relation: Model.BelongsToOneRelation,

@@ -12,7 +12,7 @@ export const numOfAdmins = async () => {
 
 
 export const capitalizeFirstLetter = (string: string) =>
-  string[0].toUpperCase() + string.slice(1);
+  string[0]?.toUpperCase() + string.slice(1);
 
 
 export const getApiUrl = () => {

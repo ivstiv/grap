@@ -20,6 +20,10 @@ export const apiV1Routes: FastifyPluginCallback =
             });
           }
           const [_bearer, token] = req.headers.authorization.split(" ");
+          if (token === undefined) {
+            // if this happens fix the regex above!
+            throw new Error("(impossible) Token is undefined");
+          }
           hasValidToken = await Token.isTokenValid(token);
         }
 

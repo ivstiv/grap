@@ -3,7 +3,7 @@ import { EmailAddress } from "./EmailAddress";
 
 
 export class Email extends Model {
-  static tableName = "emails";
+  static override tableName = "emails";
 
   id: number;
   address: number;
@@ -20,7 +20,7 @@ export class Email extends Model {
     return this.$query().delete().where({ id: this.id });
   }
 
-  static relationMappings () {
+  static override relationMappings () {
     return {
       emailAddress: {
         relation: Model.BelongsToOneRelation,

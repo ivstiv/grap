@@ -75,6 +75,11 @@ describe("User model", () => {
     }
 
     const address = user.addresses[0];
+
+    if (!address) {
+      throw new Error("Failed to get adress!");
+    }
+
     const emailsBefore = await address.getEmails();
     assert.strictEqual(emailsBefore.length, 0);
 

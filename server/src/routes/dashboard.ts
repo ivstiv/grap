@@ -10,6 +10,7 @@ export const dashboardRoutes: FastifyPluginCallback =
           return res.redirect("/login");
         }
         done();
+        return undefined;
       }
     );
 
@@ -19,4 +20,5 @@ export const dashboardRoutes: FastifyPluginCallback =
     instance.post("/inbox/email", DashboardController.deleteEmail);
     instance.get("/inbox/:inboxId/email/:emailId", DashboardController.showEmail);
     next();
+    return undefined;
   };
