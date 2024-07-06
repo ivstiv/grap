@@ -10,6 +10,7 @@ export const loginRoutes: FastifyPluginCallback =
           return res.redirect("/dashboard");
         }
         done();
+        return undefined;
       }
     );
 

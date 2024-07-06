@@ -2,8 +2,8 @@ import { Model } from "objection";
 
 
 export class UserSettings extends Model {
-  static tableName = "user_settings";
-  static idColumn = "user";
+  static override tableName = "user_settings";
+  static override idColumn = "user";
 
   user: number;
   maxEmailAddresses: number;

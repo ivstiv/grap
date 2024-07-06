@@ -1,7 +1,7 @@
-FROM node:18-bullseye-slim
+FROM node:20-bullseye-slim
 
 RUN corepack enable
-RUN corepack prepare pnpm@latest-8 --activate
+RUN corepack prepare pnpm@latest-9 --activate
 RUN pnpm config set store-dir .pnpm-store
 
 ARG MODD_VERSION=0.8

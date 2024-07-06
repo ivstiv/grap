@@ -8,8 +8,8 @@ export type StatName =
 
 
 export class SystemStat extends Model {
-  static tableName = "stats";
-  static idColumn = "name";
+  static override tableName = "stats";
+  static override idColumn = "name";
 
   name: StatName;
   value: string;

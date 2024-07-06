@@ -8,8 +8,8 @@ export type SettingName =
 
 
 export class SystemSetting extends Model {
-  static tableName = "settings";
-  static idColumn = "name";
+  static override tableName = "settings";
+  static override idColumn = "name";
 
   name: SettingName;
   value: string;

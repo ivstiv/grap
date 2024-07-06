@@ -1,7 +1,7 @@
-FROM node:18-bullseye-slim as build
+FROM node:20-bullseye-slim as build
 
 RUN corepack enable
-RUN corepack prepare pnpm@latest-8 --activate
+RUN corepack prepare pnpm@latest-9 --activate
 RUN pnpm config set store-dir .pnpm-store
 
 WORKDIR /app
@@ -9,10 +9,10 @@ COPY . /app
 RUN pnpm install --frozen-lockfile
 RUN pnpm run build
 
-FROM node:18-bullseye-slim
+FROM node:20-bullseye-slim
 
 RUN corepack enable
-RUN corepack prepare pnpm@latest-8 --activate
+RUN corepack prepare pnpm@latest-9 --activate
 RUN pnpm config set store-dir .pnpm-store
 
 WORKDIR /app

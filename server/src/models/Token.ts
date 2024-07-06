@@ -3,7 +3,7 @@ import { User } from "./User";
 
 
 export class Token extends Model {
-  static tableName = "tokens";
+  static override tableName = "tokens";
 
   id: number;
   token: string;
@@ -30,7 +30,7 @@ export class Token extends Model {
   }
 
 
-  static relationMappings () {
+  static override relationMappings () {
     return {
       user: {
         relation: Model.BelongsToOneRelation,

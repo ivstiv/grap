@@ -15,7 +15,7 @@ import { UserSettings } from "./UserSettings";
 import { env } from "../env";
 
 export class User extends Model {
-  static tableName = "users";
+  static override tableName = "users";
 
   id: number;
   email: string;
@@ -139,7 +139,7 @@ export class User extends Model {
   }
 
 
-  static relationMappings () {
+  static override relationMappings () {
     return {
       roles: {
         relation: Model.ManyToManyRelation,

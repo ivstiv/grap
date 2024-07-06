@@ -2,7 +2,7 @@ import { Model } from "objection";
 import { User } from "./User";
 
 export class Role extends Model {
-  static tableName = "roles";
+  static override tableName = "roles";
 
   id: number;
   name: "user" | "admin";
@@ -15,7 +15,7 @@ export class Role extends Model {
     return this.$relatedQuery<User>("users");
   }
 
-  static relationMappings () {
+  static override relationMappings () {
     return {
       users: {
         relation: Model.ManyToManyRelation,
