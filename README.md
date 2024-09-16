@@ -96,7 +96,6 @@ Edit the script to customise the email being sent.
 ```
 docker login
 docker pull node:20-bullseye-slim
-docker build -t ivstiv/grap:latest -f .docker/prod.Dockerfile server
-docker push ivstiv/grap:latest
+docker buildx build --push --provenance=true --sbom=true -t ivstiv/grap:experimental -f .docker/prod.Dockerfile server
 docker logout
 ```
