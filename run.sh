@@ -20,10 +20,6 @@ declare -A COMMANDS=(
   ["Stop & delete dev container"]="./compose.sh down"
   ["Rebuild dev container"]="./compose.sh build --no-cache"
   ["Open shell in dev container"]="./compose.sh run --rm server bash"
-  ["Build production image"]="docker build  --no-cache --load -t ivstiv/grap:latest -f .docker/prod.Dockerfile server"
-  ["Push production image"]="docker push ivstiv/grap:latest"
-  ["Build experimental image"]="docker build  --no-cache --load -t ivstiv/grap:experimental -f .docker/prod.Dockerfile server"
-  ["Push experimental image"]="docker push ivstiv/grap:experimental"
   ["Watch production"]="while true; do curl -s -o /dev/null -I -w \"%{http_code}\" https://grap.email; echo; sleep 1; done"
 )
 
